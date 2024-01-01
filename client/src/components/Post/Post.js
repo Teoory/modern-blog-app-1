@@ -1,0 +1,36 @@
+import React from 'react'
+import { format } from "date-fns";
+import { tr, eu } from 'date-fns/locale';
+import { Link } from 'react-router-dom';
+
+const Post = ({_id,title, summary,cover,content,createdAt, author}) => {
+
+  const locales = { tr, eu };
+  return (
+    <div className="post">
+      <div className="image">
+        <Link to={`/post/${_id}`}>
+          <img src={'http://localhost:3030/'+cover} alt="img" />
+        </Link>
+      </div>
+      <div className="text">
+        <Link to={`/post/${_id}`}>
+          <h2>{title}</h2>
+          <p className="info">
+            <a className="author">{author.username}</a>
+            <time>
+              {format(new Date(createdAt), "HH:MM | dd MMMM yyyy", {
+                locale: locales["tr"],
+              })}
+            </time>
+          </p>
+        </Link>
+        <Link to={`/post/${_id}`}>
+          <p className="summary">{summary}</p>
+        </Link>
+      </div>
+    </div>
+  )
+}
+
+export default Post
