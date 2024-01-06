@@ -7,6 +7,10 @@ body {
   color: #222;
 }
 
+a {
+  cursor: pointer;
+}
+
 img {
   max-width: 100%;
 }
@@ -101,9 +105,6 @@ div.post-page a{
 
 div.post-page h1 {
   margin: 10px 0 5px;
-}
-
-div.post-page h2 {
   text-align: center;
 }
 
@@ -123,6 +124,45 @@ div.post-page div.author {
 
 div.post-page div.content p {
   line-height: 1.6rem;
+}
+
+div.actions {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 0 10px 0;
+}
+
+div.actions a.edit,
+div.actions a.delete {
+  background-color: #555;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+div.actions svg {
+  width: 20px;
+  height: 20px;
+}
+
+div.actions a.edit{
+  background-color: #007bff;
+}
+div.actions a.delete {
+  background-color: #d80000;
+}
+
+.EditHeader {
+  display: flex;
+  justify-content: center;
+  font-size: xx-large;
+  font-weight: bold;
 }
 
 @media screen and (min-width: 768px) {

@@ -90,6 +90,37 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
         });
 });
 
+app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
+    let newPath = null; 
+    if(req.file) {
+        const {originalname,path} = req.file;
+        const parts= originalname.split('.');
+        const ext = parts[parts.length - 1];
+        newPath = path + '.' + ext;
+        fs.renameSync(path, newPath);
+    }
+
+    const {token} = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+        const {id, title, summary, content} = req.body;
+        const postDoc = await Post.findById(id);
+        const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+        if(!isAuthor) {
+            return res.status(400).json('Gönderi başka bir kullanıcı tarafından oluşturuldu.');
+        }
+
+        await postDoc.update({
+            title, 
+            summary, 
+            content, 
+            cover: newPath?newPath:postDoc.cover,
+        });
+
+        res.json(postDoc);
+    });
+});
+
 app.get('/post', async (req, res) => {
     res.json(
         await Post.find()
@@ -109,7 +140,3 @@ app.listen(3030, () => {
     console.log('Server listening on port 3030 || nodemon index.js')
 });
 
-
-//mongodb+srv://teory:eooTXqWvt1dhzl7y@cluster0.hd2atfr.mongodb.net/?retryWrites=true&w=majority
-//user: teory
-//pass: eooTXqWvt1dhzl7y

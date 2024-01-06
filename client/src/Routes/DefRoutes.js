@@ -6,6 +6,7 @@ import LoginPage from '../Pages/LoginPage/LoginPage';
 import RegisterPage from '../Pages/RegisterPage/RegisterPage';
 import CreatePost from '../Pages/CreatePost/CreatePost';
 import PostPage from '../Pages/PostPage/PostPage';
+import EditPost from '../Pages/EditPost/EditPost';
 
 const DefRoutes = () => {
   return (
@@ -16,6 +17,7 @@ const DefRoutes = () => {
       <Route path="/register" element={<RegisterPage/>} />
       <Route path="/create" element={<CreatePost/>} />
       <Route path="/post/:id" element={<PostPage/>} />
+      <Route path="/edit/:id" element={<EditPost/>} />
     </Routes>
   )
 }

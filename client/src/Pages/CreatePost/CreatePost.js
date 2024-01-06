@@ -1,28 +1,7 @@
-import ReactQuill from "react-quill"
 import 'react-quill/dist/quill.snow.css';
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
-
-const modules = {
-  toolbar: [
-    [{ 'font': [] }],
-    [{ 'header': [1, 2, 3, 4, false] }],
-
-    ['bold', 'italic', 'underline', 'strike'],
-    ['blockquote', 'code-block'],
-    [{ 'color': [] }, { 'background': [] }],
-    [{ 'align': [] }, {'indent': '-1'}, {'indent': '+1'}],
-    [{'list': 'ordered'}, {'list': 'bullet'}],
-    ['link', 'image']
-  ]
-};
-
-const formats = [
-  'header',
-  'bold', 'italic', 'underline', 'strike', 'blockquote',
-  'list', 'bullet', 'indent',
-  'link', 'image'
-];
+import Editor from "../../components/Editor/Editor";
 
 const CreatePost = () => {
   const [title, setTitle] = useState('');
@@ -65,11 +44,7 @@ const CreatePost = () => {
       <input  type="file"
               onChange={ev => setFiles(ev.target.files)}/>
 
-      <ReactQuill theme="snow" 
-                  value={content} 
-                  onChange={newValue => setContent(newValue)} 
-                  modules={modules}
-                  formats={formats}/>
+      <Editor value={content} onChange={setContent}/>
       <button style={{marginTop:'5px'}}>Gönderi oluştur</button>
     </form>
   )
