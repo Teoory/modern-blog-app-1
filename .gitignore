@@ -1,4 +1,8 @@
-.idea
-api/uploads/*
-api/node_modules
-.txt
+*.idea
+*api/uploads/*
+
+# dependencies
+*/node_modules
+*.pnp
+*.pnp.js
+*.txt
