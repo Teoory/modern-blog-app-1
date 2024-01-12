@@ -1,23 +1,107 @@
 header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 50px;
-    margin-top: 20px;
-    align-items: center;
-  }
-  
-  header a {
-    text-decoration: none;
-    color: inherit;
-  }
-  
-  header a.logo {
-    font-weight: bold;
-    font-size: 1.5rem;
-  }
-  
-  header nav {
-    display: flex;
-    gap: 15px;
-  }
-  
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 50px;
+  margin-top: 20px;
+  align-items: center;
+}
+
+header a {
+  text-decoration: none;
+  color: inherit;
+}
+
+header a.logo {
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+header nav {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+/* Dropdown Styles */
+.dropdown {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background-color: #076eb3;
+  border-radius: 5px;
+  color: white;
+  padding: 2px;
+}
+
+.dropdown-content {
+  top: 40px;
+  left: -5px;
+  display: none;
+  position: absolute;
+  background-color: #32cbd6;
+  min-width: 100px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  text-align: center;
+  border-radius: 5px;
+  font-weight: 400;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #3eeffc;
+  border-radius: 5px;
+}
+
+div .dropbtn {
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+div .dropbtn svg {
+  width: 40px;
+  height: 40px;
+  background-color: #076eb3;
+  border-radius: 50%;
+  color: white;
+}
+
+.header-username {
+  cursor: pointer;
+  font-weight: lighter;
+  font-size: 1.2rem;
+  margin-left: 10px;
+}
+
+.create-post {
+  background-color: #076eb3;
+  border-radius: 5px;
+  color: white;
+  padding: 2px;
+  font-weight: lighter;
+  font-size: 1.2rem;
+  margin-left: 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.create-post svg {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: white;
+}

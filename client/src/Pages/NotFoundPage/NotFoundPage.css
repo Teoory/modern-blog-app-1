@@ -6,7 +6,7 @@
     margin-top: -100px;
   }
   
-  .bg {
+  .nfpbg {
     animation:slide 3s ease-in-out infinite alternate;
     background-image: linear-gradient(-60deg, #2b5b92 50%, #7c5eff 50%);
     bottom:0;
@@ -29,7 +29,7 @@
     animation-duration:5s;
   }
   
-  .content {
+  .contentNotFound {
     background-color:rgba(255,255,255,.8);
     border-radius:.25em;
     box-shadow:0 0 .25em rgba(0,0,0,.25);
@@ -42,7 +42,7 @@
     transform:translate(-50%, -50%);
   }
   
-  h1 {
+  .NotFoundPage h1 {
     font-family:monospace;
   }
   

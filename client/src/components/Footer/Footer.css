@@ -1,0 +1,38 @@
+
+.footer {
+    margin-top: 70px;
+    background: rgb(200, 200, 200);
+}
+
+.ft-top {
+    padding: 50px 0 10px 0;
+    display: grid;
+    justify-items: center;
+}
+
+.ft-href {
+    text-decoration: none;
+    font-weight: 700;
+    color: #000;
+    text-transform: uppercase;
+    padding: 10px;
+}
+
+.ft-href:hover {
+    color: #007bff;
+    transition: color 0.3s ease-in-out;
+}
+.footer-logo {
+    width: 40px; height: auto;
+}
+
+
+@media (max-width: 855px) {
+    .ft-top-tx {
+        display: flex;
+        flex-direction: column;
+    }
+    .ft-href {
+        padding-bottom: 20px;
+    }
+}
