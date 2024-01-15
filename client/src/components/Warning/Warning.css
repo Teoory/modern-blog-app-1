@@ -1,0 +1,25 @@
+.warning {
+    background-color: rgb(255, 60, 0);
+    color: black;
+    padding: 2px;
+    border: 1px solid black;
+    text-align: center;
+}
+
+.warning p {
+    margin: 0;
+    font-weight: 100;
+    color: #ffffff6b;
+    font-size: 10px;
+}
+
+.warning .title {
+    font-weight: bold;
+    color: gainsboro;
+    font-size: 10px;
+}
+
+.warning .message {
+    font-size: 14px;
+    margin-top: -5px;
+}

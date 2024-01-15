@@ -1,5 +1,6 @@
 *.idea
 *api/uploads/*
+api/index.js
 
 # dependencies
 */node_modules

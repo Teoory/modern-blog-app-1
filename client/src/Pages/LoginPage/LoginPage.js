@@ -32,7 +32,7 @@ const LoginPage = () => {
     return <Navigate to="/"/>;
   }
   return (
-    <div>
+    <div className='Page'>
       <form className="login" onSubmit={login}>
         <h1>Login</h1>
         <input   type="text"

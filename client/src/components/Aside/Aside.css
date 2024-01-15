@@ -1,0 +1,80 @@
+.aside {
+    position: fixed;
+    max-width: 150px;
+    width: 100%;
+    top: 100px;
+    left: 0;
+    overflow-y: auto;
+    z-index: 100;
+    border: 2px solid cornflowerblue;
+    border-radius: 0 0 25px 0;
+    margin: 10px 0;
+}
+
+.aside-title {
+    height: 32px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    background-color: cornflowerblue;
+}
+
+.aside-title a {
+    text-decoration: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.aside-title span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.aside-title svg {
+    width: 25px;
+    height: 25px;
+    
+}
+
+.aside-content {
+    padding: 10px;
+    background-color: #6495ed80;
+}
+
+.aside-content h3 {
+    margin: 0;
+    padding: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.aside-content a {
+    display: block;
+    padding: 5px;
+    margin: 5px 0;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 400;
+    text-decoration: none;
+    background-color: white;
+    border: 1.5px solid cornflowerblue;
+}
+
+.aside:nth-last-child(1) {
+    border-bottom: 2px solid cornflowerblue;
+}
+
+@media (max-width: 1200px) {
+    .aside {
+        display: contents;
+    }
+    .aside-title:nth-last-child(1) {
+        margin-bottom: 50px;
+    }
+}
