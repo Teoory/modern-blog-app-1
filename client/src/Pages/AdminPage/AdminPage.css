@@ -1,0 +1,123 @@
+body {
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.AdminUserList ul {
+  list-style: none;
+  padding: 0;
+}
+
+.AdminUserList li {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.username {
+  font-size: 18px;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.tags {    text-transform: uppercase;
+  font-size: 14px;
+  color: #888;
+}
+
+.AdminUserList select {
+  margin-right: 10px;
+  padding: 8px;
+}
+
+.AdminUserList button {
+  padding: 8px 15px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.ourAdmin{
+  color: #888;
+}
+
+.tagSelect {
+  padding: 8px;
+  display: flex;
+}
+
+.tagn {
+  font-size: 10px;
+  margin: 0 20px;
+  text-transform: lowercase;
+}
+
+.admin {
+  color: red;
+}
+
+.moderator {
+  color: orange;
+}
+
+.editor {
+  color: purple;
+}
+
+.master-writer {
+  color: blue;
+}
+
+.writer {
+  color: rgb(35, 87, 82);;
+}
+
+.user {
+  color: grey;
+}
+
+.tagSelect select option {
+  font-weight: 700;
+  text-align: center;
+}
+  
+select option[value="user"] {
+  color: grey;
+}
+
+select option[value="writer"] {
+  color: rgb(35, 87, 82);
+}
+
+select option[value="master-writer"] {
+  color: blue;
+}
+
+select option[value="editor"] {
+  color: purple;
+}
+
+select option[value="moderator"] {
+  color: orange;
+}
+
+select option[value="admin"] {
+  color: red;
+}

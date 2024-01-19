@@ -27,6 +27,13 @@ const Header = () => {
   }
 
   const username = userInfo?.username;
+  const tags = userInfo?.tags;
+    
+  const isAdmin = tags?.includes('admin');
+  const isEditorUp = tags?.includes('editor') || tags?.includes('moderator') || isAdmin;
+  const isMasterWriterUp = tags?.includes('master-writer') || isEditorUp;
+  const isWriter = tags?.includes('writer') || isMasterWriterUp;
+  const isUser = tags?.includes('user') || isWriter;
 
   return (
     <header>
@@ -34,6 +41,7 @@ const Header = () => {
       <nav>
         {username ? (
           <>
+          {isWriter ?
             <div className="create-post">
               <Link to="/create">Create new post
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -41,6 +49,8 @@ const Header = () => {
                 </svg>
               </Link>
             </div>
+          : <>  </>
+          }
             <div className="dropdown">
               <Link className="dropbtn" onClick={() => setShowDropdown(!showDropdown)}>
                 <div className="header-username">

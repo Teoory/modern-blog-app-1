@@ -17,13 +17,20 @@ const PrivRoutes = () => {
     }, []);
     
     const username = userInfo?.username;
+    const tags = userInfo?.tags;
+    
+    const isAdmin = tags?.includes('admin');
+    const isEditorUp = tags?.includes('editor') || tags?.includes('moderator') || isAdmin;
+    const isMasterWriterUp = tags?.includes('master-writer') || isEditorUp;
+    const isWriter = tags?.includes('writer') || isMasterWriterUp;
+    const isUser = tags?.includes('user') || isWriter;
+
     return (
         <Routes>
             {username 
                 ?   <>
                         <Route path="/profile" element={<ProfilePage />} /> 
                         <Route path="/edit/:id" element={<EditPost/>} />
-                        <Route path="/create" element={<CreatePost/>} />
                         <Route path="/post/:id" element={<PostPage/>} />
                     </>
 
@@ -32,8 +39,13 @@ const PrivRoutes = () => {
                     </>
             }
             
-            {username === "admin"
+            {isAdmin
                 ?   <Route path="/admin" element={<AdminPage />} />
+                :   <>  </>
+            }
+
+            {isWriter
+                ?   <Route path="/create" element={<CreatePost/>} />
                 :   <>  </>
             }
 

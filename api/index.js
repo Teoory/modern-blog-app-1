@@ -3,15 +3,16 @@ const cors = require ('cors');
 const mongoose = require ('mongoose');
 const User = require ('./models/User');
 const Post = require ('./models/Post');
+const Warning = require ('./models/Warning');
 const bcrypt = require('bcryptjs');
 const app = express ();
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const multer = require('multer');
 const uploadMiddleware = multer({dest: 'uploads/'});
+const uploadProfilePhoto = multer({dest: 'profilephotos/'});
 const fs = require('fs');
-
-
+require('dotenv').config();
 
 const salt = bcrypt.genSaltSync(10);
 const secret = 'secret';
@@ -20,15 +21,18 @@ app.use (cors ({credentials: true, origin: 'http://localhost:3000'}));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
+app.use('/profilephotos', express.static(__dirname + '/profilephotos'));
 
-mongoose.connect('mongodb+srv://username:password@cluster0.hd2atfr.mongodb.net/?retryWrites=true&w=majority');
+mongoose.connect(`mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.hd2atfr.mongodb.net/?retryWrites=true&w=majority`);
 
 app.post ('/register', async (req, res) => {
-    const {username, password} = req.body;
+    const {username, password, email} = req.body;
     try {
         const userDoc = await User.create({
             username,
+            email,
             password:bcrypt.hashSync(password, salt),
+            tags: ['user'],
         })
         res.json(userDoc);
     } catch (e) {
@@ -42,11 +46,13 @@ app.post ('/login', async (req, res) => {
     const  passOk = bcrypt.compareSync(password, userDoc.password);
     if(passOk){
         //login
-        jwt.sign({username, id:userDoc._id}, secret, {} , (err, token) => {
+        jwt.sign({username, email:userDoc.email, tags:userDoc.tags, id:userDoc._id}, secret, {} , (err, token) => {
             if (err) throw err;
             res.cookie('token', token).json({
                 id:userDoc._id,
                 username,
+                email:userDoc.email,
+                tags:userDoc.tags,
             });
         });
     }else{
@@ -65,6 +71,64 @@ app.get('/profile', (req, res) => {
 
 app.post('/logout', (req, res) => {
     res.clearCookie('token').json('ok');
+});
+
+app.post('/profilePhoto', uploadProfilePhoto.single('file'), async (req, res) => {
+    const {originalname,path} = req.file;
+    const parts= originalname.split('.');
+    const ext = parts[parts.length - 1];
+    // const newPath = path + '.' + ext;
+    // fs.renameSync(path, newPath);
+
+    const {token} = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+
+        const userDoc = await User.findById(info.id);
+        const newFileName = `${userDoc.username}_profilePhoto.${ext}`;
+        const newPath = path + newFileName;
+
+        fs.renameSync(path, newPath);
+        userDoc.profilePhoto = newPath;
+        await userDoc.save();
+        res.json(userDoc);
+    });
+});
+
+app.put('/profilePhoto', uploadProfilePhoto.single('file'), async (req, res) => {
+    let newPath = null; 
+    if(req.file) {
+        const {originalname,path} = req.file;
+        const parts= originalname.split('.');
+        const ext = parts[parts.length - 1];
+        // newPath = path + '.' + ext;
+        // fs.renameSync(path, newPath);
+    }
+
+    const {token} = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+
+        const userDoc = await User.findById(info.id);
+        const newFileName = `${userDoc.username}_profilePhoto.${ext}`;
+        const newPath = path + newFileName;
+
+        fs.renameSync(path, newPath);
+        userDoc.profilePhoto = newPath;
+        
+        // userDoc.profilePhoto = newPath?newPath:userDoc.profilePhoto;
+        await userDoc.save();
+        res.json(userDoc);
+    });
+});
+
+app.get('/profilephoto', async (req, res) => {
+    const {token} = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+        const userDoc = await User.findById(info.id);
+        res.json(userDoc.profilePhoto);
+    });
 });
 
 app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
@@ -88,7 +152,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
             });
             res.json({postDoc});
         });
-});
+}); 
 
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
     let newPath = null; 
@@ -135,6 +199,76 @@ app.get('/post/:id', async (req, res) => {
     const postDoc = await Post.findById(id).populate('author', ['username'])
     res.json(postDoc);
 });
+
+
+//!Admin
+const isAdmin = (req, res, next) => {
+    const { token } = req.cookies;
+
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    jwt.verify(token, secret, {}, (err, info) => {
+        if (err) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        // Kullanıcı etiketlerini kontrol et
+        if (info.tags.includes('admin')) {
+            next(); // Yetkilendirme başarılı
+        } else {
+            res.status(403).json({ error: 'Forbidden' });
+        }
+    });
+};
+
+
+app.get('/users', isAdmin, async (req, res) => {
+    res.json(
+        await User.find({},'username email tags')
+        .sort({createdAt: -1})
+    );
+});
+
+app.post('/changeTag', async (req, res) => {
+    const {username, newTag} = req.body;
+    const userDoc = await User.findOne({username});
+    userDoc.tags = [newTag];
+    await userDoc.save();
+    res.json(userDoc);
+});
+
+
+//? Alert Message
+app.put('/warning', async (req, res) => {
+    const {title, message} = req.body;
+
+    try {
+        const existWarning = await Warning.findOne({});
+        if(existWarning){
+            existWarning.title = title;
+            existWarning.message = message;
+            await existWarning.save();
+            res.json({warningDoc: existWarning});
+        } else {
+            const newWarning = await Warning.create({
+                title,
+                message,
+            });
+            res.json({warningDoc: newWarning});
+        }
+    } catch (e) {
+        res.status(400).json(e);
+    }
+});
+
+app.get('/getWarning', async (req, res) => {
+    res.json(
+        await Warning.findOne({},'title message')
+    );
+});
+
 
 app.listen(3030, () => {
     console.log('Server listening on port 3030 || nodemon index.js')

@@ -178,6 +178,12 @@ div.actions a.delete {
   font-weight: bold;
 }
 
+div.image img{
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
 @media screen and (min-width: 768px) {
   div.post {
     grid-template-columns: 0.9fr 1.1fr;

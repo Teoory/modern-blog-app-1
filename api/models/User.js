@@ -8,10 +8,24 @@ const UserSchema = new mongoose.Schema({
         min: 4,
         unique: true
     },
+    email: {
+        type: String,
+        required: [true, 'Please provide a email'],
+        unique: true
+    },
     password: {
         type: String,
         required: [true, 'Please provide a password'],
-    }
+    },
+    tags: {
+        type: [String],
+        enum: ['admin', 'moderator', 'editor', 'master-writer', 'writer', 'user'],
+        default: ['user']
+    },
+    profilePhoto: {
+        type: String,
+        default: './profilePhotos/default.jpg'
+    },
 });
 
 const UserModel = model('User', UserSchema);

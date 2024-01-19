@@ -1,8 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Warning.css';
 
 const Warning = () => {
     const [isHidden, setIsHidden] = useState(false);
+    const [warning, setWarning] = useState({});
+  
+    useEffect(() => {
+        fetch('http://localhost:3030/getWarning', {
+            method: 'GET',
+            credentials: 'include',
+        })
+            .then(response => response.json())
+            .then(data => setWarning(data))
+            .catch(error => console.error('Error fetching warning:', error));
+        }, []);
 
     const toggleVisibility = () => {
         setIsHidden(!isHidden);
@@ -10,16 +21,16 @@ const Warning = () => {
 
     return (
         <>
-        {isHidden ? (
+        {isHidden || warning.title === '' ? (
             <span></span>
         ) : (
             <a onClick={toggleVisibility}>
             <div className={`warning`}>
                 <div className="title">
-                    Welcome to the new version of the website!
+                    {warning.title}
                 </div>
                 <div className="message">
-                    This is a new version of the website. Please report any bugs you encounter to the admin.
+                    {warning.message}
                 </div>
             </div></a>
         )}

@@ -1,6 +1,10 @@
 *.idea
 *api/uploads/*
 api/index.js
+.env
+
+api/profilePhotos/*
+
 
 # dependencies
 */node_modules

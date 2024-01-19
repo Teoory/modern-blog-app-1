@@ -4,6 +4,15 @@
 /node_modules
 /.pnp
 .pnp.js
+.jpg
+/.jps
+
+/uploads
+/uploads/*
+/profilePhotos
+/profilePhotos/*
+
+profilePhotos
 
 # testing
 /coverage

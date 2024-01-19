@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useContext } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { UserContext } from '../../Hooks/UserContext';
 import './LoginPage.css';
 
@@ -43,6 +43,7 @@ const LoginPage = () => {
                 placeholder="password" 
                 value={password} 
                 onChange={ev => setPassword(ev.target.value)}/>
+        <Link to="/forgetPassword">Parolami unuttum</Link>
         <button>Login</button>
       </form>
     </div>
