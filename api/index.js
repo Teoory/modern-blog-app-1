@@ -3,6 +3,7 @@ const cors = require ('cors');
 const mongoose = require ('mongoose');
 const User = require ('./models/User');
 const Post = require ('./models/Post');
+const PrevievPost = require ('./models/PrevievPost');
 const Warning = require ('./models/Warning');
 const bcrypt = require('bcryptjs');
 const app = express ();
@@ -25,6 +26,7 @@ app.use('/profilephotos', express.static(__dirname + '/profilephotos'));
 
 mongoose.connect(`mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.hd2atfr.mongodb.net/?retryWrites=true&w=majority`);
 
+//? Register & Login
 app.post ('/register', async (req, res) => {
     const {username, password, email} = req.body;
     try {
@@ -61,6 +63,7 @@ app.post ('/login', async (req, res) => {
     }
 });
 
+//? Profile
 app.get('/profile', (req, res) => {
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, (err, info) => {
@@ -69,10 +72,12 @@ app.get('/profile', (req, res) => {
     });
 });
 
+//? Logout
 app.post('/logout', (req, res) => {
     res.clearCookie('token').json('ok');
 });
 
+//? Profile Photo
 app.post('/profilePhoto', uploadProfilePhoto.single('file'), async (req, res) => {
     const {originalname,path} = req.file;
     const parts= originalname.split('.');
@@ -131,6 +136,7 @@ app.get('/profilephoto', async (req, res) => {
     });
 });
 
+//? Post
 app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
     const {originalname,path} = req.file;
     const parts= originalname.split('.');
@@ -142,13 +148,14 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
 
-        const {id, title, summary, content} = req.body;
+        const {id, title, summary, content, previev} = req.body;
             const postDoc = await Post.create({
                 title,
                 summary,
                 content,
                 cover: newPath,
                 author: info.id,
+                previev,
             });
             res.json({postDoc});
         });
@@ -167,18 +174,19 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
-        const {id, title, summary, content} = req.body;
+        const {id, title, summary, content, previev} = req.body;
         const postDoc = await Post.findById(id);
         const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
         if(!isAuthor) {
             return res.status(400).json('Gönderi başka bir kullanıcı tarafından oluşturuldu.');
         }
 
-        await postDoc.update({
+        await Post.findByIdAndUpdate(id, {
             title, 
             summary, 
             content, 
             cover: newPath?newPath:postDoc.cover,
+            previev,
         });
 
         res.json(postDoc);
@@ -198,6 +206,163 @@ app.get('/post/:id', async (req, res) => {
     const {id} = req.params;
     const postDoc = await Post.findById(id).populate('author', ['username'])
     res.json(postDoc);
+});
+
+app.delete('/post/:id', async (req, res) => {
+    const { id } = req.params;
+    const { token } = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+        const postDoc = await Post.findById(id);
+        const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+        if(!isAuthor || !info.tags.includes('admin')) {
+            return res.status(400).json('This post was created by another user.');
+        }
+        await Post.findByIdAndDelete(id);
+        res.json({ message: 'Post deleted successfully' });
+    });
+});
+
+//? Previev Post
+app.post('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
+    const {originalname,path} = req.file;
+    const parts= originalname.split('.');
+    const ext = parts[parts.length - 1];
+    const newPath = path + '.' + ext;
+    fs.renameSync(path, newPath);
+
+    const {token} = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+
+        const {id, title, summary, content, previev} = req.body;
+            const postDoc = await PrevievPost.create({
+                title,
+                summary,
+                content,
+                cover: newPath,
+                author: info.id,
+                previev,
+            });
+            res.json({postDoc});
+        });
+});
+
+app.put('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
+    let newPath = null; 
+    if(req.file) {
+        const {originalname,path} = req.file;
+        const parts= originalname.split('.');
+        const ext = parts[parts.length - 1];
+        newPath = path + '.' + ext;
+        fs.renameSync(path, newPath);
+    }
+
+    const {token} = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+        const {id, title, summary, content, previev} = req.body;
+        const postDoc = await PrevievPost.findById(id);
+        const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+        if(!isAuthor || !info.tags.includes('admin')) {
+            return res.status(400).json('Gönderi başka bir kullanıcı tarafından oluşturuldu.');
+        }
+
+        await PrevievPost.findByIdAndUpdate(id, {
+            title, 
+            summary, 
+            content, 
+            cover: newPath?newPath:postDoc.cover,
+            previev,
+        });
+
+        res.json(postDoc);
+    });
+});
+
+app.get('/previevPost', async (req, res) => {
+    res.json(
+        await PrevievPost.find()
+        .populate('author', ['username'])
+        .sort({createdAt: -1})
+        .limit(20)
+    );
+});
+
+app.get('/previevPost/:id', async (req, res) => {
+    const {id} = req.params;
+    const postDoc = await PrevievPost.findById(id).populate('author', ['username'])
+    res.json(postDoc);
+});
+
+app.delete('/previevPost/:id', async (req, res) => {
+    const { id } = req.params;
+    const { token } = req.cookies;
+    
+    if (!token) {
+        return res.status(401).json({ message: 'No token provided' });
+    }
+
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+        const postDoc = await Post.findById(id);
+        if(!info.tags.includes('admin')) {
+            return res.status(400).json('This post was created by another user.');
+        }
+        await Post.findByIdAndDelete(id);
+        res.json({ message: 'Post deleted successfully' });
+    });
+});
+
+//? Approve Post
+app.get('/approvePost', async (req, res) => {
+    res.json(
+        await PrevievPost.find()
+        .populate('author', ['username'])
+        .sort({createdAt: -1})
+        .limit(20)
+    );
+});
+
+app.get('/approvePost/:id', async (req, res) => {
+    const {id} = req.params;
+    const postDoc = await PrevievPost.findById(id).populate('author', ['username'])
+    res.json(postDoc);
+});
+
+app.put('/approvePost/:id', async (req, res) => {
+    const { id } = req.params;
+    const { token } = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+        const postDoc = await PrevievPost.findById(id);
+        if(!info.tags.includes('admin')) {
+            return res.status(400).json('This post was created by another user.');
+        }
+        await PrevievPost.findByIdAndDelete(id);
+        res.json({ message: 'Post deleted successfully' });
+    });
+});
+
+//? Search
+app.get('/search/:keyword', async (req, res) => {
+    const {keyword} = req.params;
+    const postDoc = await Post.find({title: {$regex: keyword, $options: 'i'}})
+    res.json(postDoc);
+});
+
+//? Tags
+app.get('/tags', async (req, res) => {
+    res.json(
+        await User.find({},'tags')
+    );
+});
+
+app.get('/tags/:tag', async (req, res) => {
+    const {tag} = req.params;
+    res.json(
+        await User.find({tags: tag},'username email tags')
+    );
 });
 
 

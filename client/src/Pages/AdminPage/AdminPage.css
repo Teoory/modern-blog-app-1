@@ -69,6 +69,26 @@ body {
   text-transform: lowercase;
 }
 
+.PrevievShowButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px solid #6a67ce!important;
+  border-bottom: 1px solid #6a67ce!important;
+}
+
+.PrevievShowButton a{
+  margin: 15px 0;
+  padding: 8px 15px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+}
+
 .admin {
   color: red;
 }

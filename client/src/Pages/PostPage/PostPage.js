@@ -31,6 +31,8 @@ async function deletePost(ev) {
     }
 }
 
+const tags = userInfo?.tags;
+const isAdmin = tags?.includes('admin');
 
 if (!postInfo) return <div>Loading...</div>
     const locales = { tr, eu };
@@ -42,7 +44,7 @@ if (!postInfo) return <div>Loading...</div>
 
         {userInfo === null ? (
             <span></span>
-        ) : userInfo.id === postInfo.author._id ? (
+        ) : userInfo.id === postInfo.author._id || isAdmin ? (
             <div className="actions">
                 <Link className="edit" to={`/edit/${postInfo._id}`}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">

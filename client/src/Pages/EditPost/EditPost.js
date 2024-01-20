@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Navigate, useParams, Link } from 'react-router-dom';
 import Editor from '../../components/Editor/Editor';
+import 'react-quill/dist/quill.snow.css';
 
 const EditPost = () => {
     const {id} = useParams();
@@ -45,7 +46,7 @@ const EditPost = () => {
     }
 
     return (
-        <>
+        <div>
         <div className="EditHeader">Edit Post</div>
         <div className="actions">
             <Link className="delete">
@@ -72,7 +73,7 @@ const EditPost = () => {
             <Editor value={content} onChange={setContent}/>
             <button style={{marginTop:'5px'}}>Gönderiyi Güncelle</button>
         </form>
-        </>
+        </div>
     )
 }
 

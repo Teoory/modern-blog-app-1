@@ -1,15 +1,16 @@
 
 hr {
     border: none;
-    color: #111;
-    letter-spacing: 1em;
+    color: #868686;
+    letter-spacing: 1.35em;
     text-align: center;
     font-size: 1.3rem;
     font-weight: 700;
+    margin: 50px 0;
 }
 
 hr:before {
-    content: '---';
+    content: '•••';
 }
 
 .ql-custom-hr {

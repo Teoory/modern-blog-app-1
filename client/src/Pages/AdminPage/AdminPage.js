@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom'; 
 import './AdminPage.css';
 
 const AdminPage = () => {
@@ -60,10 +61,11 @@ const AdminPage = () => {
 
   return (
     <div>
+      <div className="PrevievShowButton"><Link to='/previev'>İnceleme Bloglarını Görüntüle</Link></div>
       <ul className="AdminUserList">
         {users.map(user => (
           <li key={user.username}>
-            <span><span className={`username ${user.tags.join(' ')}`}>{user.username}</span> <span class="tagn">Tag:</span> <span className={`tags ${user.tags.join(' ')}`}>{user.tags.join(', ')}</span></span>
+            <span><span className={`username ${user.tags.join(' ')}`}>{user.username}</span> <span className="tagn">Tag:</span> <span className={`tags ${user.tags.join(' ')}`}>{user.tags.join(', ')}</span></span>
             {!user.tags.includes('admin') ? (
               <div className="tagSelect">
                 <select
