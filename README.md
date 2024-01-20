@@ -7,7 +7,26 @@ mongoose.connect('mongodb+srv://username:password@cluster0.hd2atfr.mongodb.net/?
 
 
 # Son Değişiklikler:</br>
-#### V1.1.2
+### V1.1.2
+
+#### 20/01
+- Hatalar giderildi
+
+- Admin Sayfası tekrar güncellendi
+
+- yeni yazarların blogları artık /previev kısmına gidiyor ayrıca blog yazarken /createPreviev kısmından blog yazıyorlar
+
+- /previevPost sayfasına onaylama kutucuğu eklendi fakat işlevi henüz çalışmıyor
+
+- SERVER kısmına /search/:keyword eklendi front-end tarafına işlenmesi gerekiyor backend düzgün sonuç veriyor
+
+- Server kısmına /tags eklendi bu sayede kişilerin aktif üye listesine ve taglarına ulaşılabiliyor, ayrıca /tags/:tag sayesinde hangi tag de kimin olduğu görülebiliyor (örnek: /tags/admin)
+
+- Ufak görsel iyileştirme, Quill-snow Sisteme tamamen entegre edildi
+
+#### -----------
+
+##### 19/01
 - User Taglar eklendi
   - Admin, Moderator, Editor, Master-Writer, Writer, Uye
 - Admin sayfası güncellendi
@@ -16,9 +35,9 @@ mongoose.connect('mongodb+srv://username:password@cluster0.hd2atfr.mongodb.net/?
   - Artık her kullanıcı profil resmi ekleyebiliyor, eski resimler güvenlik amacıyla kaydedilecek
 - Sitedeki Alert mesajı MongoDBya entegre edildi artık MogoDBdan ulaşılabilir.
 
-##
+<hr>
 
-#### V1.1.1
+### V1.1.1
 - Routes ayarları güncellendi
   - AppRoutes, DefRoutes, PrivRoutes
 - Sayfa stilleri güncellendi
@@ -26,9 +45,9 @@ mongoose.connect('mongodb+srv://username:password@cluster0.hd2atfr.mongodb.net/?
   - Son paylaşılan Blog, Rastgele Blog ve destek butonu bulunmakta!
 - Yeni blog yazarkenki editör ayarları güncellendi
 
-##
+<hr>
 
-#### V1.0.1 (BETA)
+### V1.0.1 (BETA)
 - Blog yazısı paylaşma ve MongoDB ile eşleşme
 - Kullanıcı Girişi ve Kayıt olma
 - bcrypt.hashSync ile kullanıcıların şifrelerini saklama
