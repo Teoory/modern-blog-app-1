@@ -4,7 +4,12 @@
 ```sh
 mongoose.connect('mongodb+srv://username:password@cluster0.hd2atfr.mongodb.net/?retryWrites=true&w=majority');
 ```
-
+<hr>
+<br/>
+Check this board
+- [Trello](https://trello.com/b/VMTJJehJ/modernblogapp)
+<hr>
+<br/>
 
 # Son Değişiklikler:</br>
 ### V1.1.3
