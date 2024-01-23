@@ -15,47 +15,29 @@ Check this board
 ### V1.1.3
 
 #### 23/01
--  Hatalar giderildi
-
-  -  Profil Photo Backend tarafından sürekli istek atıyordu ve siteye ilk kez giriş yapan kişiler serveri patlatıyordu bu sorun ortadan kaldırıldı
-
-  -  previevPage silinirken oluşan hata sorun düzeltildi
-
+- Hatalar giderildi
+  - Profil Photo Backend tarafından sürekli istek atıyordu ve siteye ilk kez giriş yapan kişiler serveri patlatıyordu bu sorun ortadan kaldırıldı
+  - previevPage silinirken oluşan hata sorun düzeltildi
 -  NavBar ve ProfilPage style güncellendi
-
--  DarkMode artık hesabınızla eşleşiyor ve giriş yaptığınızda en son hangi modda bıraktıysanız o moda geri dönüyor
-
-    -Giriş yapmayan kullanıcılar sayfayı yeniledikleri zaman otomatik olarak default’a geçiyor (Aydınlık tema)
-
--  /Test Back End tarafında oluşturuldu
-
--  AdminPage’deki approveBlog kısmı için kaç tane istek olduğu gösteren bir alert box eklendi
-
-  -  Eğer hiç istek yoksa alert göstermiyor
-
--  local ip değişti artık localhost:3000 yerine 192.168.1.3:3000
+- DarkMode artık hesabınızla eşleşiyor ve giriş yaptığınızda en son hangi modda bıraktıysanız o moda geri dönüyor
+  - Giriş yapmayan kullanıcılar sayfayı yeniledikleri zaman otomatik olarak default’a geçiyor (Aydınlık tema)
+- /Test Back End tarafında oluşturuldu
+- AdminPage’deki approveBlog kısmı için kaç tane istek olduğu gösteren bir alert box eklendi
+  - Eğer hiç istek yoksa alert göstermiyor
+- local ip değişti artık localhost:3000 yerine 192.168.1.3:3000
 
 #### -----------
 
 #### 22/01
 - Bazı Hatalar giderildi
-
 - /previevPage onaylama fonksiyonu oluşturuldu. Artık writer yetkisine sahip kullanıcıların blogları /previevpage bir admin, moderator veya editör onay verirse /postpage e gönderiliyor ve herkesin erişimine açılıyor.
-
 - deletePost fonksiyonu oluşturuldu. Artık admin ve moderator istedikleri blogu silebilirler.
-
 - Genel style güncellemesi
-
 - Search Area (BUG!)
-
 - Ads Area
-
 - Navbar style güncellemesi
-
 - butonlar düzenlendi yazmaya başla ve keşfet dropdownları eklendi
-
 - Dark/Light mode eklendi
-
 - Test sistemi için önizleme oluşturuldu fakat bütün işlevler elde girildi bunlar textAreaya bağlanacak soruları buradan çekecek ayrıca kaç sayı girilirse sorunun altına o kadar cevap seçeneği koyacak ve bütün cevaplara puan ataması yapılabilecek
 
 <hr>
@@ -64,17 +46,11 @@ Check this board
 
 #### 20/01
 - Hatalar giderildi
-
 - Admin Sayfası tekrar güncellendi
-
 - yeni yazarların blogları artık /previev kısmına gidiyor ayrıca blog yazarken /createPreviev kısmından blog yazıyorlar
-
 - /previevPost sayfasına onaylama kutucuğu eklendi fakat işlevi henüz çalışmıyor
-
 - SERVER kısmına /search/:keyword eklendi front-end tarafına işlenmesi gerekiyor backend düzgün sonuç veriyor
-
 - Server kısmına /tags eklendi bu sayede kişilerin aktif üye listesine ve taglarına ulaşılabiliyor, ayrıca /tags/:tag sayesinde hangi tag de kimin olduğu görülebiliyor (örnek: /tags/admin)
-
 - Ufak görsel iyileştirme, Quill-snow Sisteme tamamen entegre edildi
 
 #### -----------
