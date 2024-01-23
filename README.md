@@ -14,6 +14,30 @@ Check this board
 # Son Değişiklikler:</br>
 ### V1.1.3
 
+#### 23/01
+-  Hatalar giderildi
+
+  -  Profil Photo Backend tarafından sürekli istek atıyordu ve siteye ilk kez giriş yapan kişiler serveri patlatıyordu bu sorun ortadan kaldırıldı
+
+  -  previevPage silinirken oluşan hata sorun düzeltildi
+
+-  NavBar ve ProfilPage style güncellendi
+
+-  DarkMode artık hesabınızla eşleşiyor ve giriş yaptığınızda en son hangi modda bıraktıysanız o moda geri dönüyor
+
+    -Giriş yapmayan kullanıcılar sayfayı yeniledikleri zaman otomatik olarak default’a geçiyor (Aydınlık tema)
+
+-  /Test Back End tarafında oluşturuldu
+
+-  AdminPage’deki approveBlog kısmı için kaç tane istek olduğu gösteren bir alert box eklendi
+
+  -  Eğer hiç istek yoksa alert göstermiyor
+
+-  local ip değişti artık localhost:3000 yerine 192.168.1.3:3000
+
+#### -----------
+
+#### 22/01
 - Bazı Hatalar giderildi
 
 - /previevPage onaylama fonksiyonu oluşturuldu. Artık writer yetkisine sahip kullanıcıların blogları /previevpage bir admin, moderator veya editör onay verirse /postpage e gönderiliyor ve herkesin erişimine açılıyor.
