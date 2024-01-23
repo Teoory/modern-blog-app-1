@@ -7,6 +7,30 @@ mongoose.connect('mongodb+srv://username:password@cluster0.hd2atfr.mongodb.net/?
 
 
 # Son Değişiklikler:</br>
+### V1.1.3
+
+- Bazı Hatalar giderildi
+
+- /previevPage onaylama fonksiyonu oluşturuldu. Artık writer yetkisine sahip kullanıcıların blogları /previevpage bir admin, moderator veya editör onay verirse /postpage e gönderiliyor ve herkesin erişimine açılıyor.
+
+- deletePost fonksiyonu oluşturuldu. Artık admin ve moderator istedikleri blogu silebilirler.
+
+- Genel style güncellemesi
+
+- Search Area (BUG!)
+
+- Ads Area
+
+- Navbar style güncellemesi
+
+- butonlar düzenlendi yazmaya başla ve keşfet dropdownları eklendi
+
+- Dark/Light mode eklendi
+
+- Test sistemi için önizleme oluşturuldu fakat bütün işlevler elde girildi bunlar textAreaya bağlanacak soruları buradan çekecek ayrıca kaç sayı girilirse sorunun altına o kadar cevap seçeneği koyacak ve bütün cevaplara puan ataması yapılabilecek
+
+<hr>
+
 ### V1.1.2
 
 #### 20/01
