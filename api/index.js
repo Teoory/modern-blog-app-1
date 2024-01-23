@@ -3,6 +3,7 @@ const cors = require ('cors');
 const mongoose = require ('mongoose');
 const User = require ('./models/User');
 const Post = require ('./models/Post');
+const Test = require ('./models/Test');
 const PrevievPost = require ('./models/PrevievPost');
 const Warning = require ('./models/Warning');
 const bcrypt = require('bcryptjs');
@@ -18,7 +19,7 @@ require('dotenv').config();
 const salt = bcrypt.genSaltSync(10);
 const secret = 'secret';
 
-app.use (cors ({credentials: true, origin: 'http://localhost:3000'}));
+app.use (cors ({credentials: true, origin: 'http://192.168.1.3:3000'}));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
@@ -133,6 +134,27 @@ app.get('/profilephoto', async (req, res) => {
         if(err) throw err;
         const userDoc = await User.findById(info.id);
         res.json(userDoc.profilePhoto);
+    });
+});
+
+//? DarkMode
+app.put('/darkmode', async (req, res) => {
+    const {token} = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+        const userDoc = await User.findById(info.id);
+        userDoc.darkMode = !userDoc.darkMode;
+        await userDoc.save();
+        res.json(userDoc.darkMode);
+    });
+});
+
+app.get('/darkmode', async (req, res) => {
+    const {token} = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+        const userDoc = await User.findById(info.id);
+        res.json(userDoc.darkMode);
     });
 });
 
@@ -310,14 +332,14 @@ app.delete('/previevPost/:id', async (req, res) => {
     const { token } = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
-        const postDoc = await Post.findById(id);
+        const postDoc = await PrevievPost.findById(id);
         const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
         const isAdmin = info.tags.includes('admin');
         const isModerator = info.tags.includes('moderator');
         if(!isAuthor && !isAdmin && !isModerator) {
-            return res.status(400).json('Your not ADMIN!');
+            return res.status(400).json('Don\'t have permission!');
         }
-        await Post.findByIdAndDelete(id);
+        await PrevievPost.findByIdAndDelete(id);
         res.json({ message: 'Post deleted successfully' });
     });
 });
@@ -381,6 +403,92 @@ app.put('/approvePost/:id', async (req, res) => {
     }
 });
 
+
+
+//? Tests 
+app.post('/test', uploadMiddleware.single('file'), async (req, res) => {
+    const {originalname,path} = req.file;
+    const parts= originalname.split('.');
+    const ext = parts[parts.length - 1];
+    const newPath = path + '.' + ext;
+    fs.renameSync(path, newPath);
+
+    const {token} = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+
+        const {id, title, summary, content, previev} = req.body;
+            const testDoc = await Test.create({
+                title,
+                summary,
+                content,
+                cover: newPath,
+                author: info.id,
+                previev,
+            });
+            res.json({testDoc});
+        });
+});
+
+app.put('/test', uploadMiddleware.single('file'), async (req, res) => {
+    let newPath = null;
+    if(req.file) {
+        const {originalname,path} = req.file;
+        const parts= originalname.split('.');
+        const ext = parts[parts.length - 1];
+        newPath = path + '.' + ext;
+        fs.renameSync(path, newPath);
+    }
+
+    const {token} = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+        const {id, title, summary, content, previev} = req.body;
+        const testDoc = await Test.findById(id);
+        const isAuthor = JSON.stringify(testDoc.author) === JSON.stringify(info.id);
+        const isAdmin = info.tags.includes('admin');
+        const isModerator = info.tags.includes('moderator');
+        const isEditor = info.tags.includes('editor');
+        if(!isAuthor && !isAdmin && !isModerator && !isEditor) {
+            return res.status(400).json('You don\'t have permission.');
+        }
+
+        await Test.findByIdAndUpdate(id, {
+            title, 
+            summary, 
+            content, 
+            cover: newPath?newPath:testDoc.cover,
+            previev,
+        });
+
+        res.json(testDoc);
+    });
+});
+
+app.get('/test/:id', async (req, res) => {
+    const {id} = req.params;
+    const testDoc = await Test.findById(id).populate('author', ['username'])
+    res.json(testDoc);
+});
+
+app.delete('/test/:id', async (req, res) => {
+    const { id } = req.params;
+    const { token } = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+        const testDoc = await Test.findById(id);
+        const isAuthor = JSON.stringify(testDoc.author) === JSON.stringify(info.id);
+        const isAdmin = info.tags.includes('admin');
+        const isModerator = info.tags.includes('moderator');
+        if(!isAuthor && !isAdmin && !isModerator) {
+            return res.status(400).json('Your not ADMIN!');
+        }
+        await Test.findByIdAndDelete(id);
+        res.json({ message: 'Test deleted successfully' });
+    });
+});
+
+
 //? Search
 app.get('/search/:keyword', async (req, res) => {
     const {keyword} = req.params;
@@ -402,58 +510,8 @@ app.get('/tags/:tag', async (req, res) => {
     );
 });
 
+
 //? Comments
-app.post('/post/:id/comments', async (req, res) => {
-    const { id } = req.params;
-    const { comment } = req.body;
-    const { token } = req.cookies;
-    jwt.verify(token, secret, {}, async (err, info) => {
-        if(err) throw err;
-        const postDoc = await Post.findById(id);
-        const newComment = await postDoc.comments.create({
-            content: comment,
-            author: info.id,
-        });
-        await postDoc.comments.push(newComment);
-        await postDoc.save();
-        res.json(newComment);
-    }
-    );
-});
-
-app.put('/post/:id/upvote', async (req, res) => {
-    const   { name }  = req.params;
-    
-    await db.collection('blogs').updateOne({ name }, {
-        $inc: { upvotes: 1 },
-    });
-    const blog = await db.collection('blogs').findOne({ name });
-
-    if( blog ) {
-        res.json(blog);
-    } else {
-        res.send('That blog doesn\'t exist!');
-    }
-});
-
-// app.post('/post/:id/comments',  async (req, res) => {
-//     const { name } = req.params;
-//     const { postedBy, text } = req.body;
-
-//     await db .collection('blogs').updateOne({ name }, {
-//         $push: { comments: { postedBy, text} },
-//     });
-//     const blog = await db.collection('blogs').findOne({ name });
-
-//     if (blog) {
-//         res.json(blog);
-//     } else {
-//         res.send('That blog doesn\'t exist!');
-//     }
-// })
-
-
-
 
 
 //!Admin

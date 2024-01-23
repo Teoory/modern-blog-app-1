@@ -11,11 +11,12 @@ import AdminPage from '../Pages/AdminPage/AdminPage';
 import PostPage from '../Pages/PostPage/PostPage';
 import PrevievPostPage from '../Pages/PrevievPostPage/PrevievPostPage';
 import PrevievPostEdit from '../Pages/PrevievPostEdit/PrevievPostEdit';
+import CreateTest from '../Pages/CreateTest/CreateTest';
 
 const PrivRoutes = () => {
     const { userInfo } = useContext(UserContext);
     useEffect(() => {
-        fetch('http://localhost:3030/profile', {
+        fetch('http://192.168.1.3:3030/profile', {
             credentials: 'include',
         });
     }, []);
@@ -45,7 +46,7 @@ const PrivRoutes = () => {
             
             {isAdmin
                 ?   <Route path="/admin" element={<AdminPage />} />
-                :   <>  </>
+                :   null
             }
 
             {isEditorUp
@@ -54,17 +55,20 @@ const PrivRoutes = () => {
                         <Route path="/previevPost/:id" element={<PrevievPostPage />} />
                         <Route path="/previevPostEdit/:id" element={<PrevievPostEdit />} />
                     </>
-                :   <>  </>
+                :   null
             }
 
             {isWriter
                 ?   <Route path="/createPreviev" element={<CreatePrevievPost/>} />
-                :   <>  </>
+                :   null
             }
 
             {isMasterWriterUp
-                ?   <Route path="/create" element={<CreatePost/>} />
-                :   <>  </>
+                ?   <>
+                        <Route path="/create" element={<CreatePost/>} />
+                        <Route path="/createTest" element={<CreateTest/>} />
+                    </>
+                :   null
             }
 
             <Route index path="/*" element={<HomePage />} />

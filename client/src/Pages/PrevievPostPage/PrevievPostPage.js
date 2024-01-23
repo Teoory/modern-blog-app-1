@@ -10,7 +10,7 @@ const PrevievPostPage = () => {
     const [redirect, setRedirect] = useState(false);
     const {id} = useParams();
     useEffect(() => {
-        fetch(`http://localhost:3030/previevPost/${id}`).then(response => {
+        fetch(`http://192.168.1.3:3030/previevPost/${id}`).then(response => {
             response.json().then(postInfo => {
                 setPostInfo(postInfo);                
             })
@@ -19,7 +19,7 @@ const PrevievPostPage = () => {
 
     const approvePost = async () => {
         try {
-            const response = await fetch(`http://localhost:3030/approvePost/${postInfo._id}`, {
+            const response = await fetch(`http://192.168.1.3:3030/approvePost/${postInfo._id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ const PrevievPostPage = () => {
 
     const deletePost = async () => {
         try {
-            const response = await fetch(`http://localhost:3030/previevPost/${postInfo._id}`, {
+            const response = await fetch(`http://192.168.1.3:3030/previevPost/${postInfo._id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -51,13 +51,13 @@ const PrevievPostPage = () => {
                 body: JSON.stringify({}),
                 credentials: 'include',
             });
-
+    
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-
+    
             setRedirect(true);
-
+    
             const data = await response.json();
             console.log(data);
         } catch (error) {
@@ -72,6 +72,8 @@ const PrevievPostPage = () => {
 
     const tags = userInfo?.tags;
     const isAdmin = tags?.includes('admin');
+    const isModerator = tags?.includes('moderator');
+    const isEditor = tags?.includes('editor');
 
     if (!postInfo) return <div>Loading...</div>
         const locales = { tr, eu };
@@ -83,7 +85,7 @@ const PrevievPostPage = () => {
     
             {userInfo === null ? (
                 <span></span>
-            ) : isAdmin ? (
+            ) : userInfo.id === postInfo.author._id || isAdmin || isModerator || isEditor ? (
                 <div className="actions">
                     <Link className="approve" onClick={() => {
                         if(window.confirm('Bu işlem geri alınamaz. Onaylamak istediğinize emin misiniz?')) {
@@ -115,7 +117,7 @@ const PrevievPostPage = () => {
             ) : null}            
     
             <div className="image">
-                <img src={'http://localhost:3030/'+postInfo.cover} alt="img" />
+                <img src={'http://192.168.1.3:3030/'+postInfo.cover} alt="img" />
             </div>
             <div className='content' dangerouslySetInnerHTML={{__html:postInfo.content}} />
     

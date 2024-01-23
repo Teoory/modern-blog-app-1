@@ -26,6 +26,10 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: './profilePhotos/default.jpg'
     },
+    darkMode: {
+        type: Boolean,
+        default: false
+    },
 });
 
 const UserModel = model('User', UserSchema);

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 const HomePage = () => {
   const [posts, setPosts] = useState([]);
   useEffect(() => {
-    fetch('http://localhost:3030/post').then(response => {
+    fetch('http://192.168.1.3:3030/post').then(response => {
       response.json().then(posts => {
         setPosts(posts);
       });

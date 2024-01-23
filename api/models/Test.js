@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const {Schema, model} = mongoose;
 
-const PostSchema = new mongoose.Schema({
+const TestSchema = new mongoose.Schema({
     title: String,
     summary: String,
     content: String,
@@ -11,6 +11,6 @@ const PostSchema = new mongoose.Schema({
     timestamps: true,
 });
 
-const PostModel = model('Post', PostSchema);
+const TestModel = model('Test', TestSchema);
 
-module.exports = PostModel;
+module.exports = TestModel;

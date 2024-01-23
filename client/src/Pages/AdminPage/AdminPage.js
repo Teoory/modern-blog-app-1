@@ -6,19 +6,30 @@ const AdminPage = () => {
   const [users, setUsers] = useState([]);
   const [newTag, setNewTag] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [postCount, setPostCount] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:3030/users', {
+    fetch('http://192.168.1.3:3030/users', {
       method: 'GET',
       credentials: 'include',
     })
       .then(response => response.json())
       .then(data => setUsers(data))
       .catch(error => console.error('Error fetching users:', error));
+    
+    fetch('http://192.168.1.3:3030/previevPost', {
+      method: 'GET',
+      credentials: 'include',
+    })
+    .then(response => response.json())
+    .then(data => {
+        setPostCount(data.length);
+    })
+    .catch(error => console.error('Error:', error));
   }, []);
 
   const handleChangeTag = (username, newTag) => {
-    fetch('http://localhost:3030/changeTag', {
+    fetch('http://192.168.1.3:3030/changeTag', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -43,7 +54,7 @@ const AdminPage = () => {
     ev.preventDefault();
     const title = document.getElementById('title').value;
     const message = document.getElementById('message').value;
-    fetch('http://localhost:3030/warning', {
+    fetch('http://192.168.1.3:3030/warning', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -63,6 +74,9 @@ const AdminPage = () => {
     <div>
       <div className="PrevievShowButton">
         <Link to='/previev'>İnceleme Bloglarını Görüntüle</Link>
+        {postCount > 0 && 
+          <span className="postCount">{postCount}</span>
+        }
       </div>
 
       <div className="warning-edit-area">

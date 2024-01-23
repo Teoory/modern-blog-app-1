@@ -64,6 +64,7 @@
     text-decoration: none;
     background-color: var(--color-background);
     border: 1.5px solid #6495ed;
+    overflow-wrap: anywhere;
 }
 
 .aside:nth-last-child(1) {

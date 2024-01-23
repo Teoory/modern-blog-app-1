@@ -8,36 +8,38 @@ const Header = () => {
     const { setUserInfo, userInfo } = useContext(UserContext);
     const [showDropdown, setShowDropdown] = useState(false);
     const [writerDropdown, setWriterDropdown] = useState(false);
-    const [darkModeActive, setDarkModeActive] = useState(true);
+    const [darkMode, setDarkMode] = useState(true);
     const [profilePhoto, setProfilePhoto] = useState(null);
 
     useEffect(() => {
-        fetch('http://localhost:3030/profile', {
+        fetch('http://192.168.1.3:3030/profile', {
             credentials: 'include',
         }).then(response => {
             response.json().then(userInfo => {
                 setUserInfo(userInfo);
             });
         });
-
-    fetch('http://localhost:3030/profilephoto', {
-      credentials: 'include',
-    })
-      .then(response => response.json())
-      .then(data => {
-        setProfilePhoto(data);
-      })
-      .catch(error => console.error('Error fetching profile photo:', error));
     }, []);
 
     function logout() {
-        fetch('http://localhost:3030/logout', {
+        fetch('http://192.168.1.3:3030/logout', {
           credentials: 'include',
           method: 'POST',
         }).then(() => {
           setUserInfo(null);
         });
     }
+
+    const getProfilePhoto = () => {
+        fetch('http://192.168.1.3:3030/profilephoto', {
+          credentials: 'include',
+        })
+          .then(response => response.json())
+          .then(data => {
+            setProfilePhoto(data);
+          })
+          .catch(error => console.error('Error fetching profile photo:', error));
+    };
 
     const username = userInfo?.username;
     const tags = userInfo?.tags;
@@ -50,9 +52,33 @@ const Header = () => {
     const isUser = tags?.includes('user') || isWriter;
 
     const darkModeToggle = () => {
-        document.body.classList.toggle('dark-mode-variables');
-        setDarkModeActive(!darkModeActive);
+        if (userInfo === null) {
+            setDarkMode(!darkMode);
+            return;
+        };
+        fetch('http://192.168.1.3:3030/darkmode', {
+            credentials: 'include',
+            method: 'PUT',
+            }).then(() => {
+            setDarkMode(!darkMode);
+            });
+        console.log(darkMode);
     };
+
+    const GetDarkMode = () => {
+        if (userInfo === null) {
+            return;
+        };
+        fetch('http://192.168.1.3:3030/darkmode', {
+            credentials: 'include',
+        })
+            .then(response => response.json())
+            .then(data => {
+                setDarkMode(data);
+            })
+            .catch(error => console.error('Error fetching dark mode:', error));
+    };
+
 
     window.onscroll = function() {scrollFunction()};
     let lastScrollTop = 0;
@@ -80,6 +106,18 @@ const Header = () => {
             scrolledUpOnce = true;
         }
         lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
+    }
+
+    userInfo && getProfilePhoto();
+
+    if (userInfo) {
+        GetDarkMode();
+    }
+    if (darkMode) {
+        document.body.classList.remove('dark-mode-variables');
+    }
+    else {
+        document.body.classList.add('dark-mode-variables');
     }
 
   return (
@@ -112,7 +150,7 @@ const Header = () => {
                               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25M9 16.5v.75m3-3v3M15 12v5.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                               </svg>
-                              Yeni Test
+                              Yeni Test(İznin yok!)
                           </Link>
                       </div>
                   )}
@@ -136,7 +174,7 @@ const Header = () => {
                               </svg>
                               Yeni Blog
                           </Link>
-                          <Link to="/*">
+                          <Link to="/createTest">
                               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25M9 16.5v.75m3-3v3M15 12v5.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                               </svg>
@@ -180,7 +218,7 @@ const Header = () => {
             <div className="dropdown">
                 <Link className="dropbtn" onClick={() => setShowDropdown(!showDropdown)}>
                 {profilePhoto ? (
-                    <img className='ProfilePhoto' src={`http://localhost:3030/${profilePhoto}`} alt="Profile" />
+                    <img className='ProfilePhoto' src={`http://192.168.1.3:3030/${profilePhoto}`} alt="Profile" />
                 ) : (
                     <>
                         <div className="header-username">
@@ -202,12 +240,12 @@ const Header = () => {
                     </div>
                 )}
             </div>
-                <div class="navs">
-                    <div class="dark-mode" onClick={darkModeToggle}>
-                        <span class={`material-symbols-outlined ${darkModeActive ? 'active' : ''}`}>
+                <div className="navs">
+                    <div className="dark-mode" onClick={darkModeToggle}>
+                        <span className={`material-symbols-outlined ${darkMode ? 'active' : ''}`}>
                             light_mode
                         </span>
-                        <span class={`material-symbols-outlined ${darkModeActive ? '' : 'active'}`}>
+                        <span className={`material-symbols-outlined ${darkMode ? '' : 'active'}`}>
                             dark_mode
                         </span>
                     </div>
@@ -247,12 +285,12 @@ const Header = () => {
             </div>
             <div className="login-button">
                 <Link to="/login" className='login-text'>Login / Register</Link>
-                <div class="navs">
-                    <div class="dark-mode" onClick={darkModeToggle}>
-                        <span class={`material-symbols-outlined ${darkModeActive ? 'active' : ''}`}>
+                <div className="navs">
+                    <div className="dark-mode" onClick={darkModeToggle}>
+                        <span className={`material-symbols-outlined ${darkMode ? 'active' : ''}`}>
                             light_mode
                         </span>
-                        <span class={`material-symbols-outlined ${darkModeActive ? '' : 'active'}`}>
+                        <span className={`material-symbols-outlined ${darkMode ? '' : 'active'}`}>
                             dark_mode
                         </span>
                     </div>

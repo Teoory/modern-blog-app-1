@@ -9,7 +9,7 @@ import PostPage from '../Pages/PostPage/PostPage';
 const AppRoutes = () => {
     const { userInfo } = useContext(UserContext);
     useEffect(() => {
-        fetch('http://localhost:3030/profile', {
+        fetch('http://192.168.1.3:3030/profile', {
             credentials: 'include',
         });
     }, []);
@@ -17,12 +17,7 @@ const AppRoutes = () => {
     const username = userInfo?.username;
 
     return (
-        <>
-            {/* <Routes>
-                <Route index element={<HomePage />} />
-                <Route path="/post/:id" element={<PostPage/>} />
-            </Routes> */}
-            
+        <>            
             {username
                 ?   <PrivRoutes />
                 :   <DefRoutes />

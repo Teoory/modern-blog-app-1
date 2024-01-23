@@ -6,7 +6,7 @@ const Warning = () => {
     const [warning, setWarning] = useState({});
   
     useEffect(() => {
-        fetch('http://localhost:3030/getWarning', {
+        fetch('http://192.168.1.3:3030/getWarning', {
             method: 'GET',
             credentials: 'include',
         })

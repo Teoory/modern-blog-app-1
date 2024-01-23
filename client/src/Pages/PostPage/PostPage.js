@@ -4,9 +4,6 @@ import { format } from "date-fns";
 import { tr, eu } from 'date-fns/locale';
 import { UserContext } from '../../Hooks/UserContext';
 import '../../QuillSnow.css';
-// import AddCommentForm from '../../components/AddCommentForm/AddCommentForm';
-// import CommentLists from '../../components/CommentsList/CommentLists';
-// import AddCommentForm from '../../components/AddCommentForm/AddCommentForm';
 
 const PostPage = () => {
     const [postInfo, setPostInfo] = useState(null);
@@ -14,7 +11,7 @@ const PostPage = () => {
     const [redirect, setRedirect] = useState(false);
     const {id} = useParams();
     useEffect(() => {
-        fetch(`http://localhost:3030/post/${id}`).then(response => {
+        fetch(`http://192.168.1.3:3030/post/${id}`).then(response => {
             response.json().then(postInfo => {
                 setPostInfo(postInfo);
             })
@@ -23,7 +20,7 @@ const PostPage = () => {
 
 const deletePost = async () => {
     try {
-        const response = await fetch(`http://localhost:3030/post/${postInfo._id}`, {
+        const response = await fetch(`http://192.168.1.3:3030/post/${postInfo._id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -88,15 +85,9 @@ if (!postInfo) return <div>Loading...</div>
         ) : null}
 
         <div className="image">
-            <img src={'http://localhost:3030/'+postInfo.cover} alt="img" />
+            <img src={'http://192.168.1.3:3030/'+postInfo.cover} alt="img" />
         </div>
         <div className='content' dangerouslySetInnerHTML={{__html:postInfo.content}} />
-
-        {/* {userInfo === null
-        ?    <AddCommentForm
-            blogName={id}/>
-        : <button>Yorum yazmak için giriş yap</button>}
-        <CommentLists comments={id.comments} /> */}
     </div>
   )
 }

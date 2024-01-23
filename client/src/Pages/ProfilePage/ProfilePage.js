@@ -10,7 +10,7 @@ const ProfilePage = (ProfilePhoto) => {
   const [redirect, setRedirect] = useState(false);
 
   useEffect(() => {
-    fetch('http://localhost:3030/profile', {
+    fetch('http://192.168.1.3:3030/profile', {
       credentials: 'include',
     }).then(response => {
       response.json().then(userInfo => {
@@ -18,7 +18,7 @@ const ProfilePage = (ProfilePhoto) => {
       });
     });
 
-  fetch('http://localhost:3030/profilephoto', {
+  fetch('http://192.168.1.3:3030/profilephoto', {
       credentials: 'include',
     })
       .then(response => response.json())
@@ -32,7 +32,7 @@ const ProfilePage = (ProfilePhoto) => {
     ev.preventDefault();
     const data = new FormData();
     data.append('file', files[0]);
-    const response = await fetch('http://localhost:3030/profilePhoto', {
+    const response = await fetch('http://192.168.1.3:3030/profilePhoto', {
       method: 'POST',
       body: data,
       credentials: 'include',
@@ -47,14 +47,32 @@ const ProfilePage = (ProfilePhoto) => {
   const email = userInfo?.email;
   const tags = userInfo?.tags;
 
+  if (redirect) {
+    window.location.reload();
+  }
+
   return (
     <div className='ProfilePageMain'>
         <h1>{username}</h1>
         <div className="ProfileCard">
           <div className="ppArea">
-            {profilePhoto && (
-              <img className='ProfilePhoto' src={`http://localhost:3030/${profilePhoto}`} alt="Profile" />
-            )}
+            
+            <form onSubmit={newProfilePhoto} id="profilePhotoForm">
+              <div className="ppContent">
+                <input  className="ChangePP" type="file" onChange={ev => {setFiles(ev.target.files);}} />
+                {profilePhoto && (
+                  <img src={`http://192.168.1.3:3030/${profilePhoto}`} alt="Profile" />
+                  )}
+                </div>
+                {!isFileSelected 
+                ? null
+                : <div className="submit-button">
+                    <button style={{ marginTop: '5px' }} disabled={!isFileSelected}>
+                      Fotoğrafı Onayla
+                    </button>
+                  </div>
+                }
+            </form>
           </div>
 
           <div className="infoArea">
@@ -64,15 +82,7 @@ const ProfilePage = (ProfilePhoto) => {
           </div>
 
         </div>
-        <form onSubmit={newProfilePhoto}>
-        <input type="file" onChange={ev => setFiles(ev.target.files)} />
-        {!isFileSelected 
-        ? <span style={{ marginTop: '5px' }}>Profil foroğtafı seçilmedi</span>
-        : <button style={{ marginTop: '5px' }} disabled={!isFileSelected}>
-            Profil fotoğrafı değiştir
-          </button>
-        }
-      </form>
+        
     </div>
   )
 }
