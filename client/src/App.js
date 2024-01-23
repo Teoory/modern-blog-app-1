@@ -1,5 +1,4 @@
 import './App.css';
-import './QuillSnow.css';
 import { UserContextProvider } from './Hooks/UserContext';
 import Aside from './components/Aside/Aside';
 import Header from './components/Header/Header';
@@ -14,7 +13,9 @@ function App() {
         <Warning />
         <Header />
         <Aside/>
-        <AppRoutes />
+        <div className="content">
+          <AppRoutes />
+        </div>
         <Footer />
       </main>
     </UserContextProvider>

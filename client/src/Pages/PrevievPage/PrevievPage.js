@@ -1,5 +1,6 @@
 import PrevievPages from '../../components/PrevievPost/PrevievPost';
 import { useEffect, useState } from 'react';
+import '../../QuillSnow.css';
 
 const PrevievPage = () => {
     const [previevPosts, setPrevievPosts] = useState([]);

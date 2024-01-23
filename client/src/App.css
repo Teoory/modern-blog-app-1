@@ -1,10 +1,93 @@
 /* Main Css */
-*{
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0');
+
+:root {
+  --color-primary: #b37024;
+  --color-danger: #F44336;
+  --color-success: #4CAF50;
+  --color-warning: #FFC107;
+  --color-info: #2196F3;
+  --color-info-dark: #7d8da1;
+  --color-white: #FFFFFF;
+  --color-white2: #ddd;
+  --color-black: #000000;
+  --color-dark: #212121;
+  --color-dark-varient: #555;
+  --color-light: rgb(100, 100, 100);
+  --color-dark-light: rgba(0, 0, 0, 0.685);
+  --color-background: #F6F6F9;
+  --color-select-bg: #a1a1a1;
+
+  --color-text-primary: #222;
+  --color-text-secondary: #696969;
+  --color-text-author: #191970;
+
+
+  --border-radius: 0.5rem;
+  --border-radius-sm: 0.25rem;
+  --border-radius-1: 0.4rem;
+  --border-radius-2: 1.2rem;
+
+  --padding: 1.2rem;
+  --padding-sm: 0.8rem;
+  --padding-1: 1.2rem;
+
+  --box-shadow: 0 2rem 3rem var(--color-light);
+  --box-shadow1: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+
+}
+
+.dark-mode-variables {
+  --color-background: #181a1e;
+  --color-dark: #edeffd;
+  --color-white: #202528;
+  --color-text-author: #2f2fc4;
+  --color-dark-varient: #b37024;
+  --color-light: rgba(190, 190, 190, 0.5);
+  --color-dark-light: rgba(255, 255, 255, 0.25);
+  --box-shadow: 0 2rem 3rem var(--color-light);
+}
+
+
+.dark-mode {
+  background-color: var(--color-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 1.6rem;
+  width: 4.2rem;
+  cursor: pointer;
+  border-radius: var(--border-radius-1);
+  user-select: none;
+}
+
+.dark-mode span {
+  font-size: 1.2rem;
+  width: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dark-mode span.active {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-radius: var(--border-radius-1);
+}
+
+h1,h2,h3,h4,h5,h6{
+  color: var(--color-dark);
+}
+
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
 body {
-  color: #222;
+  background-color: var(--color-background);
+  color: var(--color-dark);
 }
 
 a {
@@ -16,7 +99,18 @@ img {
 }
 
 main {
-  /* padding: 10px; */
+  display: grid;
+  grid-template-areas:
+      'warning'
+      'header'
+      'main'
+      'footer';
+  grid-template-columns: auto;
+  grid-template-rows: auto auto 1fr auto;
+  height: 100vh;
+}
+
+.content {
   padding: 0;
   margin: 0 auto;
   max-width: 960px;
@@ -28,7 +122,11 @@ main {
       'footer';
   grid-template-columns: auto;
   grid-template-rows: auto auto 1fr auto;
-  height: 100vh;
+}
+
+.content h3 {
+  color: #ddd !important;
+  border-radius: 15px;
 }
 
 
@@ -54,7 +152,7 @@ div.post div.text a{
 
 div.post p.info {
   margin: 6px 0;
-  color: dimgray;
+  color: var(--color-text-secondary);
   font-size: .7rem;
   font-weight: bold;
   display: flex;
@@ -62,7 +160,7 @@ div.post p.info {
 }
 
 div.post p.info a.author {
-  color:midnightblue;
+  color: var(--color-text-author);
 }
 
 div.post p.summary {
@@ -76,17 +174,17 @@ input {
   margin-bottom: 5px;
   width: 100%;
   padding: 5px 7px;
-  border: 2px solid #ddd;
+  border: 2px solid var(--color-white2);
   border-radius: 5px;
-  background-color: #fff;
+  background-color: var(--color-white2);
 }
 
 button {
   width: 100%;
   display: block;
-  background-color: #555;
+  background-color: var(--color-dark-varient);
   border: 0;
-  color: #fff;
+  color: var(--color-white);
   border-radius: 5px;
   padding: 7px 0;
   cursor: pointer;
@@ -98,7 +196,6 @@ form.login h1, form.register h1 {
 }
 
 /* Post Page */
-
 div.post-page  div.image{
   display: flex;
   max-height: 300px;
@@ -125,7 +222,7 @@ div.post-page time {
   display: block;
   text-align: center;
   font-size: .75rem;
-  color: #aaa;
+  color: var(--color-light);
 }
 
 div.post-page div.author {
@@ -150,12 +247,12 @@ div.actions {
 div.actions a.edit,
 div.actions a.approve,
 div.actions a.delete {
-  background-color: #555;
+  background-color: var(--color-dark-varient);
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  color: #fff;
+  color: var(--color-white);
   padding: 10px 20px;
   border-radius: 5px;
   font-weight: 600;
@@ -167,13 +264,13 @@ div.actions svg {
 }
 
 div.actions a.edit{
-  background-color: #007bff;
+  background-color: var(--color-info);
 }
 div.actions a.delete {
-  background-color: #d80000;
+  background-color: var(--color-danger);
 }
 div.actions a.approve {
-  background-color: #027000;
+  background-color: var(--color-success);
 }
 
 .EditHeader {
@@ -191,8 +288,37 @@ div.image img{
   object-fit: cover;
 }
 
+
+@media screen and (max-width: 768px) {
+  div.post {
+    grid-template-columns: 1fr;
+  }
+  .content {
+    padding: 0 20px;
+  }
+}
+
 @media screen and (min-width: 768px) {
   div.post {
     grid-template-columns: 0.9fr 1.1fr;
   }
 }
+
+@media screen and (min-width: 1024px) {
+  div.post {
+    grid-template-columns: 0.8fr 1.2fr;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  div.post {
+    grid-template-columns: 0.7fr 1.3fr;
+  }
+}
+
+@media screen and (min-width: 1400px) {
+  div.post {
+    grid-template-columns: 0.6fr 1.4fr;
+  }
+}
+

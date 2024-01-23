@@ -1,0 +1,33 @@
+.login-text {
+    font-size: 12px;
+    color: goldenrod;
+    padding-bottom: 15px;
+}
+
+.UDropdown {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background-color: #678dce;
+    border-radius: 5px;
+    color: white;
+    padding: 2px;
+}
+
+
+.UDropdown:hover .dropdown-content {
+    display: block;
+}
+
+header .nav {
+    width: 50%;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+header a.logo {
+    width: 10% !important;
+}

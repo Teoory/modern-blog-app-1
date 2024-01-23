@@ -176,9 +176,14 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
         if(err) throw err;
         const {id, title, summary, content, previev} = req.body;
         const postDoc = await Post.findById(id);
+
         const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
-        if(!isAuthor) {
-            return res.status(400).json('Gönderi başka bir kullanıcı tarafından oluşturuldu.');
+        
+        const isAdmin = info.tags.includes('admin');
+        const isModerator = info.tags.includes('moderator');
+        const isEditor = info.tags.includes('editor');
+        if(!isAuthor && !isAdmin && !isModerator && !isEditor) {
+            return res.status(400).json('You don\'t have permission.');
         }
 
         await Post.findByIdAndUpdate(id, {
@@ -204,7 +209,7 @@ app.get('/post', async (req, res) => {
 
 app.get('/post/:id', async (req, res) => {
     const {id} = req.params;
-    const postDoc = await Post.findById(id).populate('author', ['username'])
+    const postDoc = await Post.findById(id).populate('author', ['username']);
     res.json(postDoc);
 });
 
@@ -215,8 +220,10 @@ app.delete('/post/:id', async (req, res) => {
         if(err) throw err;
         const postDoc = await Post.findById(id);
         const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
-        if(!isAuthor || !info.tags.includes('admin')) {
-            return res.status(400).json('This post was created by another user.');
+        const isAdmin = info.tags.includes('admin');
+        const isModerator = info.tags.includes('moderator');
+        if(!isAuthor && !isAdmin && !isModerator) {
+            return res.status(400).json('Don\'t have permission!');
         }
         await Post.findByIdAndDelete(id);
         res.json({ message: 'Post deleted successfully' });
@@ -264,8 +271,11 @@ app.put('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
         const {id, title, summary, content, previev} = req.body;
         const postDoc = await PrevievPost.findById(id);
         const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
-        if(!isAuthor || !info.tags.includes('admin')) {
-            return res.status(400).json('Gönderi başka bir kullanıcı tarafından oluşturuldu.');
+        const isAdmin = info.tags.includes('admin');
+        const isModerator = info.tags.includes('moderator');
+        const isEditor = info.tags.includes('editor');
+        if(!isAuthor && isAdmin && isModerator && isEditor) {
+            return res.status(400).json('You don\'t have permission.');
         }
 
         await PrevievPost.findByIdAndUpdate(id, {
@@ -298,16 +308,14 @@ app.get('/previevPost/:id', async (req, res) => {
 app.delete('/previevPost/:id', async (req, res) => {
     const { id } = req.params;
     const { token } = req.cookies;
-    
-    if (!token) {
-        return res.status(401).json({ message: 'No token provided' });
-    }
-
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
         const postDoc = await Post.findById(id);
-        if(!info.tags.includes('admin')) {
-            return res.status(400).json('This post was created by another user.');
+        const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+        const isAdmin = info.tags.includes('admin');
+        const isModerator = info.tags.includes('moderator');
+        if(!isAuthor && !isAdmin && !isModerator) {
+            return res.status(400).json('Your not ADMIN!');
         }
         await Post.findByIdAndDelete(id);
         res.json({ message: 'Post deleted successfully' });
@@ -331,17 +339,46 @@ app.get('/approvePost/:id', async (req, res) => {
 });
 
 app.put('/approvePost/:id', async (req, res) => {
-    const { id } = req.params;
-    const { token } = req.cookies;
-    jwt.verify(token, secret, {}, async (err, info) => {
-        if(err) throw err;
-        const postDoc = await PrevievPost.findById(id);
-        if(!info.tags.includes('admin')) {
-            return res.status(400).json('This post was created by another user.');
+    const {id} = req.params;
+    const {token} = req.cookies;
+
+    try {
+        if(!token) {
+            return res.status(401).json({message: 'No token provided'});
         }
-        await PrevievPost.findByIdAndDelete(id);
-        res.json({ message: 'Post deleted successfully' });
-    });
+
+        jwt.verify(token, secret, {}, async (err, info) => {
+            if(err) throw err;
+
+            const postDoc = await PrevievPost.findById(id);
+            if(!PrevievPost) {
+                return res.status(404).json({message: 'Post not found'});
+            }
+
+            const isAdmin = info.tags.includes('admin');
+            const isModerator = info.tags.includes('moderator');
+            const isEditor = info.tags.includes('editor');
+            if(!isAdmin && !isModerator && !isEditor) {
+                return res.status(403).json({ message: 'Unauthorized' });
+            }
+
+            const newPost = await Post.create({
+                title: postDoc.title,
+                summary: postDoc.summary,
+                content: postDoc.content,
+                cover: postDoc.cover,
+                author: postDoc.author,
+                previev: postDoc.previev,
+            });
+
+            await newPost.save();
+            await PrevievPost.deleteOne({ _id: id });
+
+            res.json({message: 'Post approved successfully'});
+        });        
+    } catch (e) {
+        res.status(500).json(e);
+    }
 });
 
 //? Search
@@ -364,6 +401,59 @@ app.get('/tags/:tag', async (req, res) => {
         await User.find({tags: tag},'username email tags')
     );
 });
+
+//? Comments
+app.post('/post/:id/comments', async (req, res) => {
+    const { id } = req.params;
+    const { comment } = req.body;
+    const { token } = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+        const postDoc = await Post.findById(id);
+        const newComment = await postDoc.comments.create({
+            content: comment,
+            author: info.id,
+        });
+        await postDoc.comments.push(newComment);
+        await postDoc.save();
+        res.json(newComment);
+    }
+    );
+});
+
+app.put('/post/:id/upvote', async (req, res) => {
+    const   { name }  = req.params;
+    
+    await db.collection('blogs').updateOne({ name }, {
+        $inc: { upvotes: 1 },
+    });
+    const blog = await db.collection('blogs').findOne({ name });
+
+    if( blog ) {
+        res.json(blog);
+    } else {
+        res.send('That blog doesn\'t exist!');
+    }
+});
+
+// app.post('/post/:id/comments',  async (req, res) => {
+//     const { name } = req.params;
+//     const { postedBy, text } = req.body;
+
+//     await db .collection('blogs').updateOne({ name }, {
+//         $push: { comments: { postedBy, text} },
+//     });
+//     const blog = await db.collection('blogs').findOne({ name });
+
+//     if (blog) {
+//         res.json(blog);
+//     } else {
+//         res.send('That blog doesn\'t exist!');
+//     }
+// })
+
+
+
 
 
 //!Admin

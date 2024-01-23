@@ -5,6 +5,7 @@ import './AdminPage.css';
 const AdminPage = () => {
   const [users, setUsers] = useState([]);
   const [newTag, setNewTag] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetch('http://localhost:3030/users', {
@@ -58,11 +59,92 @@ const AdminPage = () => {
       .catch(error => console.error('Error sending warning:', error));
   }
 
-
   return (
     <div>
-      <div className="PrevievShowButton"><Link to='/previev'>İnceleme Bloglarını Görüntüle</Link></div>
-      <ul className="AdminUserList">
+      <div className="PrevievShowButton">
+        <Link to='/previev'>İnceleme Bloglarını Görüntüle</Link>
+      </div>
+
+      <div className="warning-edit-area">
+        <div className="warning-inside">
+          <h3>Warning</h3>
+          <form>
+            <input type="text" placeholder="Title..." id="title" />
+            <textarea placeholder="Message..." id="message" />
+            <button onClick={handleWarning}>Submit</button>
+          </form>
+        </div>
+      </div>
+
+
+      <div>
+        <input
+        placeholder="Search User..."
+          type="text"
+          id="search"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
+
+      <table className="AdminUserTable" style={{ maxHeight: '800px', overflowY: 'auto', borderCollapse: 'collapse', width: '100%' }}>
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Tag</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users
+            .filter((user) => user.username.toLowerCase().includes(searchTerm.toLowerCase()))
+            .map((user) => (
+              <tr key={user.username}>
+                <td>
+                  <span className={`username ${user.tags.join(' ')}`}>
+                    {user.username}
+                  </span>
+                </td>
+                <td>
+                  <span className={`tags ${user.tags.join(' ')}`}>
+                    {user.tags.join(', ')}
+                  </span>
+                </td>
+                <td>
+                  {!user.tags.includes('admin') ? (
+                    <div className="tagSelect">
+                      <select
+                        value={newTag}
+                        onChange={(e) => setNewTag(e.target.value)}
+                      >
+                        <option value="user">User</option>
+                        <option value="writer">Writer</option>
+                        <option value="master-writer">Master Writer</option>
+                        <option value="editor">Editor</option>
+                        {user.username === 'teory' && (
+                          <option value="moderator">Moderator</option>
+                        )}
+                      </select>
+                      <button
+                        onClick={() => handleChangeTag(user.username, newTag)}
+                      >
+                        Change Tag
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="ourAdmin">
+                      Not authorized to change tags
+                    </span>
+                  )}
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
+
+
+      {/* <ul className="AdminUserList">
         {users.map(user => (
           <li key={user.username}>
             <span><span className={`username ${user.tags.join(' ')}`}>{user.username}</span> <span className="tagn">Tag:</span> <span className={`tags ${user.tags.join(' ')}`}>{user.tags.join(', ')}</span></span>
@@ -87,17 +169,7 @@ const AdminPage = () => {
             )}
           </li>
         ))}
-      </ul>
-      <div className="warning">
-        <h3>Warning</h3>
-        <form>
-          <label htmlFor="title">Title</label>
-          <input type="text" id="title" />
-          <label htmlFor="message">Message</label>
-          <textarea id="message" />
-          <button onClick={handleWarning}>Submit</button>
-        </form>
-        </div>
+      </ul> */}
     </div>
   )
 }

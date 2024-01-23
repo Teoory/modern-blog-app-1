@@ -3,7 +3,7 @@ import './Footer.css';
 
 const Footer = () => {
     return (
-        <div className="footer">
+        <footer className="footer">
             <div className="ft-top">
                 <div className="ft-top-tx">
                     <Link to="/" className="ft-href">Blog</Link>
@@ -11,10 +11,12 @@ const Footer = () => {
                     <Link to="/" className="ft-href">İletişim</Link>
                 </div>
                 <div className="ft-bot-tx">
-                    <h6>© 2024 Sitemizin tüm hakları gizlidir.</h6>
+                    <span>Berkay Köksal tarafından geliştirilmiştir.</span>
+                    <br />
+                    <span>© 2024 Sitemizin tüm hakları gizlidir.</span>
                 </div>
             </div>
-        </div>
+        </footer>
     )
 }
 

@@ -30,6 +30,8 @@ const CreatePost = () => {
     return <Navigate to={'/'}/>
   }
   return (
+    <>
+    <h3 className='warning'>Bu BLOG anasayfada paylaşılacak!</h3>
     <form onSubmit={createNewPost}>
       <input  type="title" 
               placeholder={'Title'} 
@@ -47,6 +49,7 @@ const CreatePost = () => {
       <Editor value={content} onChange={setContent}/>
       <button style={{marginTop:'5px'}}>Gönderi oluştur</button>
     </form>
+    </>
   )
 }
 

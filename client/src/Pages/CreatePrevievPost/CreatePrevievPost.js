@@ -30,6 +30,8 @@ const CreatePrevievPost = () => {
         return <Navigate to={'/'}/>
     }
   return (
+    <>
+    <h3 className='warning'>Bu BLOG önizlemeye gönderilecek!</h3>
     <form onSubmit={createNewPrevievPost}>
       <input  type="title" 
               placeholder={'Title'} 
@@ -47,6 +49,7 @@ const CreatePrevievPost = () => {
       <Editor value={content} onChange={setContent}/>
       <button style={{marginTop:'5px'}}>Gönderi oluştur</button>
     </form>
+    </>
   )
 }
 

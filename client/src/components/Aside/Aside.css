@@ -62,8 +62,8 @@
     font-size: 1rem;
     font-weight: 400;
     text-decoration: none;
-    background-color: white;
-    border: 1.5px solid cornflowerblue;
+    background-color: var(--color-background);
+    border: 1.5px solid #6495ed;
 }
 
 .aside:nth-last-child(1) {
