@@ -28,7 +28,7 @@ const UserSchema = new mongoose.Schema({
     },
     darkMode: {
         type: Boolean,
-        default: false
+        default: true
     },
 });
 

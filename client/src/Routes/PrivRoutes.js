@@ -12,6 +12,7 @@ import PostPage from '../Pages/PostPage/PostPage';
 import PrevievPostPage from '../Pages/PrevievPostPage/PrevievPostPage';
 import PrevievPostEdit from '../Pages/PrevievPostEdit/PrevievPostEdit';
 import CreateTest from '../Pages/CreateTest/CreateTest';
+import UserProfilePage from '../Pages/UserProfilePage/UserProfilePage';
 
 const PrivRoutes = () => {
     const { userInfo } = useContext(UserContext);
@@ -28,7 +29,7 @@ const PrivRoutes = () => {
     const isEditorUp = tags?.includes('editor') || tags?.includes('moderator') || isAdmin;
     const isMasterWriterUp = tags?.includes('master-writer') || isEditorUp;
     const isWriter = tags?.includes('writer') || isMasterWriterUp;
-    const isUser = tags?.includes('user') || isWriter;
+    // const isUser = tags?.includes('user') || isWriter;
 
     return (
         <Routes>
@@ -37,10 +38,12 @@ const PrivRoutes = () => {
                         <Route path="/profile" element={<ProfilePage />} /> 
                         <Route path="/edit/:id" element={<EditPost/>} />
                         <Route path="/post/:id" element={<PostPage/>} />
+                        <Route path="/profile/:username" element={<UserProfilePage/>} />
                     </>
 
                 :   <> 
                         <Route path="/post/:id" element={<PostPage/>} />
+                        <Route path="/profile/:username" element={<UserProfilePage/>} />
                     </>
             }
             

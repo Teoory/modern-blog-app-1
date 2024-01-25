@@ -82,3 +82,14 @@ content:hover {
     width: 100%;
     height: 100%;
 }
+
+.BlogTitle {
+    color: var(--color-primary);
+    font-weight: bold;
+    font-size: 22px;
+}
+
+.BlogSummary {
+    color: var(--color-dark-light);
+    font-size: 14px;
+}

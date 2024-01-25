@@ -74,6 +74,23 @@ app.get('/profile', (req, res) => {
     });
 });
 
+app.get('/profile/:username', async (req, res) => {
+    const { username } = req.params;
+  
+    try {
+      const user = await User.findOne({ username });
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      const posts = await Post.find({ author: user._id });
+  
+      res.json({ user, posts });
+    } catch (error) {
+      console.error('Error getting user profile:', error.message);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 //? Logout
 app.post('/logout', (req, res) => {
     res.clearCookie('token').json('ok');
@@ -231,9 +248,20 @@ app.get('/post', async (req, res) => {
 });
 
 app.get('/post/:id', async (req, res) => {
-    const {id} = req.params;
-    const postDoc = await Post.findById(id).populate('author', ['username']);
-    res.json(postDoc);
+    try {
+        const { id } = req.params;
+        const postDoc = await Post.findById(id).populate('author', ['username']);
+        
+        if (!postDoc) {
+            // Post bulunamadıysa anasayfaya yönlendirme yap
+            return res.redirect('/');
+        }
+
+        res.json(postDoc);
+    } catch (error) {
+        console.error('Error fetching post:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 app.delete('/post/:id', async (req, res) => {
@@ -293,44 +321,6 @@ app.get('/post/:id/comments', async (req, res) => {
 
 //* Like
 app.post('/post/:id/like', async (req, res) => {
-    const {id} = req.params;
-    const {token} = req.cookies;
-
-    jwt.verify(token, secret, {}, async (err, info) => {
-        if (err) throw err;
-
-        try {
-            const postDoc = await Post.findById(id);
-
-            const isLiked = postDoc.likes.includes(info.id);
-            if(isLiked) {
-                return res.status(400).json({message: 'you already liked this post'});
-            }
-
-            postDoc.likes.push(info.id);
-            await postDoc.save();
-
-            res.json(postDoc);
-        } catch (e) {
-            console.error('Error with like post',e);
-            res.status(500).json({e:'server error'});
-        }
-    });
-});
-
-app.get('/post/:id/like', async (req, res) => {
-    const {id} = req.params;
-
-    try {
-        const postDoc = await Post.findById(id);
-        res.json({likes: postDoc.likes.length});
-    } catch (e) {
-        console.error('Error with get likes',e);
-        res.status(500).json({e:'server error'});
-    }
-});
-
-app.delete('/post/:id/like', async (req, res) => {
     const { id } = req.params;
     const { token } = req.cookies;
   
@@ -340,23 +330,39 @@ app.delete('/post/:id/like', async (req, res) => {
       try {
         const postDoc = await Post.findById(id);
   
-        // Check if the user has liked the post
+        // Check if the user has already liked the post
         const hasLiked = postDoc.likes.includes(info.id);
-        if (!hasLiked) {
-          return res.status(400).json({ error: 'You have not liked this post.' });
+        if (hasLiked) {
+          // If already liked, remove the like
+          postDoc.likes.pull(info.id);
+        } else {
+          // If not liked, add the like
+          postDoc.likes.push(info.id);
         }
   
-        // Remove user from the likes array and save the post
-        postDoc.likes = postDoc.likes.filter(userId => userId.toString() !== info.id.toString());
         await postDoc.save();
   
-        res.json({ success: true, likes: postDoc.likes.length });
+        res.json({ success: true, likes: postDoc.likes.length, isLiked: !hasLiked });
       } catch (error) {
-        console.error('Error removing like:', error.message);
+        console.error('Error toggling like:', error.message);
         res.status(500).json({ error: 'Internal Server Error' });
       }
     });
 });
+  
+// Get the number of likes for a post
+app.get('/post/:id/likes', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const postDoc = await Post.findById(id);
+    res.json({ likes: postDoc.likes.length });
+  } catch (error) {
+    console.error('Error getting likes:', error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+  
 
 app.get('/post/:id/hasLiked', async (req, res) => {
   const { id } = req.params;
@@ -378,67 +384,65 @@ app.get('/post/:id/hasLiked', async (req, res) => {
 
 //* SuperLike
 app.post('/post/:id/superlike', async (req, res) => {
-    const {id} = req.params;
-    const {token} = req.cookies;
-
+    const { id } = req.params;
+    const { token } = req.cookies;
+  
     jwt.verify(token, secret, {}, async (err, info) => {
-        if (err) throw err;
-
-        try {
-            const postDoc = await Post.findById(id);
-
-            const isSuperLiked = postDoc.superlikes.includes(info.id);
-            if(isSuperLiked) {
-                return res.status(400).json({message: 'you already superlike this post'});
-            }
-
-            postDoc.superlikes.push(info.id);
-            await postDoc.save();
-
-            res.json(postDoc);
-        } catch (e) {
-            console.error('Error with superlike post',e);
-            res.status(500).json({e:'server error'});
+      if (err) throw err;
+  
+      try {
+        const postDoc = await Post.findById(id);
+  
+        // Check if the user has already liked the post
+        const hasSuperLiked = postDoc.superlikes.includes(info.id);
+        if (hasSuperLiked) {
+          // If already liked, remove the like
+          postDoc.superlikes.pull(info.id);
+        } else {
+          // If not liked, add the like
+          postDoc.superlikes.push(info.id);
         }
+  
+        await postDoc.save();
+  
+        res.json({ success: true, superlikes: postDoc.superlikes.length, isSuperLiked: !hasSuperLiked });
+      } catch (error) {
+        console.error('Error toggling like:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
     });
 });
+  
+// Get the number of likes for a post
+app.get('/post/:id/superlikes', async (req, res) => {
+  const { id } = req.params;
 
-app.get('/post/:id/superlike', async (req, res) => {
-    const {id} = req.params;
+  try {
+    const postDoc = await Post.findById(id);
+    res.json({ superlikes: postDoc.superlikes.length });
+  } catch (error) {
+    console.error('Error getting superlike:', error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+  
+
+app.get('/post/:id/hasSuperLiked', async (req, res) => {
+  const { id } = req.params;
+  const { token } = req.cookies;
+
+  jwt.verify(token, secret, {}, async (err, info) => {
+    if (err) throw err;
 
     try {
-        const postDoc = await Post.findById(id);
-        res.json({superlikes: postDoc.superlikes.length});
-    } catch (e) {
-        console.error('Error with get superlikes',e);
-        res.status(500).json({e:'server error'});
+      const postDoc = await Post.findById(id);
+      const hasSuperLiked = postDoc.superlikes.includes(info.id);
+      res.json({ hasSuperLiked });
+    } catch (error) {
+      console.error('Error checking if user has superliked:', error.message);
+      res.status(500).json({ error: 'Internal Server Error' });
     }
-});
-
-app.delete('/post/:id/superlike', async (req, res) => {
-    const {id} = req.params;
-    const {token} = req.cookies;
-
-    jwt.verify(token, secret, {}, async (err, info) => {
-        if(err) throw err;
-
-        try {
-            const postDoc = await Post.findById(id);
-
-            const isSuperLiked = postDoc.superlikes.includes(info.id);
-            if(!isSuperLiked) {
-                return res.status(400).json({message: 'you already unliked this post'});
-            }
-
-            postDoc.superlikes = postDoc.superlikes.filter(userID => userID.toString() !== info.id.toString());
-            await postDoc.save();
-
-            res.json(postDoc);
-        } catch (e) {
-            console.error('Error with unlike post',e);
-            res.status(500).json({e:'server error'});
-        }
-    });
+  });
 });
 
 //? Previev Post

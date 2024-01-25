@@ -10,32 +10,59 @@ const PostPage = () => {
     const {userInfo} = useContext(UserContext);
     const [redirect, setRedirect] = useState(false);
     const [likes, setLikes] = useState(0);
-    const [hasLiked, setHasLiked] = useState(false);
+    const [isLiked, setIsLiked] = useState(false);
+    const [superlikes, setSuperLikes] = useState(0);
+    const [isSuperLiked, setIsSuperLiked] = useState(false);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
-    const [commentCount, setCommentCount] = useState('');
     const {id} = useParams();
 
-    useEffect(() => {
-        fetch(`http://localhost:3030/post/${id}`)
-            .then(response => {
-                response.json().then(postInfo => {
-                    setPostInfo(postInfo);
+    // useEffect(() => {
+    //     fetch(`http://localhost:3030/post/${id}`)
+    //         .then(response => {
+    //             response.json().then(postInfo => {
+    //                 setPostInfo(postInfo);
+    //             })
+    //         })
+    //     }, [id]);
+    
+        useEffect(() => {
+            fetch(`http://localhost:3030/post/${id}`)
+                .then(response => {
+                    if(!response.ok) {
+                        setRedirect(true);
+                        return;
+                    }
+                    response.json().then(postInfo => {
+                        setPostInfo(postInfo);
+                    })
                 })
-            })
-
-        fetch(`http://localhost:3030/post/${id}/comments`)
+        }, [id]);
+        
+        useEffect(() => { 
+            fetch(`http://localhost:3030/post/${id}/comments`)
             .then(response => response.json())
             .then(comments => setComments(comments))
+    }, [id]);
     
-        Promise.all([
-                fetch(`http://localhost:3030/post/${id}/likes`).then(response => response.json()),
-                fetch(`http://localhost:3030/post/${id}/hasLiked`, { credentials: 'include' }).then(response => response.json()),
-            ]).then(([likesData, hasLikedData]) => {
-                setLikes(likesData.likes);
-                setHasLiked(hasLikedData.hasLiked);
-        });
-}, []);
+    useEffect(() => {
+        fetch(`http://localhost:3030/post/${id}/likes`)
+          .then(response => response.json())
+          .then(data => {
+            setLikes(data.likes);
+            setIsLiked(data.isLiked);
+          });
+    }, [id]);
+
+    useEffect(() => {
+        fetch(`http://localhost:3030/post/${id}/superlikes`)
+          .then(response => response.json())
+          .then(data => {
+            setSuperLikes(data.superlikes);
+            setIsSuperLiked(data.isSuperLiked);
+          });
+    }, [id]);
+    
 
 const deletePost = async () => {
     try {
@@ -63,27 +90,41 @@ const deletePost = async () => {
 
 const toggleLike = async () => {
     try {
-        const endpoint = hasLiked ? 'unlike' : 'like';
-        const response = await fetch(`http://localhost:3030/post/${id}/like`, {
-            method: hasLiked ? 'DELETE' : 'POST',
-            credentials: 'include',
-        });
+      const response = await fetch(`http://localhost:3030/post/${id}/like`, {
+        method: 'POST',
+        credentials: 'include',
+      });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-        // Update the number of likes and like status after adding or removing a like
-        const updatedLikes = await fetch(`http://localhost:3030/post/${id}/likes`)
-            .then(response => response.json());
-
-        setLikes(updatedLikes.likes);
-        setHasLiked(!hasLiked);
+      const updatedData = await response.json();
+      setLikes(updatedData.likes);
+      setIsLiked(updatedData.isLiked);
     } catch (error) {
-        console.error(`Error ${hasLiked ? 'removing' : 'adding'} like:`, error.message);
+      console.error('Error toggling like:', error.message);
     }
 };
 
+const toggleSuperLike = async () => {
+    try {
+      const response = await fetch(`http://localhost:3030/post/${id}/superlike`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const updatedData = await response.json();
+      setSuperLikes(updatedData.superlikes);
+      setIsSuperLiked(updatedData.isSuperLiked);
+    } catch (error) {
+      console.error('Error toggling superlike:', error.message);
+    }
+};
 
 const addComment = async () => {
     try {
@@ -121,10 +162,10 @@ const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('tr-TR', opt);
 };
 
-
 if(redirect) {
     return <Navigate to={'/'}/>
 }
+
 
 const tags = userInfo?.tags;
 const isAdmin = tags?.includes('admin');
@@ -137,7 +178,7 @@ if (!postInfo) return <div>Loading...</div>
     <div className="post-page">
         <h1>{postInfo.title}</h1>
         <time>{format(new Date(postInfo.createdAt), "HH:MM | dd MMMM yyyy", {locale: locales["tr"],})}</time>
-        <div className="author">Yazar: @{postInfo.author.username}</div>
+        <div className="author">Yazar: @<Link to={`/profile/${postInfo.author.username}`}>{postInfo.author.username}</Link></div>
 
         {userInfo === null ? (
             <span></span>
@@ -172,26 +213,29 @@ if (!postInfo) return <div>Loading...</div>
 
 
         <div className="LikesArea">
-            {userInfo !== null 
-                ?   <div className='LikeButtons'>
-                        <div className="superlikesArea">
-                            <span className='SuperLikesCount'>{'SUPERLIKE2'}</span>
-                            <button>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-6 h-6">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div className="likeArea">
-                        <span className='LikesCount'>{likes}</span>
-                            <button onClick={toggleLike}>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="orange" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-6 h-6">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23H5.904m10.598-9.75H14.25M5.904 18.5c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 0 1-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 9.953 4.167 9.5 5 9.5h1.053c.472 0 .745.556.5.96a8.958 8.958 0 0 0-1.302 4.665c0 1.194.232 2.333.654 3.375Z" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                :   <span className='CommentLogin'>Beğenmek için <Link to="/login">giriş yapın</Link></span>
+            <div className='LikeButtons'>
+                <div className="superlikesArea">
+                    <span className='SuperLikesCount'>{superlikes}</span>
+                    {userInfo !== null 
+                    ?   <button onClick={toggleSuperLike} className={isSuperLiked ? 'superliked' : ''}>
+                            😍
+                        </button>
+
+                    :   <div className='LikeSVG'>😍</div>
+                    }
+                </div>
+                <div className="likeArea">
+                    <span className='LikesCount'>{likes}</span>
+                    {userInfo !== null 
+                    ?   <button onClick={toggleLike} className={isLiked ? 'liked' : ''}>
+                            🙂
+                        </button>
+                    :   <div className='LikeSVG'>🙂</div>
+                    }
+                </div>
+            </div>
+            {userInfo == null &&
+                <span className='CommentLogin'>Beğenmek için <Link to="/login">giriş yapın</Link></span>
             }
         </div>
 
@@ -221,20 +265,22 @@ if (!postInfo) return <div>Loading...</div>
             )}
             
             {comments.length === 0
-                ?   <h3>Buralar biraz sessiz!</h3>
-                :   <div>
-                        {comments.map(comment => (
-                            <div key={comment._id} className="comment">
-                                <div className="commentInfo">
-                                    <span className='commentAuthorHeader'>Yazar:</span>
-                                    <span className='commentAuthor'> @{comment.author.username}</span>
-                                    <span className='commentTime'>{formatDate(comment.createdAt)}</span>
+            ?   <h3>Buralar biraz sessiz!</h3>
+            :   <div>
+                    {comments.map(comment => (
+                        <div key={comment._id} className="comment">
+                            <div className="commentInfo">
+                                <div>
+                                <span className='commentAuthorHeader'>Yazar:</span>
+                                <span className='commentAuthor'> @{comment.author.username}</span>
                                 </div>
-
-                                <p>{comment.content}</p>
+                                <span className='commentTime'>{formatDate(comment.createdAt)}</span>
                             </div>
-                        ))}
-                    </div>
+
+                            <p>{comment.content}</p>
+                        </div>
+                    ))}
+                </div>
             }
         </div>
     </div>

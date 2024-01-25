@@ -8,6 +8,7 @@ const PostSchema = new mongoose.Schema({
     cover:String,
     author:{type:Schema.Types.ObjectId, ref:'User'},
     likes:[{type:Schema.Types.ObjectId, ref:'User'}],
+    superlikes:[{type:Schema.Types.ObjectId, ref:'User'}],
 }, {
     timestamps: true,
 });

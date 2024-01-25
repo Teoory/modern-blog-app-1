@@ -4,6 +4,7 @@ import LoginPage from '../Pages/LoginPage/LoginPage';
 import RegisterPage from '../Pages/RegisterPage/RegisterPage';
 import HomePage from '../Pages/HomePage/HomePage';
 import PostPage from '../Pages/PostPage/PostPage';
+import UserProfilePage from '../Pages/UserProfilePage/UserProfilePage';
 
 const DefRoutes = () => {
   return (
@@ -12,6 +13,7 @@ const DefRoutes = () => {
       <Route path="/login" element={<LoginPage/>} />
       <Route path="/register" element={<RegisterPage/>} />
       <Route path="/post/:id" element={<PostPage/>} />
+      <Route path="/profile/:username" element={<LoginPage/>} />
     </Routes>
   )
 }

@@ -8,7 +8,7 @@ const Header = () => {
     const { setUserInfo, userInfo } = useContext(UserContext);
     const [showDropdown, setShowDropdown] = useState(false);
     const [writerDropdown, setWriterDropdown] = useState(false);
-    const [darkMode, setDarkMode] = useState(true);
+    const [darkMode, setDarkMode] = useState(false);
     const [profilePhoto, setProfilePhoto] = useState(null);
 
     useEffect(() => {
@@ -235,7 +235,7 @@ const Header = () => {
                       {isAdmin && (
                         <Link to="/admin" className='AdminButton'>Admin</Link>
                       )}
-                      <Link to="/profile">Profile</Link>
+                      <Link to={`/profile/${username}`}>Profile</Link>
                       <a onClick={logout}>Logout</a>
                     </div>
                 )}

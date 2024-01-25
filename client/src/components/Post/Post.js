@@ -17,7 +17,7 @@ const Post = ({_id,title, summary,cover,content,createdAt, author}) => {
         <Link to={`/post/${_id}`}>
           <h1>{title}</h1>
           <p className="info">
-            <a className="author">{author.username}</a>
+            <Link to={`/profile/${author.username}`} className="author">{author.username}</Link>
             <time>
               {format(new Date(createdAt), "HH:MM | dd MMMM yyyy", {
                 locale: locales["tr"],
