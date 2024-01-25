@@ -12,13 +12,22 @@ Check this board
 <br/>
 
 # Son Değişiklikler:</br>
+
+### V1.1.4
+- Hatalar giderildi
+  - ipler tekrar localhost olarak güncellendi!
+- Yorum yapma sistemi eklendi artık kullanıcıların istedikleri bloglara yorum yapabilirler
+- Beğeni ve Super beğeni eklendi artık kullanıcılar istedikleri blogları beğenebilirler
+  
+<hr>
+
 ### V1.1.3
 
 #### 23/01
 - Hatalar giderildi
   - Profil Photo Backend tarafından sürekli istek atıyordu ve siteye ilk kez giriş yapan kişiler serveri patlatıyordu bu sorun ortadan kaldırıldı
   - previevPage silinirken oluşan hata sorun düzeltildi
--  NavBar ve ProfilPage style güncellendi
+- NavBar ve ProfilPage style güncellendi
 - DarkMode artık hesabınızla eşleşiyor ve giriş yaptığınızda en son hangi modda bıraktıysanız o moda geri dönüyor
   - Giriş yapmayan kullanıcılar sayfayı yeniledikleri zaman otomatik olarak default’a geçiyor (Aydınlık tema)
 - /Test Back End tarafında oluşturuldu
