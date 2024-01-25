@@ -13,7 +13,20 @@ Check this board
 
 # Son Değişiklikler:</br>
 
-### V1.1.4
+### V1.4.1
+- Hatalar giderildi
+  - Beğeni ve Super beğeni eklendi artık kullanıcılar istedikleri blogları beğenebilirler
+  - profile kısmında boş username girilirse ana sayfaya atıyor
+  - post/:id kısmına boş id girilirse ana sayfaya atıyor
+- Kullanıcı Profilleri eklendi artık her kullanıcının kendi Profil sayfası mevcut ve herkes tarafından görüntülenebilir
+  - kullanıcı "/profile/username" şeklinde
+- Profillere kullanıcının Yazdığı Bloglar eklendi artık profiline girdiğiniz kişinin hangi Blogları yazdığını görebilirsiniz.
+- Eğer kullanıcı giriş yapmamışsa Profile girmeye çalıştığı zaman login’e yönlendirecek
+- Kullanıcı Profillerinde görünen "Son Bloglara" etkileşim eklendi artık kullanıcılar ordaki linkten bloga ulaşabiliyor
+
+<hr>
+
+### V1.3.1
 - Hatalar giderildi
   - ipler tekrar localhost olarak güncellendi!
 - Yorum yapma sistemi eklendi artık kullanıcıların istedikleri bloglara yorum yapabilirler
@@ -21,9 +34,7 @@ Check this board
   
 <hr>
 
-### V1.1.3
-
-#### 23/01
+### V1.2.2
 - Hatalar giderildi
   - Profil Photo Backend tarafından sürekli istek atıyordu ve siteye ilk kez giriş yapan kişiler serveri patlatıyordu bu sorun ortadan kaldırıldı
   - previevPage silinirken oluşan hata sorun düzeltildi
@@ -37,7 +48,7 @@ Check this board
 
 #### -----------
 
-#### 22/01
+#### V1.2.1
 - Bazı Hatalar giderildi
 - /previevPage onaylama fonksiyonu oluşturuldu. Artık writer yetkisine sahip kullanıcıların blogları /previevpage bir admin, moderator veya editör onay verirse /postpage e gönderiliyor ve herkesin erişimine açılıyor.
 - deletePost fonksiyonu oluşturuldu. Artık admin ve moderator istedikleri blogu silebilirler.
@@ -51,9 +62,7 @@ Check this board
 
 <hr>
 
-### V1.1.2
-
-#### 20/01
+### V1.1.3
 - Hatalar giderildi
 - Admin Sayfası tekrar güncellendi
 - yeni yazarların blogları artık /previev kısmına gidiyor ayrıca blog yazarken /createPreviev kısmından blog yazıyorlar
@@ -64,7 +73,7 @@ Check this board
 
 #### -----------
 
-##### 19/01
+### V1.1.2
 - User Taglar eklendi
   - Admin, Moderator, Editor, Master-Writer, Writer, Uye
 - Admin sayfası güncellendi
