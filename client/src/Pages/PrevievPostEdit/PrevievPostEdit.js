@@ -11,7 +11,7 @@ const PrevievPostEdit = () => {
     const [redirect, setRedirect] = useState(false);
 
     useEffect(() => {
-        fetch('http://192.168.1.3:3030/previevPost/'+id).then(response => {
+        fetch('http://localhost:3030/previevPost/'+id).then(response => {
             response.json().then(postInfo => {
                 setTitle(postInfo.title);
                 setSummary(postInfo.summary);
@@ -30,7 +30,7 @@ const PrevievPostEdit = () => {
         if(files?.[0]) {
             data.set('file', files?.[0]);
         }
-        const response = await fetch('http://192.168.1.3:3030/previevPost', {
+        const response = await fetch('http://localhost:3030/previevPost', {
             method: 'PUT',
             body: data,
             credentials: 'include',

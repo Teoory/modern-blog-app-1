@@ -9,7 +9,7 @@ const AdminPage = () => {
   const [postCount, setPostCount] = useState('');
 
   useEffect(() => {
-    fetch('http://192.168.1.3:3030/users', {
+    fetch('http://localhost:3030/users', {
       method: 'GET',
       credentials: 'include',
     })
@@ -17,19 +17,17 @@ const AdminPage = () => {
       .then(data => setUsers(data))
       .catch(error => console.error('Error fetching users:', error));
     
-    fetch('http://192.168.1.3:3030/previevPost', {
+    fetch('http://localhost:3030/previevPost', {
       method: 'GET',
       credentials: 'include',
     })
     .then(response => response.json())
-    .then(data => {
-        setPostCount(data.length);
-    })
+    .then(data => { setPostCount(data.length); })
     .catch(error => console.error('Error:', error));
   }, []);
 
   const handleChangeTag = (username, newTag) => {
-    fetch('http://192.168.1.3:3030/changeTag', {
+    fetch('http://localhost:3030/changeTag', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -54,7 +52,7 @@ const AdminPage = () => {
     ev.preventDefault();
     const title = document.getElementById('title').value;
     const message = document.getElementById('message').value;
-    fetch('http://192.168.1.3:3030/warning', {
+    fetch('http://localhost:3030/warning', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

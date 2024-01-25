@@ -16,7 +16,7 @@ const CreatePost = () => {
     data.set('content', content);
     data.set('file', files[0]);
     ev.preventDefault();
-    const response = await fetch('http://192.168.1.3:3030/post', {
+    const response = await fetch('http://localhost:3030/post', {
       method: 'POST',
       body: data,
       credentials: 'include',

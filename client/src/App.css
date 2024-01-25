@@ -114,6 +114,7 @@ main {
   padding: 0;
   margin: 0 auto;
   max-width: 960px;
+  width: 100%;
   display: grid;
   grid-template-areas:
       'warning'
@@ -125,7 +126,7 @@ main {
 }
 
 .content h3 {
-  color: #ddd !important;
+  color: var(--color-dark-varient) !important;
   border-radius: 15px;
 }
 
@@ -157,6 +158,203 @@ div.post p.info {
   font-weight: bold;
   display: flex;
   gap: 10px;
+}
+
+/* Begeniler */
+div.LikesArea::before {
+  content: '';
+  display: block;
+  clear: both;
+  border: none;
+  letter-spacing: 0;
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 20px 0 0 50px;
+  background-color: var(--color-dark);
+  width: 100%;
+  height: 3px;
+  border-radius: 25px;
+}
+
+div.LikesArea {
+  margin: 0 0 10px 0;
+  padding: 10px;
+}
+
+.LikeButtons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+div.LikesArea button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--color-info);
+}
+
+div.superlikesArea,
+div.likeArea {
+  display: grid;
+  justify-items: center;
+}
+
+
+/* Yorumlar */
+div.CommentsArea {
+  margin: 0 0 10px 0;
+  padding: 10px;
+}
+
+/* div.CommentsArea::before {
+  content: '';
+  display: block;
+  clear: both;
+  border: none;
+  letter-spacing: 0;
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 50px 0;
+  background-color: var(--color-dark);
+  width: 100%;
+  height: 3px;
+  border-radius: 25px;
+} */
+
+span.CommentsCount  {
+  position: absolute;
+  margin-top: -50px;
+  margin-left: 150px;
+  border-radius: 50%;
+  padding: 1px 5px;
+  font-size: 14px;
+  color: darkorange;
+  border: 1px solid;
+  text-align: center;
+}
+
+.Comments {
+  margin-bottom: 20px;
+}
+
+div.CommentsHeader {
+  /* margin-bottom: 5px; */
+  font-size: 32px;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+span.FirstComment {
+  color: var(--color-dark-varient);
+}
+
+div.addComment {
+  display: flex;
+  height: 100%;
+  max-height: 120px;
+}
+
+div.CommentsArea button {
+  background-color: var(--color-info);
+  text-decoration: none;
+  text-transform: capitalize;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-white);
+  padding: 10px 20px;
+  border-radius: 0 5px 5px 0;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+  width: auto;
+  height: 80px;
+}
+
+div.addComment textarea {
+  width: 100%;
+  height: 80px;
+  padding: 5px 7px;
+  border: 2px solid var(--color-white2);
+  border-radius: 5px 0 0 5px;
+  background-color: var(--color-white2);
+  resize: none;
+}
+
+span.CommentLogin {
+  font-size: 32px;
+  color: var(--color-text-author);
+  background: var(--color-white2);
+  border: 2px solid var(--color-text-primary);
+  border-radius: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0;
+  width: 540px;
+  font-weight: bold;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+div.comment {
+  margin: 0 0 10px 0;
+  padding: 10px;
+  border: 1px solid #6a67ce!important;
+  border-radius: 5px;
+  background-color: var(--color-white2);
+  color: var(--color-black);
+}
+
+span.commentAuthor {
+  font-size: 16px;
+  color: var(--color-text-author);
+  font-weight: bold;
+}
+
+span.commentAuthorHeader {
+  font-size: 12px;
+  line-height: 1.8rem;
+  color: var(--color-text-secondary);
+}
+
+span.commentTime {
+  font-size: 12px;
+  line-height: 1.8rem;
+  color: var(--color-text-secondary);
+  margin-left: 10px;
+}
+
+span.commentTime::before {
+  content: '| ';
+  margin-right: 5px;
+}
+
+div.commentInfo::after {
+  content: '';
+  display: block;
+  clear: both;
+  border: none;
+  letter-spacing: 0;
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 700;
+  background-color: var(--color-text-secondary);
+  margin: 2px 0;
+  width: 100%;
+  height: 1px;
+  border-radius: 25px;
+}
+
+div.comment p {
+  margin: 0;
+  line-height: 1.4rem;
 }
 
 div.post p.info a.author {

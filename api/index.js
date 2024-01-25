@@ -3,6 +3,7 @@ const cors = require ('cors');
 const mongoose = require ('mongoose');
 const User = require ('./models/User');
 const Post = require ('./models/Post');
+const Comment = require ('./models/Comment');
 const Test = require ('./models/Test');
 const PrevievPost = require ('./models/PrevievPost');
 const Warning = require ('./models/Warning');
@@ -19,7 +20,7 @@ require('dotenv').config();
 const salt = bcrypt.genSaltSync(10);
 const secret = 'secret';
 
-app.use (cors ({credentials: true, origin: 'http://192.168.1.3:3000'}));
+app.use (cors ({credentials: true, origin: 'http://localhost:3000'}));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
@@ -249,6 +250,194 @@ app.delete('/post/:id', async (req, res) => {
         }
         await Post.findByIdAndDelete(id);
         res.json({ message: 'Post deleted successfully' });
+    });
+});
+
+//* Comment
+app.post('/post/:id/comment', uploadProfilePhoto.single('file'), async (req, res) => {
+    const {id} = req.params;
+    const {token} = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+        const {content} = req.body;
+
+        try {
+            const commentDoc = await Comment.create({
+                content,
+                author: info.id,
+                post: id,
+            });
+
+            res.json(commentDoc);
+        } catch (e) {
+            console.error('Error with add comment',e);
+            res.status(500).json({e:'server error'});
+        }
+    });
+});
+
+app.get('/post/:id/comments', async (req, res) => {
+    const {id} = req.params;
+    try {
+        const comments = await Comment.find({post: id})
+        .populate('author', ['username'])
+        .sort({createdAt: -1})
+        .limit(20);
+
+        res.json(comments);
+    } catch (e) {
+        console.error('Error with get comments',e);
+        res.status(500).json({e:'server error'});
+    }
+});
+
+//* Like
+app.post('/post/:id/like', async (req, res) => {
+    const {id} = req.params;
+    const {token} = req.cookies;
+
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if (err) throw err;
+
+        try {
+            const postDoc = await Post.findById(id);
+
+            const isLiked = postDoc.likes.includes(info.id);
+            if(isLiked) {
+                return res.status(400).json({message: 'you already liked this post'});
+            }
+
+            postDoc.likes.push(info.id);
+            await postDoc.save();
+
+            res.json(postDoc);
+        } catch (e) {
+            console.error('Error with like post',e);
+            res.status(500).json({e:'server error'});
+        }
+    });
+});
+
+app.get('/post/:id/like', async (req, res) => {
+    const {id} = req.params;
+
+    try {
+        const postDoc = await Post.findById(id);
+        res.json({likes: postDoc.likes.length});
+    } catch (e) {
+        console.error('Error with get likes',e);
+        res.status(500).json({e:'server error'});
+    }
+});
+
+app.delete('/post/:id/like', async (req, res) => {
+    const { id } = req.params;
+    const { token } = req.cookies;
+  
+    jwt.verify(token, secret, {}, async (err, info) => {
+      if (err) throw err;
+  
+      try {
+        const postDoc = await Post.findById(id);
+  
+        // Check if the user has liked the post
+        const hasLiked = postDoc.likes.includes(info.id);
+        if (!hasLiked) {
+          return res.status(400).json({ error: 'You have not liked this post.' });
+        }
+  
+        // Remove user from the likes array and save the post
+        postDoc.likes = postDoc.likes.filter(userId => userId.toString() !== info.id.toString());
+        await postDoc.save();
+  
+        res.json({ success: true, likes: postDoc.likes.length });
+      } catch (error) {
+        console.error('Error removing like:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+    });
+});
+
+app.get('/post/:id/hasLiked', async (req, res) => {
+  const { id } = req.params;
+  const { token } = req.cookies;
+
+  jwt.verify(token, secret, {}, async (err, info) => {
+    if (err) throw err;
+
+    try {
+      const postDoc = await Post.findById(id);
+      const hasLiked = postDoc.likes.includes(info.id);
+      res.json({ hasLiked });
+    } catch (error) {
+      console.error('Error checking if user has liked:', error.message);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+});
+
+//* SuperLike
+app.post('/post/:id/superlike', async (req, res) => {
+    const {id} = req.params;
+    const {token} = req.cookies;
+
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if (err) throw err;
+
+        try {
+            const postDoc = await Post.findById(id);
+
+            const isSuperLiked = postDoc.superlikes.includes(info.id);
+            if(isSuperLiked) {
+                return res.status(400).json({message: 'you already superlike this post'});
+            }
+
+            postDoc.superlikes.push(info.id);
+            await postDoc.save();
+
+            res.json(postDoc);
+        } catch (e) {
+            console.error('Error with superlike post',e);
+            res.status(500).json({e:'server error'});
+        }
+    });
+});
+
+app.get('/post/:id/superlike', async (req, res) => {
+    const {id} = req.params;
+
+    try {
+        const postDoc = await Post.findById(id);
+        res.json({superlikes: postDoc.superlikes.length});
+    } catch (e) {
+        console.error('Error with get superlikes',e);
+        res.status(500).json({e:'server error'});
+    }
+});
+
+app.delete('/post/:id/superlike', async (req, res) => {
+    const {id} = req.params;
+    const {token} = req.cookies;
+
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+
+        try {
+            const postDoc = await Post.findById(id);
+
+            const isSuperLiked = postDoc.superlikes.includes(info.id);
+            if(!isSuperLiked) {
+                return res.status(400).json({message: 'you already unliked this post'});
+            }
+
+            postDoc.superlikes = postDoc.superlikes.filter(userID => userID.toString() !== info.id.toString());
+            await postDoc.save();
+
+            res.json(postDoc);
+        } catch (e) {
+            console.error('Error with unlike post',e);
+            res.status(500).json({e:'server error'});
+        }
     });
 });
 

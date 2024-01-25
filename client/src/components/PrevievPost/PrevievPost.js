@@ -9,7 +9,7 @@ const PrevievPost = ({_id,title, summary,cover,content,createdAt, author}) => {
         <div className="post">
           <div className="image">
             <Link to={`/previevPost/${_id}`}>
-              <img src={'http://192.168.1.3:3030/'+cover} alt="img" />
+              <img src={'http://localhost:3030/'+cover} alt="img" />
             </Link>
           </div>
           <div className="text">

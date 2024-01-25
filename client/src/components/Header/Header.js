@@ -12,7 +12,7 @@ const Header = () => {
     const [profilePhoto, setProfilePhoto] = useState(null);
 
     useEffect(() => {
-        fetch('http://192.168.1.3:3030/profile', {
+        fetch('http://localhost:3030/profile', {
             credentials: 'include',
         }).then(response => {
             response.json().then(userInfo => {
@@ -22,7 +22,7 @@ const Header = () => {
     }, []);
 
     function logout() {
-        fetch('http://192.168.1.3:3030/logout', {
+        fetch('http://localhost:3030/logout', {
           credentials: 'include',
           method: 'POST',
         }).then(() => {
@@ -31,7 +31,7 @@ const Header = () => {
     }
 
     const getProfilePhoto = () => {
-        fetch('http://192.168.1.3:3030/profilephoto', {
+        fetch('http://localhost:3030/profilephoto', {
           credentials: 'include',
         })
           .then(response => response.json())
@@ -56,7 +56,7 @@ const Header = () => {
             setDarkMode(!darkMode);
             return;
         };
-        fetch('http://192.168.1.3:3030/darkmode', {
+        fetch('http://localhost:3030/darkmode', {
             credentials: 'include',
             method: 'PUT',
             }).then(() => {
@@ -69,7 +69,7 @@ const Header = () => {
         if (userInfo === null) {
             return;
         };
-        fetch('http://192.168.1.3:3030/darkmode', {
+        fetch('http://localhost:3030/darkmode', {
             credentials: 'include',
         })
             .then(response => response.json())
@@ -218,7 +218,7 @@ const Header = () => {
             <div className="dropdown">
                 <Link className="dropbtn" onClick={() => setShowDropdown(!showDropdown)}>
                 {profilePhoto ? (
-                    <img className='ProfilePhoto' src={`http://192.168.1.3:3030/${profilePhoto}`} alt="Profile" />
+                    <img className='ProfilePhoto' src={`http://localhost:3030/${profilePhoto}`} alt="Profile" />
                 ) : (
                     <>
                         <div className="header-username">

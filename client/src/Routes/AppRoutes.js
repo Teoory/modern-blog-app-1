@@ -9,7 +9,7 @@ import PostPage from '../Pages/PostPage/PostPage';
 const AppRoutes = () => {
     const { userInfo } = useContext(UserContext);
     useEffect(() => {
-        fetch('http://192.168.1.3:3030/profile', {
+        fetch('http://localhost:3030/profile', {
             credentials: 'include',
         });
     }, []);

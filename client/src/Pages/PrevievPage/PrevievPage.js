@@ -5,7 +5,7 @@ import '../../QuillSnow.css';
 const PrevievPage = () => {
     const [previevPosts, setPrevievPosts] = useState([]);
     useEffect(() => {
-        fetch('http://192.168.1.3:3030/previevPost').then(response => {
+        fetch('http://localhost:3030/previevPost').then(response => {
             response.json().then(previevPosts => {
                 setPrevievPosts(previevPosts);
             });
