@@ -1,3 +1,24 @@
+🚀 Yepyeni bir proje geliştirme aşamasında! Blog dünyasına adım atmak için heyecan verici bir fırsat geliyor! Yakında herkesle paylaşacağım, takipte kalın!
+
+💡Artık yorum yaparak writer olabilir ve kendi bloglarınızı oluşturarak Master Writer'lığa giden yolda ilk adımı atabilirsiniz. Eğlencenin tadını okuyarak çıkarabilirsiniz! ✍️📖
+
+
+Dilerseniz Youtube'dan videolara ulaşabilirsiniz.
+Blog: https://lnkd.in/de2r6K4j
+<br>
+Responsive Görünüm: https://lnkd.in/dWnQWYnk
+
+Oynatma Listesi:
+https://youtube.com/playlist?list=PLR_-EKc5hBrEuh7I2JvghWuuaxa6XbCNj&si=a7IW0qtQxUpKbO8t
+
+<br/>
+<hr/>
+Check this board
+- [Trello](https://trello.com/b/VMTJJehJ/modernblogapp)
+<br/>
+
+<hr>
+
 *Need to add Mongodb server link*
 </br>edit this line api->index.js
 </br>↓
@@ -5,11 +26,6 @@
 mongoose.connect('mongodb+srv://username:password@cluster0.hd2atfr.mongodb.net/?retryWrites=true&w=majority');
 ```
 <hr>
-<br/>
-Check this board
-- [Trello](https://trello.com/b/VMTJJehJ/modernblogapp)
-<hr>
-<br/>
 
 # Son Değişiklikler:</br>
 
