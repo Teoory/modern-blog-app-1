@@ -12,32 +12,23 @@ const PostPage = () => {
     const [likes, setLikes] = useState(0);
     const [isLiked, setIsLiked] = useState(false);
     const [superlikes, setSuperLikes] = useState(0);
-    const [isSuperLiked, setIsSuperLiked] = useState(false);
+    const [isSuperLiked, setHasSuperLiked] = useState(false);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const {id} = useParams();
-
-    // useEffect(() => {
-    //     fetch(`http://localhost:3030/post/${id}`)
-    //         .then(response => {
-    //             response.json().then(postInfo => {
-    //                 setPostInfo(postInfo);
-    //             })
-    //         })
-    //     }, [id]);
     
-        useEffect(() => {
-            fetch(`http://localhost:3030/post/${id}`)
-                .then(response => {
-                    if(!response.ok) {
-                        setRedirect(true);
-                        return;
-                    }
-                    response.json().then(postInfo => {
-                        setPostInfo(postInfo);
-                    })
+    useEffect(() => {
+        fetch(`http://localhost:3030/post/${id}`)
+            .then(response => {
+                if(!response.ok) {
+                    setRedirect(true);
+                    return;
+                }
+                response.json().then(postInfo => {
+                    setPostInfo(postInfo);
                 })
-        }, [id]);
+            })
+    }, [id]);
         
         useEffect(() => { 
             fetch(`http://localhost:3030/post/${id}/comments`)
@@ -50,8 +41,16 @@ const PostPage = () => {
           .then(response => response.json())
           .then(data => {
             setLikes(data.likes);
-            setIsLiked(data.isLiked);
           });
+
+          fetch(`http://localhost:3030/post/${id}/hasLiked`,{
+              method: 'GET',
+              credentials: 'include',
+          })
+              .then(response => response.json())
+              .then(data => {
+                setIsLiked(data.hasLiked);
+              });
     }, [id]);
 
     useEffect(() => {
@@ -59,8 +58,16 @@ const PostPage = () => {
           .then(response => response.json())
           .then(data => {
             setSuperLikes(data.superlikes);
-            setIsSuperLiked(data.isSuperLiked);
           });
+
+        fetch(`http://localhost:3030/post/${id}/hasSuperLiked`,{
+            method: 'GET',
+            credentials: 'include',
+        })
+            .then(response => response.json())
+            .then(data => {
+                setHasSuperLiked(data.hasSuperLiked);
+            });
     }, [id]);
     
 
@@ -120,7 +127,7 @@ const toggleSuperLike = async () => {
 
       const updatedData = await response.json();
       setSuperLikes(updatedData.superlikes);
-      setIsSuperLiked(updatedData.isSuperLiked);
+      setHasSuperLiked(updatedData.isSuperLiked);
     } catch (error) {
       console.error('Error toggling superlike:', error.message);
     }
@@ -214,16 +221,6 @@ if (!postInfo) return <div>Loading...</div>
 
         <div className="LikesArea">
             <div className='LikeButtons'>
-                <div className="superlikesArea">
-                    <span className='SuperLikesCount'>{superlikes}</span>
-                    {userInfo !== null 
-                    ?   <button onClick={toggleSuperLike} className={isSuperLiked ? 'superliked' : ''}>
-                            😍
-                        </button>
-
-                    :   <div className='LikeSVG'>😍</div>
-                    }
-                </div>
                 <div className="likeArea">
                     <span className='LikesCount'>{likes}</span>
                     {userInfo !== null 
@@ -231,6 +228,16 @@ if (!postInfo) return <div>Loading...</div>
                             🙂
                         </button>
                     :   <div className='LikeSVG'>🙂</div>
+                    }
+                </div>
+                <div className="superlikesArea">
+                    <span className='SuperLikesCount'>{superlikes}</span>
+                    {userInfo !== null 
+                    ?   <button onClick={toggleSuperLike} className={isSuperLiked ? 'superliked' : ''}>
+                            👻
+                        </button>
+
+                    :   <div className='LikeSVG'>👻</div>
                     }
                 </div>
             </div>
@@ -271,8 +278,13 @@ if (!postInfo) return <div>Loading...</div>
                         <div key={comment._id} className="comment">
                             <div className="commentInfo">
                                 <div>
-                                <span className='commentAuthorHeader'>Yazar:</span>
-                                <span className='commentAuthor'> @{comment.author.username}</span>
+                                    <Link to={`/profile/${comment.author.username}`}>
+                                        <img src={`http://localhost:3030/${comment.author.profilePhoto}`} alt="*" />
+                                    </Link>
+                                    <span className='commentAuthorHeader'>Yazar: </span>
+                                    <span className='commentAuthor'>
+                                        <Link to={`/profile/${comment.author.username}`}>{comment.author.username}</Link>
+                                    </span>
                                 </div>
                                 <span className='commentTime'>{formatDate(comment.createdAt)}</span>
                             </div>

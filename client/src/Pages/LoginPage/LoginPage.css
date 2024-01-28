@@ -1,4 +1,66 @@
+.loginArea {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.loginArea form {
+    max-width: 400px;
+    background: var(--color-dark);
+    border-radius: 25px;
+    padding: 20px;
+}
+
+.loginArea form h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--color-white);
+}
+
+.loginArea form input {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    border: 1px solid var(--color-dark-light);
+}
+
+.loginArea form button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 15px 0;
+    width: 100%;
+    padding: 10px;
+    border-radius: 25px;
+    background: var(--color-primary);
+    color: var(--color-white);
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.loginArea .newAccount {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    color: var(--color-white);
+}
+
 form.login {
     max-width: 400px;
     margin: 0 auto;
+}
+
+.password-validations {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    margin: 0 0 15px 0;
+}
+
+.password-validations {
+    color: var(--color-light-varient);
 }

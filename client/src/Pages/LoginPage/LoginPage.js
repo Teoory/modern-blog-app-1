@@ -23,7 +23,7 @@ const LoginPage = () => {
         setRedirect(true);
       });
     } else {
-      alert('Login failed!');
+      alert('Hatalı kullanıcı adı veya şifre!');
     }
   }
 
@@ -32,19 +32,21 @@ const LoginPage = () => {
     return <Navigate to="/"/>;
   }
   return (
-    <div className='Page'>
+    <div className='loginArea'>
       <form className="login" onSubmit={login}>
-        <h1>Login</h1>
+        <h1>Giriş Yap</h1>
         <input   type="text"
                 placeholder="username" 
-                value={username} 
+                value={username}
+                required
                 onChange={ev => setUsername(ev.target.value)}/>
         <input  type="password" 
                 placeholder="password" 
-                value={password} 
+                value={password}
+                required
                 onChange={ev => setPassword(ev.target.value)}/>
-        <Link to="/forgetPassword">Parolami unuttum</Link>
-        <button>Login</button>
+        <button>Giriş</button>
+        <div className='newAccount'>Hesabın yokmu? <Link to="/register">Yeni Hesap Oluştur</Link></div>
       </form>
     </div>
   )

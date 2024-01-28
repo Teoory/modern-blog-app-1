@@ -9,6 +9,12 @@
     max-width: 1200px;
 }
 
+.ppArea {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .ppArea img{
     width: 100%;
     height: 100%;
@@ -26,10 +32,17 @@
 
 .ProfileCard {
     display: flex;
-    width: 100%;
     justify-content: center;
     align-items: stretch;
     gap: 15px;
+    max-width: 400px;
+    background: var(--color-dark);
+    border-radius: 25px;
+    padding: 10px;
+}
+
+.email {
+    color: var(--color-white);
 }
 
 content:hover {
@@ -92,4 +105,76 @@ content:hover {
 .BlogSummary {
     color: var(--color-dark-light);
     font-size: 14px;
+    margin: 2px 0 0 15px;
+}
+
+.LastPostImageOverlay img {
+    width: 100%;
+    height: 100%;
+    max-width: 160px;
+    max-height: 160px;
+    object-fit: cover;
+    border-radius: 15px;
+    background: linear-gradient(to bottom, rgba(28, 34, 59, 0.52) 50%, rgba(0, 0, 0, 0));
+    filter: blur(2px) brightness(0.25) saturate(1.5);
+}
+
+.LastPostImage {
+    max-width: 600px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+}
+
+.LastPostImageOverlay {
+    width: 160px;
+    height: 160px;
+    border: 2px solid var(--color-primary);
+    border-radius: 15px;
+}
+
+.LastPostTitle {
+    position: absolute;
+    max-width: 155px;
+    width: 140px;
+    height: 140px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: -155px 0 0 10px;
+    color: white;
+    font-size: 16px;
+    filter: drop-shadow(0px 0px 5px black) contrast(1.5) brightness(1.5); 
+}
+
+.LastArea {
+    display: grid;
+    justify-items: center;
+}
+
+.LastArea h2 {
+    text-align: center;
+}
+
+.LastArea h2 span {
+    text-transform: capitalize;
+}
+
+.LastArea button {
+    width: 100px;
+    margin-top: 25px;
+    color: white;
+
+}
+
+@media (max-width: 300px) {
+
+
+    .ppArea img {
+        height: auto;
+    }
 }

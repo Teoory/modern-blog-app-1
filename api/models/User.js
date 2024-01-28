@@ -30,6 +30,10 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
+    likedPosts: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Post'
+    }]
 });
 
 const UserModel = model('User', UserSchema);

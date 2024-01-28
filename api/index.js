@@ -47,20 +47,23 @@ app.post ('/register', async (req, res) => {
 app.post ('/login', async (req, res) => {
     const {username, password} = req.body;
     const userDoc = await User.findOne({username});
+    if (!userDoc) {
+        return res.redirect('/login');
+    }
     const  passOk = bcrypt.compareSync(password, userDoc.password);
     if(passOk){
-        //login
-        jwt.sign({username, email:userDoc.email, tags:userDoc.tags, id:userDoc._id}, secret, {} , (err, token) => {
+        jwt.sign({username, profilePhoto:userDoc.profilePhoto , email:userDoc.email, tags:userDoc.tags, id:userDoc._id, likedPosts:userDoc.likedPosts}, secret, {} , (err, token) => {
             if (err) throw err;
             res.cookie('token', token).json({
                 id:userDoc._id,
                 username,
                 email:userDoc.email,
                 tags:userDoc.tags,
+                profilePhoto: userDoc.profilePhoto,
+                likedPosts: userDoc.likedPosts,
             });
         });
     }else{
-        //error
         res.status(400).json({message: 'Wrong password'});
     }
 });
@@ -88,6 +91,25 @@ app.get('/profile/:username', async (req, res) => {
     } catch (error) {
       console.error('Error getting user profile:', error.message);
       res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+app.get('/profile/:username/likedPosts', async (req, res) => {
+    const { username } = req.params;
+  
+    try {
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+  
+        const likedPosts = await Post.find({ '_id': { $in: user.likedPosts } }).populate('author', ['username']);
+  
+        res.json({ likedPosts });
+    } catch (error) {
+        console.error('Error getting liked posts:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -253,7 +275,6 @@ app.get('/post/:id', async (req, res) => {
         const postDoc = await Post.findById(id).populate('author', ['username']);
         
         if (!postDoc) {
-            // Post bulunamadıysa anasayfaya yönlendirme yap
             return res.redirect('/');
         }
 
@@ -308,7 +329,7 @@ app.get('/post/:id/comments', async (req, res) => {
     const {id} = req.params;
     try {
         const comments = await Comment.find({post: id})
-        .populate('author', ['username'])
+        .populate('author', ['username', 'profilePhoto'])
         .sort({createdAt: -1})
         .limit(20);
 
@@ -330,14 +351,21 @@ app.post('/post/:id/like', async (req, res) => {
       try {
         const postDoc = await Post.findById(id);
   
-        // Check if the user has already liked the post
         const hasLiked = postDoc.likes.includes(info.id);
         if (hasLiked) {
-          // If already liked, remove the like
-          postDoc.likes.pull(info.id);
+            postDoc.likes.pull(info.id);
+            
+            const user = await User.findOne({ _id: info.id });
+            user.likedPosts.pull(postDoc._id);
+            await user.save();
         } else {
-          // If not liked, add the like
-          postDoc.likes.push(info.id);
+            postDoc.likes.push(info.id);
+
+            const user = await User.findOne({ _id: info.id });
+            if(!user.likedPosts.includes(postDoc._id)) {
+                user.likedPosts.push(postDoc._id);
+                await user.save();
+            }
         }
   
         await postDoc.save();
@@ -350,7 +378,7 @@ app.post('/post/:id/like', async (req, res) => {
     });
 });
   
-// Get the number of likes for a post
+
 app.get('/post/:id/likes', async (req, res) => {
   const { id } = req.params;
 
@@ -369,6 +397,10 @@ app.get('/post/:id/hasLiked', async (req, res) => {
   const { token } = req.cookies;
 
   jwt.verify(token, secret, {}, async (err, info) => {
+    
+    if (!token) {
+        return res.status(404).json({ error: 'Token not found' });
+    }
     if (err) throw err;
 
     try {
@@ -392,14 +424,10 @@ app.post('/post/:id/superlike', async (req, res) => {
   
       try {
         const postDoc = await Post.findById(id);
-  
-        // Check if the user has already liked the post
         const hasSuperLiked = postDoc.superlikes.includes(info.id);
         if (hasSuperLiked) {
-          // If already liked, remove the like
           postDoc.superlikes.pull(info.id);
         } else {
-          // If not liked, add the like
           postDoc.superlikes.push(info.id);
         }
   
@@ -412,8 +440,7 @@ app.post('/post/:id/superlike', async (req, res) => {
       }
     });
 });
-  
-// Get the number of likes for a post
+
 app.get('/post/:id/superlikes', async (req, res) => {
   const { id } = req.params;
 
@@ -432,6 +459,10 @@ app.get('/post/:id/hasSuperLiked', async (req, res) => {
   const { token } = req.cookies;
 
   jwt.verify(token, secret, {}, async (err, info) => {
+    
+    if (!token) {
+        return res.status(404).json({ error: 'Token not found' });
+    }
     if (err) throw err;
 
     try {
@@ -444,6 +475,7 @@ app.get('/post/:id/hasSuperLiked', async (req, res) => {
     }
   });
 });
+
 
 //? Previev Post
 app.post('/previevPost', uploadMiddleware.single('file'), async (req, res) => {

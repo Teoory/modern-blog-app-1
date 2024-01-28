@@ -14,8 +14,11 @@ const UserProfilePage = () => {
   
   const { setUserInfo, userInfo } = useContext(UserContext);
   const [profilePhoto, setProfilePhoto] = useState(null);
+  const [likedPosts, setLikedPosts] = useState([]);
   const [files, setFiles] = useState('');
   const [redirect, setRedirect] = useState(false);
+  const [showMore, setShowMore] = useState(false);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     fetch('http://localhost:3030/profile', {
@@ -36,6 +39,21 @@ const UserProfilePage = () => {
       .catch(error => console.error('Error fetching profile photo:', error));
     }, []);
 
+    
+    useEffect(() => {
+      fetch(`http://localhost:3030/profile/${username}`)
+        .then(response => response.json())
+        .then(data => setUserProfile(data));
+    
+      fetch(`http://localhost:3030/profile/${username}/likedPosts`)
+    .then(response => response.json())
+    .then(data => {
+      setLikedPosts(data.likedPosts);
+      setShowMore(data.likedPosts.length > 6);
+    })
+    .catch(error => console.error('Error fetching liked posts:', error));
+}, [username]);
+
     if (!userInfo) {
       return <Navigate to="/" replace />;
     }
@@ -53,6 +71,12 @@ const UserProfilePage = () => {
       setRedirect(true);
     }
   }
+
+  const handleShowMore = () => {
+    setShowMore(false);
+
+    setShowAll(true);
+  };
 
   const isFileSelected = files.length > 0;
 
@@ -104,15 +128,46 @@ const UserProfilePage = () => {
             </div>
         </div>
         <div>
-            <h2>{user.username}'nin Blogları:</h2>
-            <ul>
-                {posts.map(post => (
-                <li key={post._id}>
-                    <Link to={`/post/${post._id}`} className='BlogTitle'>{post.title}</Link>
-                    <p className='BlogSummary'>{post.summary}</p>
-                </li>
+          <div className='LastArea'>
+            <h2><span>{user.username}</span>'nin Paylaşımları:</h2>
+            {posts.length === 0 && <p>Bu kullanıcının henüz bir paylaşımı yok.</p>}
+            {posts.length > 0 ? (
+              <div className='LastPostImage'>
+                  {posts.map(post => (
+                  <div key={post._id} className="LastPostImageOverlay">
+                      <Link to={`/post/${post._id}`} className='BlogTitle'>
+                          <img src={'http://localhost:3030/'+post.cover} alt="img" />
+                          <div className='LastPostTitle'>{post.title}</div>
+                      </Link>
+                      {/* <p className='BlogSummary'>{post.summary}</p> */}
+                  </div>
+                  ))}
+              </div>
+            ): (null)}
+          </div>
+
+          <hr />
+              
+          <div className='LastArea'>
+            <h2><span>{user.username}</span>'nin Beğendiği Gönderiler:</h2>
+            {likedPosts.length > 0 ? (
+              <div className='LastPostImage'>
+                {likedPosts.slice(0, showAll ? likedPosts.length : 6).map(post => (
+                  <div key={post._id} className='LastPostImageOverlay'>
+                      <Link to={`/post/${post._id}`} className='BlogTitle'>
+                          <img src={'http://localhost:3030/'+post.cover} alt="img" />
+                          <div className='LastPostTitle'>{post.title}</div>
+                      </Link>
+                  </div>
                 ))}
-            </ul>
+              </div>
+            ) : (
+              <p>{username} henüz hiçbir gönderiyi beğenmedi.</p>
+            )}
+            {showMore && (
+              <button onClick={handleShowMore}>Daha Fazla Göster</button>
+            )}
+          </div>
         </div>
     </div>
   );
