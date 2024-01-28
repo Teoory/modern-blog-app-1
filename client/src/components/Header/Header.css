@@ -1,15 +1,17 @@
 header {
   display: flex;
   justify-content: space-around;
-  margin-bottom: 20px;
   padding: 10px 0;
   align-items: center;
-  background: rgb(0 0 0 / 58%);
+  background: var(--color-nav);
   top: 0;
   left: 0;
   right: 0;
   width: 100%;
   z-index: 9999999;
+}
+.header {
+  margin-bottom: 20px;
 }
 
 header a {
@@ -216,6 +218,56 @@ header .nav {
   text-transform: capitalize;
 }
 
+.exchange-rate {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  font-weight: lighter;
+  color: var(--color-white2) !important;
+  background-color: var(--color-dark-varient) !important;
+  color: black;
+  padding: 1px 200px;
+}
+
+.exchange-rate svg,
+.exchange-rate img{
+  width: 20px;
+  height: 20px;
+  margin: 0 5px;
+}
+
+.gold {
+  height: 18px !important;
+  width: 18px !important;
+}
+
+.exchange-rate span {
+  display: flex;
+  align-items: center;
+}
+
+.upChange {
+  color: green;
+  font-weight: 900;
+}
+
+.downChange {
+  color: red;
+  font-weight: 900;
+}
+
+.exchange-rate span::after {
+  content: " | ";
+  height: 100%;
+  display: inline-block;
+  font-size: initial;
+}
+
+.exchange-rate span:nth-last-child(1)::after {
+  content: "";
+}
+
 @media (max-width: 768px) {
   header {
     padding: 5px 20px;
@@ -283,5 +335,122 @@ header .nav {
   header .dropdown .dropbtn svg {
     width: 30px;
     height: 30px;
+  }
+}
+
+@media (max-width: 1300px) {
+  .exchange-rate {
+    gap: 1px;
+    padding: 2px 0;
+  }
+
+  .exchange-rate span::after {
+    content: " | ";
+    height: 100%;
+    display: inline-block;
+    font-size: initial;
+  }
+
+  .exchange-rate span:nth-last-child(1)::after {
+    content: "";
+  }
+
+  .exchange-rate svg {
+    margin: 0;
+  }
+
+  .downChange, .upChange {
+    font-size: 8px;
+    font-weight: 200;
+    margin: 0 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .exchange-rate {
+    font-size: 12px;
+    gap: 1px;
+    padding: 2px 0;
+  }
+
+  .exchange-rate span::after {
+    content: " | ";
+    height: 100%;
+    display: inline-block;
+    font-size: initial;
+  }
+
+  .exchange-rate span:nth-last-child(1)::after {
+    content: "";
+  }
+
+  .exchange-rate svg {
+    margin: 0;
+  }
+
+  .downChange, .upChange {
+    font-size: 8px;
+    font-weight: 400;
+    margin: 0 !important;
+  }
+}
+
+@media (max-width: 425px) {
+  .exchange-rate {
+    font-size: 6px;
+    gap: 1px;
+    padding: 2px 0;
+    max-width: 420px;
+    display: flex;
+    justify-content: start;
+  }
+
+  .exchange-rate span::after {
+    content: " | ";
+    height: 100%;
+    display: inline-block;
+    font-size: initial;
+  }
+
+  .exchange-rate span:nth-last-child(1)::after {
+    content: "";
+  }
+
+  .exchange-rate svg {
+    margin: 0;
+  }
+
+  .downChange, .upChange {
+    font-size: 8px;
+    font-weight: 400;
+    margin: 0 !important;
+  }
+  
+  .dropdowns {
+    display: grid;
+    gap: 10px;
+  }
+
+  header {
+    align-items: start;
+  }
+
+  header nav {
+    width: 50%;
+  }
+}
+
+@media (max-width: 300px) {
+  .exchange-rate {
+    display: none;
+  }
+
+  header {
+    align-items: start;
+  }
+
+  .dropdowns {
+    display: grid;
+    gap: 10px;
   }
 }

@@ -40,6 +40,17 @@
     background: #000;
     color: #ffffff2f;
     text-align: center;
+    text-decoration: none;
+}
+
+.ft-bot-tx a {
+    color: #ffffff2f;
+    text-decoration: none;
+}
+
+.ft-bot-tx a:hover {
+    color: #ffffff;
+    transition: color 0.3s ease-in-out;
 }
 
 

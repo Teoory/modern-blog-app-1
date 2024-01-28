@@ -10,8 +10,10 @@
   --color-info: #2196F3;
   --color-info-dark: #7d8da1;
   --color-white: #FFFFFF;
+  --color-content: #fff0f0;
   --color-white2: #ddd;
   --color-black: #000000;
+  --color-nav: rgba(150, 150, 150, 0.9);
   --color-dark: #212121;
   --color-dark-varient: #555;
   --color-light: rgb(100, 100, 100);
@@ -42,6 +44,7 @@
 .dark-mode-variables {
   --color-background: #181a1e;
   --color-dark: #edeffd;
+  --color-nav: rgba(0, 0, 0, 0.9);
   --color-white: #202528;
   --color-text-author: #2f2fc4;
   --color-dark-varient: #b37024;
@@ -174,6 +177,87 @@ div.post p.info {
   font-weight: bold;
   display: flex;
   gap: 10px;
+}
+
+
+/* ALL POSTS */
+div.allPosts {
+  width: 100%;
+  max-width: 300px;
+  height: initial;
+  max-height: 410px;
+  display: grid;
+  background: var(--color-content);
+  border-radius: 15px;
+  color: var(--color-dark);
+  margin-bottom: 25px;
+}
+
+div.allPosts div.text {
+  padding: 10px;
+  border: 1px solid rgba(155,155,155,.2);
+  border-radius: 0 0 15px 15px;
+}
+
+div.allPosts div.text a {
+  text-decoration: none;
+  display: flex;
+  justify-content: space-between;
+}
+
+div.allPosts p.info {
+  margin: 6px 0;
+  color: var(--color-text-secondary);
+  font-size: .7rem;
+  font-weight: bold;
+  display: grid;
+}
+
+div.allPosts p.summary {
+  float: left;
+  color: #4e4e4e;
+  font-size: 13px;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+div.allPosts h1 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: var(--color-dark);
+  font-weight: 700;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: #0f0f0f;
+  line-height: 20px;
+  font-size: 16px;
+}
+
+div.allPosts div.image img{
+  object-fit: cover;
+  object-position: center;
+  width: 100%;
+  border-radius: 15px 15px 0 0;
+  max-height: 200px;
+  height: 200px;
+}
+
+div.allPosts div.image {
+  height: 200px;
+}
+
+div.AllPostsList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 20px auto;
+  gap: 20px;
+  height: min-content;
 }
 
 /* Begeniler */

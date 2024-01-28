@@ -3,6 +3,7 @@ import { useEffect, useContext, useState } from 'react';
 import { UserContext } from '../../Hooks/UserContext';
 import './Header.css';
 import logo from './logo.svg';
+import goldIngot from '../../Images/gold-ingot.svg';
 
 const Header = () => {
     const { setUserInfo, userInfo } = useContext(UserContext);
@@ -19,6 +20,38 @@ const Header = () => {
                 setUserInfo(userInfo);
             });
         });
+    }, []);
+
+    let [exchangeData, setExchangeData] = useState({});
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch('https://api.bigpara.hurriyet.com.tr/doviz/headerlist/anasayfa');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                if (data && data.data) {
+                    const exchangeRates = {};
+                    data.data.forEach(currency => {
+                        exchangeRates[currency.SEMBOL] = {
+                            kapanis: currency.KAPANIS,
+                            yuzdeDegisim: currency.YUZDEDEGISIM
+                        };
+                    });
+                    setExchangeData(exchangeRates);
+                } else {
+                    console.error('Fetched data is invalid:', data);
+                }
+            } catch (error) {
+                console.error('Fetch operation failed:', error);
+            }
+        };
+
+        fetchData();
+
+        const intervalId = setInterval(fetchData, 7200000);
+        return () => clearInterval(intervalId);
     }, []);
 
     function logout() {
@@ -87,7 +120,7 @@ const Header = () => {
     function scrollFunction() {
         let st = window.scrollY || document.documentElement.scrollTop;
         if (document.querySelector("header") === null) return;
-        const header = document.querySelector("header");
+        const header = document.querySelector(".header");
         
         header.style.transition = "transform 0.3s ease";
         
@@ -103,6 +136,7 @@ const Header = () => {
         } else {
             header.style.position = "fixed";
             header.style.transform = "translateY(0%)";
+            header.style.width = "100%";
             scrolledUpOnce = true;
         }
         lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
@@ -121,9 +155,10 @@ const Header = () => {
     }
 
   return (
-    <header>
-        <Link to="/" className="logo" ><img alt='logo' className='logo' src={logo}/></Link>
-        <nav>
+    <div className='header'>
+        <header>
+            <Link to="/" className="logo" ><img alt='logo' className='logo' src={logo}/></Link>
+            <nav>
         {username ? (
         <>
             <div className="dropdowns">
@@ -298,8 +333,79 @@ const Header = () => {
             </div>
         </>
         )}
-      </nav>
-    </header>
+            </nav>
+        </header>
+
+        <div>
+            <nav className="exchange-rate">
+                <span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                    USD/TRY: {exchangeData['USDTRY']?.kapanis}
+                    {exchangeData['USDTRY']?.yuzdeDegisim > 0 ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="upChange w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
+                        </svg>
+                    ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="downChange w-6 h-6">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6 9 12.75l4.286-4.286a11.948 11.948 0 0 1 4.306 6.43l.776 2.898m0 0 3.182-5.511m-3.182 5.51-5.511-3.181" />
+                        </svg>
+
+                    )}
+                </span>
+                <span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M14.25 7.756a4.5 4.5 0 1 0 0 8.488M7.5 10.5h5.25m-5.25 3h5.25M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                    EUR/TRY: {exchangeData['EURTRY']?.kapanis}
+                    {exchangeData['EURTRY']?.yuzdeDegisim > 0 ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="upChange w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
+                        </svg>
+                      
+                    ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="downChange w-6 h-6">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6 9 12.75l4.286-4.286a11.948 11.948 0 0 1 4.306 6.43l.776 2.898m0 0 3.182-5.511m-3.182 5.51-5.511-3.181" />
+                        </svg>
+
+                    )}
+                </span>
+                <span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M14.121 7.629A3 3 0 0 0 9.017 9.43c-.023.212-.002.425.028.636l.506 3.541a4.5 4.5 0 0 1-.43 2.65L9 16.5l1.539-.513a2.25 2.25 0 0 1 1.422 0l.655.218a2.25 2.25 0 0 0 1.718-.122L15 15.75M8.25 12H12m9 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                    GBP/TRY: {exchangeData['GBPTRY']?.kapanis}
+                    {exchangeData['GBPTRY']?.yuzdeDegisim > 0 ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="upChange w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
+                        </svg>
+                      
+                    ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="downChange w-6 h-6">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6 9 12.75l4.286-4.286a11.948 11.948 0 0 1 4.306 6.43l.776 2.898m0 0 3.182-5.511m-3.182 5.51-5.511-3.181" />
+                        </svg>
+
+                    )}
+                </span>
+                <span>
+                    <img src={goldIngot} alt="gold" className='gold'/>
+                    ALTIN: {exchangeData['GLDGR']?.kapanis}
+                    {exchangeData['GLDGR']?.yuzdeDegisim > 0 ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="upChange w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
+                        </svg>
+                      
+                    ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="downChange w-6 h-6">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6 9 12.75l4.286-4.286a11.948 11.948 0 0 1 4.306 6.43l.776 2.898m0 0 3.182-5.511m-3.182 5.51-5.511-3.181" />
+                        </svg>
+
+                    )}
+                </span>
+            </nav>
+        </div>
+    </div>
   )
 }
 
