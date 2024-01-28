@@ -35,6 +35,10 @@ mongoose.connect('mongodb+srv://username:password@cluster0.hd2atfr.mongodb.net/?
 - Aside responsive sınırı arttırıldı
 - Tanıtım videoları hazırlandı
 - Ufak style güncellemesi
+- Navbara doviz eklendi her 2 saate bir verileri güncelliyor
+- HomePage güncellendi
+  - Artık Son 3 gönderi yatay grid şeklinde sıralanıyorlar diğer gönderliler küçük kutucuklar halinde flex şolarak görünüyor
+    
 
 #### -----------
 
