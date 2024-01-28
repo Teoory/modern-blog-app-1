@@ -109,7 +109,7 @@ mongoose.connect('mongodb+srv://username:password@cluster0.hd2atfr.mongodb.net/?
 
 <hr>
 
-### V1.1.1
+### V1.0.2
 - Routes ayarları güncellendi
   - AppRoutes, DefRoutes, PrivRoutes
 - Sayfa stilleri güncellendi
