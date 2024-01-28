@@ -28,6 +28,15 @@ mongoose.connect('mongodb+srv://username:password@cluster0.hd2atfr.mongodb.net/?
 <hr>
 
 # Son Değişiklikler:</br>
+### V1.4.2
+- Hatalar giderildi
+  - Beğenilen bloglarda beğeni butonunun arka plan rengi mavi kalıyordu düzeltildi artık sayfa yenilense bile beğenmişse turuncu oluyor
+- Yorumlara kullanıcıların avatarları ve etkileşimi eklendi
+- Aside responsive sınırı arttırıldı
+- Tanıtım videoları hazırlandı
+- Ufak style güncellemesi
+
+#### -----------
 
 ### V1.4.1
 - Hatalar giderildi
