@@ -3,17 +3,18 @@ import { format } from "date-fns";
 import { tr, eu } from 'date-fns/locale';
 import { Link } from 'react-router-dom';
 
-const PostAll = ({_id,title, summary,cover,content,createdAt, author}) => {
+const PostAll = ({_id,title, summary,cover,content,createdAt, author, PostTags}) => {
 
   const locales = { tr, eu };
   return (
     <div className="allPosts">
       <div className="image">
         <Link to={`/post/${_id}`}>
-          <img src={'http://localhost:3030/'+cover} alt="img" />
+          <img src={'http://localhost:3030/'+cover} alt="img" loading='layz' decoding='async' />
         </Link>
       </div>
       <div className="text">
+          <span className='PostTagsAreaAll'>{PostTags}</span>
         <Link to={`/post/${_id}`}>
           <h1>{title}</h1>
           <p className="info">

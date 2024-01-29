@@ -1,5 +1,5 @@
 import 'react-quill/dist/quill.snow.css';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import Editor from "../../components/Editor/Editor";
 
@@ -9,12 +9,22 @@ const CreatePost = () => {
   const [content, setContent] = useState('');
   const [files, setFiles] = useState('');
   const [redirect, setRedirect] = useState(false);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [availableTags, SetAvailableTags] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:3030/availableTags')
+      .then(response => response.json())
+      .then(data => SetAvailableTags(data.availableTags));
+  }, []);
+
   async function createNewPost(ev) {
     const data = new FormData();
     data.set('title', title);
     data.set('summary', summary);
     data.set('content', content);
     data.set('file', files[0]);
+    data.set('PostTags', selectedTags);
     ev.preventDefault();
     const response = await fetch('http://localhost:3030/post', {
       method: 'POST',
@@ -33,6 +43,16 @@ const CreatePost = () => {
     <>
     <h3 className='warning'>Bu BLOG anasayfada paylaşılacak!</h3>
     <form onSubmit={createNewPost}>
+      <select
+        value={selectedTags}
+        onChange={ev => setSelectedTags(Array.from(ev.target.selectedOptions, option => option.value))}
+      >
+          {availableTags.map(tag => (
+            <option key={tag} value={tag}>
+              {tag}
+            </option>
+          ))}
+      </select>
       <input  type="title" 
               placeholder={'Title'} 
               value={title} 

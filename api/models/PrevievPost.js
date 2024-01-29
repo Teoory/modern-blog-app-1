@@ -6,7 +6,16 @@ const PrevievPostSchema = new mongoose.Schema({
     summary: String,
     content: String,
     cover:String,
-    author:{type:Schema.Types.ObjectId, ref:'User'},
+    author:{
+        type:Schema.Types.ObjectId,
+         ref:'User'
+    },
+    PostTags: [{
+        type: Schema.Types.String,
+        ref: 'Post',
+        required: true,
+        default: 'Gündem'
+    }],
 }, {
     timestamps: true,
 });

@@ -210,7 +210,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
 
-        const {id, title, summary, content, previev} = req.body;
+        const {id, title, summary, content, previev, PostTags} = req.body;
             const postDoc = await Post.create({
                 title,
                 summary,
@@ -218,10 +218,11 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
                 cover: newPath,
                 author: info.id,
                 previev,
+                PostTags,
             });
             res.json({postDoc});
         });
-}); 
+});
 
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
     let newPath = null; 
@@ -236,7 +237,7 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
-        const {id, title, summary, content, previev} = req.body;
+        const {id, title, summary, content, previev, PostTags} = req.body;
         const postDoc = await Post.findById(id);
 
         const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
@@ -254,6 +255,7 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
             content, 
             cover: newPath?newPath:postDoc.cover,
             previev,
+            PostTags,
         });
 
         res.json(postDoc);
@@ -300,6 +302,23 @@ app.delete('/post/:id', async (req, res) => {
         await Post.findByIdAndDelete(id);
         res.json({ message: 'Post deleted successfully' });
     });
+});
+
+app.get('/availableTags', async (req, res) => {
+    const enumValues = Post.schema.path('PostTags').enumValues;
+    res.json({availableTags: enumValues});
+})
+
+app.get('/posts/:tag', async (req, res) => {
+    const { tag } = req.params;
+
+    try {
+        const posts = await Post.find({ PostTags: tag }).populate('author', ['username']);
+        res.json({ posts });
+    } catch (error) {
+        console.error('Error getting posts by tag:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 
 //* Comment
@@ -489,7 +508,7 @@ app.post('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
 
-        const {id, title, summary, content, previev} = req.body;
+        const {id, title, summary, content, previev, PostTags} = req.body;
             const postDoc = await PrevievPost.create({
                 title,
                 summary,
@@ -497,6 +516,7 @@ app.post('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
                 cover: newPath,
                 author: info.id,
                 previev,
+                PostTags,
             });
             res.json({postDoc});
         });
@@ -515,7 +535,7 @@ app.put('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
-        const {id, title, summary, content, previev} = req.body;
+        const {id, title, summary, content, previev, PostTags} = req.body;
         const postDoc = await PrevievPost.findById(id);
         const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
         const isAdmin = info.tags.includes('admin');
@@ -531,6 +551,7 @@ app.put('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
             content, 
             cover: newPath?newPath:postDoc.cover,
             previev,
+            PostTags,
         });
 
         res.json(postDoc);

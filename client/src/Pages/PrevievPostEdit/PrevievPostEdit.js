@@ -9,6 +9,8 @@ const PrevievPostEdit = () => {
     const [content, setContent] = useState('');
     const [files, setFiles] = useState('');
     const [redirect, setRedirect] = useState(false);
+    const [selectedTags, setSelectedTags] = useState([]);
+    const [availableTags, SetAvailableTags] = useState([]);
 
     useEffect(() => {
         fetch('http://localhost:3030/previevPost/'+id).then(response => {
@@ -16,8 +18,17 @@ const PrevievPostEdit = () => {
                 setTitle(postInfo.title);
                 setSummary(postInfo.summary);
                 setContent(postInfo.content);
+                setSelectedTags(postInfo.PostTags);
             });
         });
+    }, []);
+
+    useEffect(() => {
+        fetch('http://localhost:3030/availableTags')
+            .then(response => response.json())
+            .then(data => {
+                SetAvailableTags(data.availableTags);
+            });
     }, []);
 
     async function updatePost(ev) {
@@ -26,6 +37,7 @@ const PrevievPostEdit = () => {
         data.set('title', title);
         data.set('summary', summary);
         data.set('content', content);
+        data.set('PostTags', selectedTags);
         data.set('id', id);
         if(files?.[0]) {
             data.set('file', files?.[0]);
@@ -57,6 +69,16 @@ const PrevievPostEdit = () => {
     </div> */}
 
     <form onSubmit={updatePost}>
+      <select
+        value={selectedTags}
+        onChange={ev => setSelectedTags(Array.from(ev.target.selectedOptions, option => option.value))}
+      >
+          {availableTags.map(tag => (
+            <option key={tag} value={tag}>
+              {tag}
+            </option>
+          ))}
+      </select>
         <input  type="title" 
                 placeholder={'Title'} 
                 value={title} 

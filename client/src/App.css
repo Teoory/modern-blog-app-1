@@ -151,6 +151,21 @@ div.HeadImage img {
   width: 100%;
 }
 
+div.vievButtonArea {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button.ViewButton {
+  margin: 10px 0;
+  background: var(--color-info);
+  color: var(--color-dark);
+  font-weight: 900;
+  text-align: center;
+  max-width: 300px;
+}
+
 div.post {
   display: grid;
   grid-template-columns: 1fr;
@@ -170,6 +185,28 @@ div.post div.text a{
   color: inherit;
 }
 
+div.text span {
+  /* position: absolute; */
+  /* margin-left: -190px; */
+  background-color: var(--color-warning);
+  color: var(--color-black);
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: bold;
+  /* margin-top: 5px; */
+}
+
+div.text h1 {
+  margin: 0;
+}
+
+span.PostTagsAreaAll {
+  display: flex;
+  justify-content: center;
+  align-self: center;
+}
+
 div.post p.info {
   margin: 6px 0;
   color: var(--color-text-secondary);
@@ -179,11 +216,45 @@ div.post p.info {
   gap: 10px;
 }
 
+div.PostTags {
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  margin-bottom: 10px;
+}
+
+div.PostTags span {
+  background-color: var(--color-warning);
+  color: var(--color-black);
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin: 0 5px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.PostTagArea {
+  display: flex;
+  align-items: stretch;
+}
+
+.PostTagArea select {
+  height: 100%;
+  border-radius: 10px 0 0 10px;
+}
+
+.PostTagArea button {
+  height: 100%;
+  border-radius: 0 10px 10px 0;
+  color: var(--color-white2);
+  font-weight: 700;
+  font-size: large;
+  text-align: center;
+}
 
 /* ALL POSTS */
 div.allPosts {
-  width: 100%;
-  max-width: 300px;
+  width: 300px;
   height: initial;
   max-height: 410px;
   display: grid;
@@ -197,6 +268,7 @@ div.allPosts div.text {
   padding: 10px;
   border: 1px solid rgba(155,155,155,.2);
   border-radius: 0 0 15px 15px;
+  height: 170px;
 }
 
 div.allPosts div.text a {
@@ -517,7 +589,8 @@ div.post p.summary {
 }
 
 /* Login & Register Css */
-input {
+input,
+select {
   display: block;
   margin-bottom: 5px;
   width: 100%;
