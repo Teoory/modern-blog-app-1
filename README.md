@@ -28,6 +28,21 @@ mongoose.connect('mongodb+srv://username:password@cluster0.hd2atfr.mongodb.net/?
 <hr>
 
 # Son Değişiklikler:</br>
+### V1.5.1
+- BackEndPostTags eklendi
+  - Sunucu tarafından /posts/:postTags ile tagdeki postlar görüntülenebilir.
+  - /availableTags ile kullanılabilir taglar incelenebilir.
+- FrontEnd işlevleri eklendi
+  - Postlara etiket ekleme.
+  - Posttaki etkiketi düzenleme.
+- Anasayfa görünümü
+  - Postların hangi etikete sahip olduklarını gösteriyor.
+  - Tag filtreleme eklendi. Sadece seçilen tagdeki postların gösterimini sağlıyor.
+  - Filtreyi temizleme butonu eklendi.
+  - Tüm postlar kısmına görünüm değiştirme butonu eklendi. Grid ve Flex görünüm arasında geçiş yapabilirsiniz.
+
+<hr>
+
 ### V1.4.2
 - Hatalar giderildi
   - Beğenilen bloglarda beğeni butonunun arka plan rengi mavi kalıyordu düzeltildi artık sayfa yenilense bile beğenmişse turuncu oluyor
