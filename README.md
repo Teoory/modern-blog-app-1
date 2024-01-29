@@ -14,9 +14,8 @@ https://youtube.com/playlist?list=PLR_-EKc5hBrEuh7I2JvghWuuaxa6XbCNj&si=a7IW0qtQ
 <br/>
 <hr/>
 Check this board
+  
 - [Trello](https://trello.com/b/VMTJJehJ/modernblogapp)
-<br/>
-
 <hr>
 
 *Need to add Mongodb server link*
