@@ -13,7 +13,7 @@ https://youtube.com/playlist?list=PLR_-EKc5hBrEuh7I2JvghWuuaxa6XbCNj&si=a7IW0qtQ
 
 <br/>
 <hr/>
-Check this board
+Check this board: `Daha detaylı bilgi istiyorsanız burayı inceleyebilirsiniz.`
   
 - [Trello](https://trello.com/b/VMTJJehJ/modernblogapp)
 <hr>
@@ -29,6 +29,21 @@ mongoose.connect('mongodb+srv://username:password@cluster0.hd2atfr.mongodb.net/?
 <hr>
 
 # Son Değişiklikler:</br>
+### V1.6.1
+- Dovizdeki değişim oklarına dropShadow eklendi
+- Aside bölümüne En Beğenilen eklendi
+  - Likes ve GhostLikes toplamı en yüksek olanı gösteriyor
+- Ticket sistemi eklendi
+  - /createticket ile ticket oluşturma sayfasına gidiliyor
+  - /ticket ile inceleme sayfasına gidiliyor (Sadece admin)
+  - /tickets/:id ile istenene ticket kontorol edilebilir
+  - /ticket artık herkesin kullanımına açıldı kullanıcılar ticketlarını inceleyebilirler
+  - Başka kullanıcının ticketına girmeye çalışılırsa “yetkin yok” uyarısı çıkıyor
+- /settings eklendi
+  - Tema değişimi ve Ticket sistemi settings e taşındı
+
+<hr>
+
 ### V1.5.1
 - BackEndPostTags eklendi
   - Sunucu tarafından /posts/:postTags ile tagdeki postlar görüntülenebilir.
