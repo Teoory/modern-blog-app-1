@@ -17,6 +17,8 @@ Check this board
   
 - [Trello](https://trello.com/b/VMTJJehJ/modernblogapp)
 <hr>
+Total code lines: https://api.github.com/repos/Teoory/modern-blog-app-1/languages
+<hr>
 
 *Need to add Mongodb server link*
 </br>edit this line api->index.js
