@@ -249,11 +249,13 @@ header .nav {
 
 .upChange {
   color: green;
+  filter: drop-shadow(2px 1px 0.75px rgb(0 0 0 / 0.8));
   font-weight: 900;
 }
 
 .downChange {
   color: red;
+  filter: drop-shadow(2px 0px 0.75px rgb(0 0 0 / 0.8));
   font-weight: 900;
 }
 

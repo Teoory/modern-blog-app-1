@@ -5,6 +5,7 @@ const User = require ('./models/User');
 const Post = require ('./models/Post');
 const Comment = require ('./models/Comment');
 const Test = require ('./models/Test');
+const Ticket = require ('./models/Ticket');
 const PrevievPost = require ('./models/PrevievPost');
 const Warning = require ('./models/Warning');
 const bcrypt = require('bcryptjs');
@@ -304,6 +305,7 @@ app.delete('/post/:id', async (req, res) => {
     });
 });
 
+//? Post Tags
 app.get('/availableTags', async (req, res) => {
     const enumValues = Post.schema.path('PostTags').enumValues;
     res.json({availableTags: enumValues});
@@ -321,42 +323,92 @@ app.get('/posts/:tag', async (req, res) => {
     }
 });
 
-//* Comment
-app.post('/post/:id/comment', uploadProfilePhoto.single('file'), async (req, res) => {
-    const {id} = req.params;
+//* Ticket
+app.post('/ticket', async (req, res) => {
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
-        const {content} = req.body;
-
-        try {
-            const commentDoc = await Comment.create({
+        const {id, title, content, status} = req.body;
+            const ticketDoc = await Ticket.create({
+                title,
                 content,
                 author: info.id,
-                post: id,
+                status,
             });
+            res.json({ticketDoc});
+        });
+});
 
-            res.json(commentDoc);
-        } catch (e) {
-            console.error('Error with add comment',e);
-            res.status(500).json({e:'server error'});
+app.put('/ticket', async (req, res) => {
+    const {token} = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+        const {id, title, content, status} = req.body;
+        const ticketDoc = await Ticket.findById(id);
+        
+        const isAuthor = JSON.stringify(ticketDoc.author) === JSON.stringify(info.id);
+
+        const isAdmin = info.tags.includes('admin');
+        const isModerator = info.tags.includes('moderator');
+
+        if(!isAuthor && !isAdmin && !isModerator) {
+            return res.status(400).json('You don\'t have permission.');
         }
+
+        await Ticket.findByIdAndUpdate(id, {
+            title, 
+            content, 
+            author: info.id,
+            status,
+        });
+
+        res.json(ticketDoc);
     });
 });
 
-app.get('/post/:id/comments', async (req, res) => {
-    const {id} = req.params;
-    try {
-        const comments = await Comment.find({post: id})
-        .populate('author', ['username', 'profilePhoto'])
+app.get('/ticket', async (req, res) => {
+    res.json(
+        await Ticket.find()
+        .populate('author', ['username'])
         .sort({createdAt: -1})
-        .limit(20);
+        .limit(20)
+    );
+});
 
-        res.json(comments);
-    } catch (e) {
-        console.error('Error with get comments',e);
-        res.status(500).json({e:'server error'});
+app.get('/ticket/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const ticketDoc = await Ticket.findById(id).populate('author', ['username']);
+
+        if (!ticketDoc) {
+            return res.redirect('/');
+        }
+
+        res.json(ticketDoc);
+    } catch (error) {
+        console.error('Error fetching ticket:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
+});
+
+app.delete('/ticket/:id', async (req, res) => {
+    const { id } = req.params;
+    const { token } = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+        const ticketDoc = await Ticket.findById(id);
+
+        const isAuthor = JSON.stringify(ticketDoc.author) === JSON.stringify(info.id);
+
+        const isAdmin = info.tags.includes('admin');
+        const isModerator = info.tags.includes('moderator');
+
+        if(!isAuthor && !isAdmin && !isModerator) {
+            return res.status(400).json('Don\'t have permission!');
+        }
+        await Ticket.findByIdAndDelete(id);
+        res.json({ message: 'Ticket deleted successfully' });
+    });
 });
 
 //* Like

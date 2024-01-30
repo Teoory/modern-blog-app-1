@@ -35,7 +35,7 @@ const Header = () => {
                     const exchangeRates = {};
                     data.data.forEach(currency => {
                         exchangeRates[currency.SEMBOL] = {
-                            kapanis: currency.KAPANIS,
+                            kapanis: currency.KAPANIS.toFixed(2),
                             yuzdeDegisim: currency.YUZDEDEGISIM
                         };
                     });
@@ -271,11 +271,12 @@ const Header = () => {
                         <Link to="/admin" className='AdminButton'>Admin</Link>
                       )}
                       <Link to={`/profile/${username}`}>Profile</Link>
+                      <Link to="/settings">Settings</Link>
                       <a onClick={logout}>Logout</a>
                     </div>
                 )}
             </div>
-                <div className="navs">
+                {/* <div className="navs">
                     <div className="dark-mode" onClick={darkModeToggle}>
                         <span className={`material-symbols-outlined ${darkMode ? 'active' : ''}`}>
                             light_mode
@@ -284,7 +285,7 @@ const Header = () => {
                             dark_mode
                         </span>
                     </div>
-                </div>
+                </div> */}
             </div>
         </>
         ) : (

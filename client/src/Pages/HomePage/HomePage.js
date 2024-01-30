@@ -38,6 +38,8 @@ const HomePage = () => {
       <div className='HeadImage'>
         <img src={upImage} alt="upperImage" decoding='async'/>
       </div>
+
+      
         <hr/>
       <h2>Son 3 Gönderi</h2>
       <div className="posts">

@@ -1,18 +1,27 @@
 import React, { useContext, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { UserContext } from '../Hooks/UserContext';
+
 import HomePage from '../Pages/HomePage/HomePage';
-import PrevievPage from '../Pages/PrevievPage/PrevievPage';
-import ProfilePage from '../Pages/ProfilePage/ProfilePage';
-import EditPost from '../Pages/EditPost/EditPost';
-import CreatePost from '../Pages/CreatePost/CreatePost';
-import CreatePrevievPost from '../Pages/CreatePrevievPost/CreatePrevievPost';
 import AdminPage from '../Pages/AdminPage/AdminPage';
+import ProfilePage from '../Pages/ProfilePage/ProfilePage';
+import UserProfilePage from '../Pages/UserProfilePage/UserProfilePage';
+import ProfileSettingsPage from '../Pages/ProfilSettingsPage/ProfilSettingsPage';
+
 import PostPage from '../Pages/PostPage/PostPage';
+import CreatePost from '../Pages/CreatePost/CreatePost';
+import EditPost from '../Pages/EditPost/EditPost';
+
+import PrevievPage from '../Pages/PrevievPage/PrevievPage';
+import CreatePrevievPost from '../Pages/CreatePrevievPost/CreatePrevievPost';
 import PrevievPostPage from '../Pages/PrevievPostPage/PrevievPostPage';
 import PrevievPostEdit from '../Pages/PrevievPostEdit/PrevievPostEdit';
+
 import CreateTest from '../Pages/CreateTest/CreateTest';
-import UserProfilePage from '../Pages/UserProfilePage/UserProfilePage';
+
+import TicketPage from '../Pages/TicketPage/TicketPage';
+import TicketCreatePage from '../Pages/TicketCreatePage/TicketCreatePage';
+import TicketControlPage from '../Pages/TicketControlPage/TicketControlPage';
 
 const PrivRoutes = () => {
     const { userInfo } = useContext(UserContext);
@@ -29,7 +38,6 @@ const PrivRoutes = () => {
     const isEditorUp = tags?.includes('editor') || tags?.includes('moderator') || isAdmin;
     const isMasterWriterUp = tags?.includes('master-writer') || isEditorUp;
     const isWriter = tags?.includes('writer') || isMasterWriterUp;
-    // const isUser = tags?.includes('user') || isWriter;
 
     return (
         <Routes>
@@ -39,16 +47,24 @@ const PrivRoutes = () => {
                         <Route path="/edit/:id" element={<EditPost/>} />
                         <Route path="/post/:id" element={<PostPage/>} />
                         <Route path="/profile/:username" element={<UserProfilePage/>} />
+                        <Route path="/ticketCreate" element={<TicketCreatePage/>} />
+                        <Route path="/ticket" element={<TicketPage/>} />
+                        <Route path="/tickets/:id" element={<TicketControlPage/>} />
+                        <Route path="/settings" element={<ProfileSettingsPage />} />
                     </>
 
                 :   <> 
                         <Route path="/post/:id" element={<PostPage/>} />
-                        <Route path="/profile/:username" element={<UserProfilePage/>} />
+                        <Route path="/ticketCreate" element={<TicketCreatePage/>} />
+                        <Route path="/tickets/:id" element={<TicketControlPage username={username} isAdmin={isAdmin}/>} />
+                        <Route path="/settings" element={<ProfileSettingsPage />} />
                     </>
             }
             
             {isAdmin
-                ?   <Route path="/admin" element={<AdminPage />} />
+                ?   <>
+                        <Route path="/admin" element={<AdminPage />} />
+                    </>
                 :   null
             }
 
