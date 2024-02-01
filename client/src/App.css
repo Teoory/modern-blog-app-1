@@ -730,6 +730,61 @@ div.image img{
 }
 
 
+/* Settings Area */
+.settingsArea {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  border-radius: 15px;
+  justify-items: center;
+  text-align: center;
+}
+
+.settingsArea .dark-mode {
+  margin-bottom: 25px;
+}
+
+.themaSwitch {
+  border-bottom: 1px solid #cacaca;
+  width: 100%;
+  display: grid;
+  justify-items: center;
+}
+
+.profil-settings-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.profil-settings-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  width: 100%;
+}
+
+.SendTicket {
+  color: var(--color-white);
+  background-color: var(--color-info);
+  border-radius: 15px;
+  padding: 10px;
+}
+
+.ViewTicket {
+  color: var(--color-white);
+  background-color: var(--color-success);
+  border-radius: 15px;
+  padding: 10px;
+}
+
+.SendTicket a,
+.ViewTicket a {
+  text-decoration: none;
+  color: inherit;
+}
+
+
 @media screen and (max-width: 768px) {
   div.post {
     grid-template-columns: 1fr;

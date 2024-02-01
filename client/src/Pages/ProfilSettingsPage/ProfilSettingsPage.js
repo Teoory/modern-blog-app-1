@@ -57,14 +57,16 @@ const ProfilSettingsPage = () => {
 
 
   return (
-    <div>
-        <div className="dark-mode" onClick={darkModeToggle}>
-            <span className={`material-symbols-outlined ${darkMode ? 'active' : ''}`}>
-                light_mode
-            </span>
-            <span className={`material-symbols-outlined ${darkMode ? '' : 'active'}`}>
-                dark_mode
-            </span>
+    <div className='settingsArea'>
+        <div className="themaSwitch">
+            <div className="dark-mode" onClick={darkModeToggle}>
+                <span className={`material-symbols-outlined ${darkMode ? 'active' : ''}`}>
+                    light_mode
+                </span>
+                <span className={`material-symbols-outlined ${darkMode ? '' : 'active'}`}>
+                    dark_mode
+                </span>
+            </div>
         </div>
 
         <div className="profil-settings">
