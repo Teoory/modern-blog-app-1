@@ -29,6 +29,13 @@ mongoose.connect('mongodb+srv://username:password@cluster0.hd2atfr.mongodb.net/?
 <hr>
 
 # Son Değişiklikler:</br>
+### V1.7.2
+- Hatalar giderildi
+  - gereksiz endpointler kaldırıldı (Frontend)
+- Profil pagedeki email onaylama style güncellendi
+
+#### -----------
+
 ### V1.7.1
 - Backend
   - 6 haneli rastgele kod oluşturuluyor
