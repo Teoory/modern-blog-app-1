@@ -22,6 +22,7 @@ import CreateTest from '../Pages/CreateTest/CreateTest';
 import TicketPage from '../Pages/TicketPage/TicketPage';
 import TicketCreatePage from '../Pages/TicketCreatePage/TicketCreatePage';
 import TicketControlPage from '../Pages/TicketControlPage/TicketControlPage';
+import VerifyPage from '../Pages/RegisterPage/VerifyPage';
 
 const PrivRoutes = () => {
     const { userInfo } = useContext(UserContext);
@@ -51,6 +52,7 @@ const PrivRoutes = () => {
                         <Route path="/ticket" element={<TicketPage/>} />
                         <Route path="/tickets/:id" element={<TicketControlPage/>} />
                         <Route path="/settings" element={<ProfileSettingsPage />} />
+                        <Route path="/verify-email" element={<VerifyPage/>} />
                     </>
 
                 :   <> 
@@ -58,6 +60,7 @@ const PrivRoutes = () => {
                         <Route path="/ticketCreate" element={<TicketCreatePage/>} />
                         <Route path="/tickets/:id" element={<TicketControlPage username={username} isAdmin={isAdmin}/>} />
                         <Route path="/settings" element={<ProfileSettingsPage />} />
+                        <Route path="/verify-email" element={<VerifyPage/>} />
                     </>
             }
             

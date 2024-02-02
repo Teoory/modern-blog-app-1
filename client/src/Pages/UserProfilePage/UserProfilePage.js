@@ -37,10 +37,10 @@ const UserProfilePage = () => {
         setProfilePhoto(data);
       })
       .catch(error => console.error('Error fetching profile photo:', error));
-    }, []);
+  }, []);
 
-    
-    useEffect(() => {
+  
+  useEffect(() => {
       fetch(`http://localhost:3030/profile/${username}`)
         .then(response => response.json())
         .then(data => setUserProfile(data));
@@ -52,7 +52,7 @@ const UserProfilePage = () => {
       setShowMore(data.likedPosts.length > 6);
     })
     .catch(error => console.error('Error fetching liked posts:', error));
-}, [username]);
+  }, [username]);
 
     if (!userInfo) {
       return <Navigate to="/" replace />;
@@ -83,6 +83,7 @@ const UserProfilePage = () => {
   if (redirect) {
     window.location.reload();
   }
+
 
   if (!userProfile) {
         return <div>Loading...</div>;
@@ -127,6 +128,13 @@ const UserProfilePage = () => {
               </div>
             </div>
         </div>
+
+        <div className="verifyArea">
+          <div className={`verify ${user.isVerified ? 'MailVerified' : 'MailNotVerified'}`}>
+            {user.isVerified ? 'E-posta doğrulanmış' : 'E-posta doğrulanmamış'}
+          </div>
+        </div>
+
         <div>
           <div className='LastArea'>
             <h2><span>{user.username}</span>'nin Paylaşımları:</h2>

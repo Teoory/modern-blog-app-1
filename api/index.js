@@ -2,6 +2,7 @@ const express = require ('express');
 const cors = require ('cors');
 const mongoose = require ('mongoose');
 const User = require ('./models/User');
+const MailVerification = require ('./models/MailVerification');
 const Post = require ('./models/Post');
 const Comment = require ('./models/Comment');
 const Test = require ('./models/Test');
@@ -15,6 +16,7 @@ const cookieParser = require('cookie-parser');
 const multer = require('multer');
 const uploadMiddleware = multer({dest: 'uploads/'});
 const uploadProfilePhoto = multer({dest: 'profilephotos/'});
+const nodemailer = require('nodemailer');
 const fs = require('fs');
 require('dotenv').config();
 
@@ -28,6 +30,18 @@ app.use('/uploads', express.static(__dirname + '/uploads'));
 app.use('/profilephotos', express.static(__dirname + '/profilephotos'));
 
 mongoose.connect(`mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.hd2atfr.mongodb.net/?retryWrites=true&w=majority`);
+
+
+
+const transporter = nodemailer.createTransport({
+    host: 'ssl://smtp.yandex.com',
+    service: 'Yandex',
+    port: 465,
+    auth: {
+        user: `${process.env.MAIL_ADRESS}`, // E-posta adresiniz
+        pass: `${process.env.YANDEXSMTP_PASSWORD}` // E-posta şifreniz
+    },
+});
 
 //? Register & Login
 app.post ('/register', async (req, res) => {
@@ -44,6 +58,69 @@ app.post ('/register', async (req, res) => {
         res.status(400).json(e);
     }
 });
+
+app.post('/request-verify-code', async (req, res) => {
+    const { email } = req.body;
+
+    try {
+      // Mevcut doğrulama kodunu bulma
+      let existingVerification = await MailVerification.findOne({ email });
+  
+      // Eğer varsa, güncelle
+      if (existingVerification) {
+        existingVerification.code = Math.random().toString(36).substring(6);
+        await existingVerification.save();
+      }
+      // Yoksa, yeni doğrulama kodu oluştur
+      else {
+        existingVerification = await MailVerification.create({
+          email,
+          code: Math.random().toString(36).substring(6),
+        });
+      }
+  
+        const mailOptions = {
+            from: `${process.env.MAIL_ADRESS}`,
+            to: email,
+            subject: 'Fiysako Blog | E-posta Doğrulama Kodu',
+            text: `Kaydınızı tamamlamak için aşağıdaki doğrulama kodunu kullanın: ${existingVerification.code}`
+        };
+
+        transporter.sendMail(mailOptions, function(error, info) {
+          if (error) {
+            console.log('E-posta gönderme hatası:', error);
+            res.status(500).json({ error: 'E-posta gönderme hatası.' });
+          } else {
+            console.log('E-posta gönderildi:', info.response);
+            res.status(200).json({ message: 'Doğrulama kodu başarıyla gönderildi.' });
+          }
+        });
+      } catch (error) {
+        console.error('Doğrulama kodu oluşturma hatası:', error);
+        res.status(500).json({ error: 'Doğrulama kodu oluşturma hatası.' });
+      }
+});
+
+app.post('/verify-email', async (req, res) => {
+    const { verificationCode } = req.body;
+    try {
+      const verification = await MailVerification.findOne({ code: verificationCode });
+  
+      if (!verification) {
+        return res.status(404).json({ error: 'Geçersiz doğrulama kodu.' });
+      }
+      
+      await User.findOneAndUpdate({ email: verification.email }, { isVerified: true });
+  
+      await MailVerification.deleteOne({ _id: verification._id });
+  
+      res.status(200).json({ message: 'E-posta adresi başarıyla doğrulandı.' });
+    } catch (error) {
+      console.error('Doğrulama hatası:', error);
+      res.status(500).json({ error: 'Doğrulama hatası.' });
+    }
+});
+
 
 app.post ('/login', async (req, res) => {
     const {username, password} = req.body;

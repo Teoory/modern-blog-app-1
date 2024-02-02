@@ -600,6 +600,44 @@ form.login h1, form.register h1 {
   margin-bottom: 20px;
 }
 
+.requestArea {
+  display: flex;
+  justify-content: center;
+}
+
+.requestArea button {
+  background-color: #1d5700;
+  width: 330px;
+  border-radius: 0 0 25px 25px;
+}
+
+.Verify{
+  display: grid !important;
+}
+
+.Verify .login {
+  border-radius: 25px 25px 0 0;
+}
+
+.verifyArea {
+  display: flex;
+  justify-content: center;
+}
+
+.MailVerified {
+  background: green;
+  padding: 10px;
+  color: white;
+  border-radius: 25px;
+}
+
+.MailNotVerified {
+  background: red;
+  padding: 10px;
+  color: white;
+  border-radius: 25px;
+}
+
 /* Post Page */
 div.post-page  div.image{
   display: flex;

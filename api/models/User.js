@@ -17,6 +17,10 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please provide a password'],
     },
+    isVerified: {
+        type: Boolean,
+        default: false 
+    },
     tags: {
         type: [String],
         enum: ['admin', 'moderator', 'editor', 'master-writer', 'writer', 'user'],

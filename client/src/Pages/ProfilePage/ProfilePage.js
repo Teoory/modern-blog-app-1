@@ -26,7 +26,7 @@ const ProfilePage = (ProfilePhoto) => {
         setProfilePhoto(data);
       })
       .catch(error => console.error('Error fetching profile photo:', error));
-    }, []);
+  }, []);
 
   async function newProfilePhoto(ev) {
     ev.preventDefault();
@@ -46,6 +46,7 @@ const ProfilePage = (ProfilePhoto) => {
   const username = userInfo?.username;
   const email = userInfo?.email;
   const tags = userInfo?.tags;
+  const verify = userInfo?.isVerified;
 
   if (redirect) {
     window.location.reload();
@@ -79,6 +80,12 @@ const ProfilePage = (ProfilePhoto) => {
             <div className="username">{username}</div>
             <div className="email">{email}</div>
             <div className={`tags ${tags.join(' ')}`}>{tags}</div>
+          </div>
+
+          <div className="verifyArea">
+            <div className="verify">
+              {verify ? 'E-posta doğrulanmış' : 'E-posta doğrulanmamış'}
+            </div>
           </div>
 
         </div>
