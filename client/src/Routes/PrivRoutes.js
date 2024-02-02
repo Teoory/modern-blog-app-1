@@ -44,7 +44,7 @@ const PrivRoutes = () => {
         <Routes>
             {username 
                 ?   <>
-                        <Route path="/profile" element={<ProfilePage />} /> 
+                        {/* <Route path="/profile" element={<ProfilePage />} />  */}
                         <Route path="/edit/:id" element={<EditPost/>} />
                         <Route path="/post/:id" element={<PostPage/>} />
                         <Route path="/profile/:username" element={<UserProfilePage/>} />

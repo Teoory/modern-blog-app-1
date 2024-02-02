@@ -132,6 +132,11 @@ const UserProfilePage = () => {
         <div className="verifyArea">
           <div className={`verify ${user.isVerified ? 'MailVerified' : 'MailNotVerified'}`}>
             {user.isVerified ? 'E-posta doğrulanmış' : 'E-posta doğrulanmamış'}
+            {userInfo.username === username && !user.isVerified && (
+              <Link to="/verify-email" className="verifyLink">
+                E-posta doğrulama
+              </Link>
+            )}
           </div>
         </div>
 

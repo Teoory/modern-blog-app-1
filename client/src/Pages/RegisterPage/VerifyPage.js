@@ -29,7 +29,7 @@ const VerifyPage = () => {
         });
 
         if (response.ok) {
-            alert('E-posta doğrulama başarılı! Şimdi giriş yapabilirsiniz.');
+            alert('E-posta doğrulama başarılı!');
             navigate('/login');
         } else {
             alert('E-posta doğrulama başarısız! Lütfen tekrar deneyin.');

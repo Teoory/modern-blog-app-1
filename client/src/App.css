@@ -636,6 +636,12 @@ form.login h1, form.register h1 {
   padding: 10px;
   color: white;
   border-radius: 25px;
+  display: grid;
+  justify-items: center;
+}
+
+.verifyLink {
+  color: black;
 }
 
 /* Post Page */
