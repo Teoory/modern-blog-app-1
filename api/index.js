@@ -17,6 +17,8 @@ const multer = require('multer');
 const uploadMiddleware = multer({dest: 'uploads/'});
 const uploadProfilePhoto = multer({dest: 'profilephotos/'});
 const nodemailer = require('nodemailer');
+const path = require('path');
+const logoPath = path.join(__dirname, 'logo.png');
 const fs = require('fs');
 require('dotenv').config();
 
@@ -83,7 +85,31 @@ app.post('/request-verify-code', async (req, res) => {
             from: `${process.env.MAIL_ADRESS}`,
             to: email,
             subject: 'Fiysako Blog | E-posta Doğrulama Kodu',
-            text: `Kaydınızı tamamlamak için aşağıdaki doğrulama kodunu kullanın: ${existingVerification.code}`
+            // text: `Kaydınızı tamamlamak için aşağıdaki doğrulama kodunu kullanın: ${existingVerification.code}`,
+            html: `
+                <div style="text-align: center;display: flex;justify-content: center;align-items: center;">
+                    <div style="background: #f7f0e4;padding: 20px;border-radius: 25px;width: max-content;">
+                        <img src="cid:logo" alt="Logo" style="width: auto; height: 100px;margin-bottom: -15px;">
+                        <h1 style="color: #333;padding-bottom: 5px;border-bottom: 1px solid #aaa;">E-posta Doğrulama Kodu</h1>
+                        <p style="color: #445;">Merhaba,</p>
+                        <p style="color: #445;">Kaydınızı onaylamak için aşağıdaki doğrulama kodunu kullanın:</p>
+                        <h2 style="color: #fff;background: #00466a;margin: 10px auto;padding: 10px;border-radius: 4px;width: max-content;">${existingVerification.code}</h2>
+                        <p style="color: #888;margin-top: -5px;">Doğrulama kodunu kimseyle paylaşmayın.</p>
+                        <p style="color: #888;">Eğer bu e-postayı siz talep etmediyseniz, lütfen dikkate almayın.</p>
+                        <hr style="border:none;border-top:1px solid #cdcdcd" />
+                        <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
+                            <p>Fiyasko Blog</p>
+                        </div>
+                    </div>
+                </div>
+            `,
+            attachments: [
+                {
+                    filename: 'logo.png',
+                    path: logoPath,
+                    cid: 'logo'
+                }
+            ]
         };
 
         transporter.sendMail(mailOptions, function(error, info) {
@@ -887,6 +913,43 @@ app.get('/tags/:tag', async (req, res) => {
 
 
 //? Comments
+
+app.post('/post/:id/comment', uploadProfilePhoto.single('file'), async (req, res) => {
+    const {id} = req.params;
+    const {token} = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+        const {content} = req.body;
+
+        try {
+            const commentDoc = await Comment.create({
+                content,
+                author: info.id,
+                post: id,
+            });
+
+            res.json(commentDoc);
+        } catch (e) {
+            console.error('Error with add comment',e);
+            res.status(500).json({e:'server error'});
+        }
+    });
+});
+
+app.get('/post/:id/comments', async (req, res) => {
+    const {id} = req.params;
+    try {
+        const comments = await Comment.find({post: id})
+        .populate('author', ['username', 'profilePhoto'])
+        .sort({createdAt: -1})
+        .limit(20);
+
+        res.json(comments);
+    } catch (e) {
+        console.error('Error with get comments',e);
+        res.status(500).json({e:'server error'});
+    }
+});
 
 
 //!Admin

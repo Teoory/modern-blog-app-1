@@ -14,7 +14,7 @@ const MailVerificationSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now,
-        expires: 3600 // Doğrulama kodu 1 saat sonra otomatik olarak silinecek
+        expires: 3600
     }
 });
 
