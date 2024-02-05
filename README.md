@@ -29,6 +29,13 @@ mongoose.connect('mongodb+srv://username:password@cluster0.hd2atfr.mongodb.net/?
 <hr>
 
 # Son Değişiklikler:</br>
+### V1.7.4
+- Mobile Responsive
+  - Mobil görünümde navbar yerine ekranın alt kısmına butonlar yerleştirildi.
+- Bazı stlye hataları giderildi
+
+#### -----------
+
 ### V1.7.3
 - Hatalar giderildi
   - Yorumlarda oluşan hata giderildi
