@@ -6,6 +6,7 @@ import { UserContext } from '../../Hooks/UserContext';
 const ProfilSettingsPage = () => {
     const { setUserInfo, userInfo } = useContext(UserContext);
     const [darkMode, setDarkMode] = useState(false);
+    const [aside, setAside] = useState(false);
 
     useEffect(() => {
         fetch('http://localhost:3030/profile', {
@@ -31,6 +32,10 @@ const ProfilSettingsPage = () => {
         console.log(darkMode);
     };
 
+    const asideToggle = () => {
+        setAside(!aside);
+    };
+
     const GetDarkMode = () => {
         if (userInfo === null) {
             return;
@@ -45,18 +50,35 @@ const ProfilSettingsPage = () => {
             .catch(error => console.error('Error fetching dark mode:', error));
     };
 
+    function logout() {
+        fetch('http://localhost:3030/logout', {
+          credentials: 'include',
+          method: 'POST',
+        }).then(() => {
+          setUserInfo(null);
+        });
+    }
+
     if (userInfo) {
         GetDarkMode();
     }
     if (darkMode) {
+        document.body.classList.add('dark-mode-variables');
+    } else {
         document.body.classList.remove('dark-mode-variables');
     }
-    else {
-        document.body.classList.add('dark-mode-variables');
+
+    var asideElement = document.querySelector('.aside');
+    if (aside) {
+        asideElement.classList.add('aside-closed');
+    } else {
+        asideElement.classList.remove('aside-closed');
     }
 
 
-  return (
+
+
+    return (
     <div className='settingsArea'>
         <div className="themaSwitch">
             <div className="dark-mode" onClick={darkModeToggle}>
@@ -73,6 +95,14 @@ const ProfilSettingsPage = () => {
             <div className="profil-settings-title">
                 Profil Ayarları
             </div>
+        <div className="logoutButton">
+            <a onClick={logout}>Logout</a>
+        </div>
+
+        <div className="asideButton">
+            <a onClick={asideToggle}>Aside</a>
+        </div>
+
             <div className="profil-settings-content">
                 <div className="SendTicket">
                     <Link to={"/ticketcreate"}>Ticket Oluştur</Link>
@@ -83,7 +113,7 @@ const ProfilSettingsPage = () => {
             </div>
         </div>
     </div>
-  )
+    )
 }
 
 export default ProfilSettingsPage

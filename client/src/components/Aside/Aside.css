@@ -71,6 +71,10 @@
     border-bottom: 2px solid cornflowerblue;
 }
 
+.aside-closed {
+    display: none !important;
+}
+
 @media (max-width: 1280px) {
     .aside {
         display: contents;

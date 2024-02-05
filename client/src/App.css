@@ -344,7 +344,7 @@ div.LikesArea::before {
   font-weight: 700;
   margin: 20px 0 0 50px;
   background-color: var(--color-dark);
-  width: 100%;
+  width: 90%;
   height: 3px;
   border-radius: 25px;
 }
@@ -808,6 +808,33 @@ div.image img{
   width: 100%;
 }
 
+.profil-settings {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.logoutButton {
+  color: var(--color-white);
+  background-color: var(--color-danger);
+  border-radius: 15px;
+  padding: 10px;
+}
+
+.loginButton {
+  color: var(--color-white);
+  background-color: var(--color-info);
+  border-radius: 15px;
+  padding: 10px;
+}
+
+.asideButton {
+  color: var(--color-white);
+  background-color: var(--color-warning);
+  border-radius: 15px;
+  padding: 10px;
+}
+
 .SendTicket {
   color: var(--color-white);
   background-color: var(--color-info);
@@ -823,7 +850,10 @@ div.image img{
 }
 
 .SendTicket a,
-.ViewTicket a {
+.ViewTicket a,
+.logoutButton a,
+.loginButton a,
+.asideButton a {
   text-decoration: none;
   color: inherit;
 }
@@ -835,6 +865,28 @@ div.image img{
   }
   .content {
     padding: 0 20px;
+  }
+  
+  span.CommentLogin {
+    font-size: 18px;
+    color: var(--color-text-author);
+    background: var(--color-white2);
+    border: 2px solid var(--color-text-primary);
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+    width: auto;
+    max-width: 540px;
+    font-weight: bold;
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  div.LikesArea::before {
+    margin: 20px 0 0 20px;
   }
 }
 

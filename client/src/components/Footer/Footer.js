@@ -11,7 +11,7 @@ const Footer = () => {
                     <Link to="/" className="ft-href">İletişim</Link>
                 </div>
                 <div className="ft-bot-tx">
-                    <a href="https://www.linkedin.com/in/berkay-koksal/">
+                    <a target="_blank" href="https://www.linkedin.com/in/berkay-koksal/">
                         <span>Berkay Köksal tarafından geliştirilmiştir.</span>
                         <br />
                         <span>© 2024 Sitemizin tüm hakları gizlidir.</span>
