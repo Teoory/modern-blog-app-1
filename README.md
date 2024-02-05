@@ -29,6 +29,13 @@ mongoose.connect('mongodb+srv://username:password@cluster0.hd2atfr.mongodb.net/?
 <hr>
 
 # Son Değişiklikler:</br>
+### V1.7.3
+- Hatalar giderildi
+  - Yorumlarda oluşan hata giderildi
+- Email verification görnümü güncellendi
+
+#### -----------
+
 ### V1.7.2
 - Hatalar giderildi
   - gereksiz endpointler kaldırıldı (Frontend)
