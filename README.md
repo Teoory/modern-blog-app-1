@@ -4,18 +4,14 @@
 
 
 Dilerseniz Youtube'dan videolara ulaşabilirsiniz.
-Blog: https://lnkd.in/de2r6K4j
-<br>
-Responsive Görünüm: https://lnkd.in/dWnQWYnk
-
-Oynatma Listesi:
-https://youtube.com/playlist?list=PLR_-EKc5hBrEuh7I2JvghWuuaxa6XbCNj&si=a7IW0qtQxUpKbO8t
+<br/>
+[Playlist](https://youtube.com/playlist?list=PLR_-EKc5hBrEuh7I2JvghWuuaxa6XbCNj&si=a7IW0qtQxUpKbO8t)
 
 <br/>
 <hr/>
 Check this board: `Daha detaylı bilgi istiyorsanız burayı inceleyebilirsiniz.`
   
-- [Trello](https://trello.com/b/VMTJJehJ/modernblogapp)
+- [Trello](https://trello.com/b/VMTJJehJ/fiyasko-blog)
 <hr>
 Total code lines: https://api.github.com/repos/Teoory/modern-blog-app-1/languages
 <hr>
