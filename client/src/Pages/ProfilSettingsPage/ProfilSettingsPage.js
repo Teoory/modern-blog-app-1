@@ -28,8 +28,10 @@ const ProfilSettingsPage = () => {
             method: 'PUT',
             }).then(() => {
             setDarkMode(!darkMode);
+            setUserInfo({ ...userInfo, darkMode: !userInfo.darkMode });
             });
-        console.log(darkMode);
+        // console.log(darkMode);
+        window.location.reload();
     };
 
     const asideToggle = () => {
@@ -62,30 +64,27 @@ const ProfilSettingsPage = () => {
     if (userInfo) {
         GetDarkMode();
     }
-    if (darkMode) {
-        document.body.classList.add('dark-mode-variables');
-    } else {
-        document.body.classList.remove('dark-mode-variables');
-    }
+    // if (darkMode) {
+    //     document.body.classList.add('dark-mode-variables');
+    // } else {
+    //     document.body.classList.remove('dark-mode-variables');
+    // }
 
     var asideElement = document.querySelector('.aside');
-    if (aside) {
+    if (aside && asideElement.classList.contains('aside-closed')) {
         asideElement.classList.add('aside-closed');
     } else {
         asideElement.classList.remove('aside-closed');
     }
 
-
-
-
     return (
     <div className='settingsArea'>
         <div className="themaSwitch">
             <div className="dark-mode" onClick={darkModeToggle}>
-                <span className={`material-symbols-outlined ${darkMode ? 'active' : ''}`}>
+                <span className={`material-symbols-outlined ${darkMode ? '' : 'active'}`}>
                     light_mode
                 </span>
-                <span className={`material-symbols-outlined ${darkMode ? '' : 'active'}`}>
+                <span className={`material-symbols-outlined ${darkMode ? 'active' : ''}`}>
                     dark_mode
                 </span>
             </div>

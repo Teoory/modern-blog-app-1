@@ -9,7 +9,7 @@ const Header = () => {
     const { setUserInfo, userInfo } = useContext(UserContext);
     const [showDropdown, setShowDropdown] = useState(false);
     const [writerDropdown, setWriterDropdown] = useState(false);
-    const [darkMode, setDarkMode] = useState(false);
+    // const [darkMode, setDarkMode] = useState(false);
     const [profilePhoto, setProfilePhoto] = useState(null);
 
     useEffect(() => {
@@ -318,16 +318,16 @@ const Header = () => {
             </div>
             <div className="login-button">
                 <Link to="/login" className='login-text'>Login / Register</Link>
-                <div className="navs">
-                    {/* <div className="dark-mode" onClick={darkModeToggle}>
+                {/* <div className="navs">
+                    <div className="dark-mode" onClick={darkModeToggle}>
                         <span className={`material-symbols-outlined ${darkMode ? 'active' : ''}`}>
                             light_mode
                         </span>
                         <span className={`material-symbols-outlined ${darkMode ? '' : 'active'}`}>
                             dark_mode
                         </span>
-                    </div> */}
-                </div>
+                    </div>
+                </div> */}
             </div>
         </>
         )}
