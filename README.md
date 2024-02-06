@@ -25,6 +25,14 @@ mongoose.connect('mongodb+srv://username:password@cluster0.hd2atfr.mongodb.net/?
 <hr>
 
 # Son Değişiklikler:</br>
+### V1.7.5
+- Mobile Responsive icon size düşürüldü
+
+- Dark mode da oluşan bug düzeltildi
+  - Dark mode farklı bir component olarak eklendi
+
+#### -----------
+
 ### V1.7.4
 - Mobile Responsive
   - Mobil görünümde navbar yerine ekranın alt kısmına butonlar yerleştirildi.
