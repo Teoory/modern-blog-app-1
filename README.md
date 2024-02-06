@@ -4,8 +4,8 @@
 
 
 Dilerseniz Youtube'dan videolara ulaşabilirsiniz.
-Oynatma Listesi:
-https://youtube.com/playlist?list=PLR_-EKc5hBrEuh7I2JvghWuuaxa6XbCNj&si=a7IW0qtQxUpKbO8t
+<br/>
+[Playlist](https://youtube.com/playlist?list=PLR_-EKc5hBrEuh7I2JvghWuuaxa6XbCNj&si=a7IW0qtQxUpKbO8t)
 
 <br/>
 <hr/>
