@@ -36,6 +36,7 @@ const ProfilSettingsPage = () => {
             </div>
         </div>
 
+		<span>Daha fazla ayar görebilmek ve ayarlarınızın kaydedilebilmesi için lütfen giriş yapınız!</span>
         <div className="loginButton">
             <Link to="/login">Login</Link>
         </div>
