@@ -25,6 +25,15 @@ mongoose.connect('mongodb+srv://username:password@cluster0.hd2atfr.mongodb.net/?
 <hr>
 
 # Son Değişiklikler:</br>
+### V1.8.1
+- Hatalar giderildi
+  - style hataları giderildi
+- Kullanıcı bildirmleri eklendi
+  - Mobil için ekranın en üstüne yerleştirildi, her 30 saniyede bir yeni bildirim varmı diye kontrol ediyor.
+  - Birisi eğer postunuza yorum yaparsa bildirim geliyor.
+
+<hr>
+
 ### V1.7.5
 - Mobile Responsive icon size düşürüldü
 
