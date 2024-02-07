@@ -737,6 +737,31 @@ div.image img{
   object-fit: cover;
 }
 
+/* Notification Page */
+.NotificationListItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 10px;
+  border-radius: 15px;
+  background: var(--color-dark-light);
+  margin-bottom: 20px;
+  color: var(--color-white2);
+}
+
+.NotificationListItem .commentTime {
+  font-size: 12px;
+  line-height: 1.8rem;
+  color: var(--color-primary);
+  margin-left: 10px;
+}
+
+.NotificationArea a {
+  text-decoration: none;
+  color: var(--color-info);
+}
+
 /* Ticket Control Page */
 .TicketArea {
   grid-template-columns: 1fr;
@@ -858,7 +883,6 @@ div.image img{
   color: inherit;
 }
 
-
 @media screen and (max-width: 768px) {
   div.post {
     grid-template-columns: 1fr;
@@ -914,3 +938,13 @@ div.image img{
   }
 }
 
+@media screen and (max-width: 430px) {
+  .content {
+    padding: 0 10px;
+  }
+}
+@media screen and (max-width: 300px) {
+  .content {
+    padding: 0 5px;
+  }
+}

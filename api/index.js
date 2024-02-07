@@ -5,6 +5,7 @@ const User = require ('./models/User');
 const MailVerification = require ('./models/MailVerification');
 const Post = require ('./models/Post');
 const Comment = require ('./models/Comment');
+const Notification = require ('./models/Notification');
 const Test = require ('./models/Test');
 const Ticket = require ('./models/Ticket');
 const PrevievPost = require ('./models/PrevievPost');
@@ -189,7 +190,7 @@ app.get('/profile/:username', async (req, res) => {
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
-      const posts = await Post.find({ author: user._id });
+      const posts = await Post.find({ author: user._id }).sort({ createdAt: -1 });
   
       res.json({ user, posts });
     } catch (error) {
@@ -208,12 +209,69 @@ app.get('/profile/:username/likedPosts', async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
   
-        const likedPosts = await Post.find({ '_id': { $in: user.likedPosts } }).populate('author', ['username']);
+        const likedPosts = await Post.find({ '_id': { $in: user.likedPosts } }).populate('author', ['username']).sort({ updatedAt: -1 });
   
         res.json({ likedPosts });
     } catch (error) {
         console.error('Error getting liked posts:', error.message);
         res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+//? Notifications
+app.post('/notifications', async (req, res) => {
+    try {
+        const { sender, receiver, post, type } = req.body;
+        const notification = await Notification.create({ sender, receiver, post, type });
+        res.json(notification);
+    } catch (error) {
+        res.status(500).json({ message: 'Bildirim oluşturulurken bir hata oluştu.' });
+    }
+});
+
+app.get('/notifications/:userId', async (req, res) => {
+    const profilID = req.params.userId;
+    try {
+        const userId = req.params.userId;
+        const notifications = await Notification.find({ receiver: userId }).populate('sender').populate('post').sort({ createdAt: -1 });
+        res.json(notifications);
+    } catch (error) {
+        res.status(500).json({ message: 'Bildirimleri getirirken bir hata oluştu.' });
+    }
+});
+
+app.post('/send-notification', async (req, res) => {
+    const { senderId, receiverId, postId, type } = req.body;
+
+    const notification = new Notification({
+        sender: senderId,
+        receiver: receiverId,
+        post: postId,
+        type: type
+    });
+    await notification.save();
+
+    res.status(200).json({ message: 'Bildirim gönderildi.' });
+});
+
+app.post('/mark-all-notifications-as-read', async (req, res) => {
+    try {
+        const { userId } = req.body;
+        await Notification.updateMany({ receiver: userId }, { isRead: true });
+        res.status(200).json({ message: 'Tüm bildirimler başarıyla okundu olarak işaretlendi.' });
+    } catch (error) {
+        res.status(500).json({ error: 'Bir hata oluştu, bildirimler işaretlenemedi.' });
+    }
+});
+
+app.get('/check-new-notifications', async (req, res) => {
+    try {
+        const { userId } = req.query;
+        const notifications = await Notification.find({ receiver: userId });
+        const newNotificationExists = notifications.some(notification => !notification.isRead);
+        res.status(200).json({ newNotificationExists });
+    } catch (error) {
+        res.status(500).json({ error: 'Bir hata oluştu, yeni bildirimler kontrol edilemedi.' });
     }
 });
 

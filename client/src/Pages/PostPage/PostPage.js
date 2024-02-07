@@ -70,6 +70,29 @@ const PostPage = () => {
             });
     }, [id]);
     
+const sendNotification = async (senderId, receiverId, postId, type) => {
+    try {
+        const response = await fetch('http://localhost:3030/send-notification', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                senderId: senderId,
+                receiverId: receiverId,
+                postId: postId,
+                type: type
+            })
+        });
+        if (response.ok) {
+            // console.log('Bildirim gönderildi.');
+        } else {
+            console.error('Bildirim gönderilirken bir hata oluştu.');
+        }
+    } catch (error) {
+        console.error('Bildirim gönderilirken bir hata oluştu.', error);
+    }
+};
 
 const deletePost = async () => {
     try {
@@ -128,6 +151,7 @@ const toggleSuperLike = async () => {
       const updatedData = await response.json();
       setSuperLikes(updatedData.superlikes);
       setHasSuperLiked(updatedData.isSuperLiked);
+
     } catch (error) {
       console.error('Error toggling superlike:', error.message);
     }
@@ -152,6 +176,8 @@ const addComment = async () => {
 
         setComments(updatedComments);
         setNewComment('');
+        
+        await sendNotification(userInfo.id, postInfo.author._id, postInfo._id, 'Yorum');
     } catch (error) {
         console.error('Error adding comment:', error.message);
     }

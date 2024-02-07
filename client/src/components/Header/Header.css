@@ -202,6 +202,7 @@ header .nav {
 .login-button {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
 }
 
@@ -216,6 +217,45 @@ header .nav {
 
 .dropbtn span {
   text-transform: capitalize;
+}
+
+.notificationsButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background-color: #678dce;
+  border-radius: 50%;
+  color: white;
+  padding: 2px;
+  width: max-content;
+}
+
+.newNatificationsActive {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background-color: var(--color-danger);
+  border-radius: 50%;
+  color: white;
+  padding: 2px;
+  width: max-content;
+}
+
+.notificationsButton a {
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  margin: 5px;
+}
+
+.notificationsButton svg {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: white;
 }
 
 .exchange-rate {
@@ -273,6 +313,13 @@ header .nav {
 
 .profileButton img {
   border: 1px solid rgba(56, 56, 56, 0.5);
+}
+
+.HeadNav {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+  background: var(--color-white);
 }
 
 @media (max-width: 768px) {
@@ -464,6 +511,9 @@ header .nav {
 
 @media (min-width: 431px) {
   .Mobile-Responsive {
+    display: none;
+  }
+  .HeadNav {
     display: none;
   }
 }

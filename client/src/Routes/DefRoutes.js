@@ -18,6 +18,7 @@ const DefRoutes = () => {
       <Route path="/profile/:username" element={<LoginPage/>} />
       <Route path="/verify-email" element={<VerifyPage/>} />
       <Route path="/settings" element={<PublicSettingsPage/>} />
+      <Route path="/notifications" element={<LoginPage />} />
     </Routes>
   )
 }

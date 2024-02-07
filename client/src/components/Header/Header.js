@@ -9,18 +9,61 @@ const Header = () => {
     const { setUserInfo, userInfo } = useContext(UserContext);
     const [showDropdown, setShowDropdown] = useState(false);
     const [writerDropdown, setWriterDropdown] = useState(false);
-    // const [darkMode, setDarkMode] = useState(false);
     const [profilePhoto, setProfilePhoto] = useState(null);
+    const [newNotification, setNewNotification] = useState(false);
 
     useEffect(() => {
         fetch('http://localhost:3030/profile', {
             credentials: 'include',
         }).then(response => {
-            response.json().then(userInfo => {
-                setUserInfo(userInfo);
-            });
-        });
+                response.json().then(userInfo => {
+                    setUserInfo(userInfo);
+                });
+            })
     }, []);
+
+    useEffect(() => {
+        const checkNewNotifications = async () => {
+            try {
+                const response = await fetch(`http://localhost:3030/check-new-notifications?userId=${userInfo.id}`);
+                if (response.ok) {
+                    const { newNotificationExists } = await response.json();
+                    setNewNotification(newNotificationExists);
+                } else {
+                    console.error('Yeni bildirimler kontrol edilemedi.');
+                }
+            } catch (error) {
+                console.error('Bir hata oluştu:', error);
+            }
+        };
+
+        if (userInfo) {
+            checkNewNotifications();
+        }
+    }, [userInfo]);
+
+    const [timer, setTimer] = useState(0);
+    setTimeout(() => {
+        const checkNewNotifications = async () => {
+            try {
+                const response = await fetch(`http://localhost:3030/check-new-notifications?userId=${userInfo.id}`);
+                if (response.ok) {
+                    const { newNotificationExists } = await response.json();
+                    setNewNotification(newNotificationExists);
+                } else {
+                    console.error('Yeni bildirimler kontrol edilemedi.');
+                }
+            } catch (error) {
+                console.error('Bir hata oluştu:', error);
+            }
+        };
+        setTimer(timer + 1);
+
+        if (userInfo) {
+            // console.log('Yeni bildirimler kontrol ediliyor...');
+            checkNewNotifications();
+        }
+    }, 30000); // 30 saniyede bir bildirimleri kontrol et | 60 saniye 60000 / 10 saniye 10000 / 1 saniye 1000 
 
     let [exchangeData, setExchangeData] = useState({});
     useEffect(() => {
@@ -84,35 +127,6 @@ const Header = () => {
     const onlyWriter = tags?.includes('writer');
     const isUser = tags?.includes('user') || isWriter;
 
-    // const darkModeToggle = () => {
-    //     if (userInfo === null) {
-    //         setDarkMode(!darkMode);
-    //         return;
-    //     };
-    //     fetch('http://localhost:3030/darkmode', {
-    //         credentials: 'include',
-    //         method: 'PUT',
-    //         }).then(() => {
-    //         setDarkMode(!darkMode);
-    //         });
-    //     console.log(darkMode);
-    // };
-
-    // const GetDarkMode = () => {
-    //     if (userInfo === null) {
-    //         return;
-    //     };
-    //     fetch('http://localhost:3030/darkmode', {
-    //         credentials: 'include',
-    //     })
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             setDarkMode(data);
-    //         })
-    //         .catch(error => console.error('Error fetching dark mode:', error));
-    // };
-
-
     window.onscroll = function() {scrollFunction()};
     let lastScrollTop = 0;
     let scrolledUpOnce = false;
@@ -127,33 +141,33 @@ const Header = () => {
         if (st < 200) {
             header.style.position = "relative";
             header.style.transform = "translateY(0%)";
+            header.style.zIndex = "999999";
             scrolledUpOnce = false;
         }
         else if (st > lastScrollTop){
             header.style.position = "relative";
             header.style.transform = "translateY(-100%)";
+            header.style.zIndex = "999999";
             scrolledUpOnce = false;
         } else {
             header.style.position = "fixed";
             header.style.transform = "translateY(0%)";
             header.style.width = "100%";
+            header.style.zIndex = "999999";
             scrolledUpOnce = true;
         }
         lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
     }
 
+    if (!isWriter) {
+        if(document.querySelector(".homePageButton") !== null) {
+            document.querySelector(".homePageButton").style.width = "33%";
+            document.querySelector(".setttingsButton").style.width = "33%";
+            document.querySelector(".profileButton").style.width = "33%";
+        }
+    }
+
     userInfo && getProfilePhoto();
-
-    // if (userInfo) {
-    //     GetDarkMode();
-    // }
-    // if (darkMode) {
-    //     document.body.classList.remove('dark-mode-variables');
-    // }
-    // else {
-    //     document.body.classList.add('dark-mode-variables');
-    // }
-
   return (
     <>
     <div className='header'>
@@ -251,38 +265,43 @@ const Header = () => {
             </div>
             {/* PROILE EDIT BUTONU */}
             <div className="login-button">
-            <div className="dropdown">
-                <a className="dropbtn" onClick={() => setShowDropdown(!showDropdown)}>
-                {profilePhoto ? (
-                    <img className='ProfilePhoto' src={`http://localhost:3030/${profilePhoto}`} alt="Profile" />
-                ) : (
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                        </svg>
-                )}
-                <span>{username}</span>
-                </a>
-                {showDropdown && (
-                    <div className="dropdown-content2">
-                      {isAdmin && (
-                        <Link to="/admin" className='AdminButton'>Admin</Link>
-                      )}
-                      <Link to={`/profile/${username}`}>Profile</Link>
-                      <Link to="/settings">Settings</Link>
-                      <a onClick={logout}>Logout</a>
-                    </div>
-                )}
-            </div>
-                {/* <div className="navs">
-                    <div className="dark-mode" onClick={darkModeToggle}>
-                        <span className={`material-symbols-outlined ${darkMode ? 'active' : ''}`}>
-                            light_mode
-                        </span>
-                        <span className={`material-symbols-outlined ${darkMode ? '' : 'active'}`}>
-                            dark_mode
-                        </span>
-                    </div>
-                </div> */}
+                <div className="dropdown">
+                    <a className="dropbtn" onClick={() => setShowDropdown(!showDropdown)}>
+                    {profilePhoto ? (
+                        <img className='ProfilePhoto' src={`http://localhost:3030/${profilePhoto}`} alt="Profile" />
+                    ) : (
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            </svg>
+                    )}
+                    <span>{username}</span>
+                    </a>
+                    {showDropdown && (
+                        <div className="dropdown-content2">
+                          {isAdmin && (
+                            <Link to="/admin" className='AdminButton'>Admin</Link>
+                          )}
+                          <Link to={`/profile/${username}`}>Profile</Link>
+                          <Link to="/settings">Settings</Link>
+                          <a onClick={logout}>Logout</a>
+                        </div>
+                    )}
+                </div>
+                <div className={`notificationsButton ${newNotification ? 'newNatificationsActive' : ''}`}>
+                    {newNotification ? (
+                        <Link to="/notifications">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0M3.124 7.5A8.969 8.969 0 0 1 5.292 3m13.416 0a8.969 8.969 0 0 1 2.168 4.5" />
+                            </svg>
+                        </Link>
+                    ) : (
+                        <Link to="/notifications">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                            </svg>
+                        </Link>
+                    )}
+                </div>
             </div>
         </>
         ) : (
@@ -318,16 +337,6 @@ const Header = () => {
             </div>
             <div className="login-button">
                 <Link to="/login" className='login-text'>Login / Register</Link>
-                {/* <div className="navs">
-                    <div className="dark-mode" onClick={darkModeToggle}>
-                        <span className={`material-symbols-outlined ${darkMode ? 'active' : ''}`}>
-                            light_mode
-                        </span>
-                        <span className={`material-symbols-outlined ${darkMode ? '' : 'active'}`}>
-                            dark_mode
-                        </span>
-                    </div>
-                </div> */}
             </div>
         </>
         )}
@@ -335,6 +344,24 @@ const Header = () => {
         </header>
 
         <div>
+            <div className='HeadNav'>
+                <Link to="/" className="logo" ><img alt='logo' className='logo' src={logo}/></Link>
+                <div className={`notificationsButton ${newNotification ? 'newNatificationsActive' : ''}`}>
+                    {newNotification ? (
+                        <Link to="/notifications">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0M3.124 7.5A8.969 8.969 0 0 1 5.292 3m13.416 0a8.969 8.969 0 0 1 2.168 4.5" />
+                            </svg>
+                        </Link>
+                    ) : (
+                        <Link to="/notifications">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                            </svg>
+                        </Link>
+                    )}
+                </div>
+            </div>
             <nav className="exchange-rate">
                 <span>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -422,6 +449,7 @@ const Header = () => {
                     </svg>
                 </Link>
             </div>
+            {isWriter && (
             <div className="createBlogButton">
                 {isMasterWriterUp ? (
                 <Link to="/create">
@@ -437,6 +465,7 @@ const Header = () => {
                 </Link>
                 )}
             </div>
+            )}
             <div className="profileButton">
                 <Link to={`/profile/${username}`}>
                 {profilePhoto ? (
