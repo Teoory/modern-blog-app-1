@@ -18,7 +18,7 @@ const PostPage = () => {
     const {id} = useParams();
     
     useEffect(() => {
-        fetch(`http://localhost:3030/post/${id}`)
+        fetch(`http://https://fiyaskoblog-api.vercel.app/post/${id}`)
             .then(response => {
                 if(!response.ok) {
                     setRedirect(true);
@@ -31,19 +31,19 @@ const PostPage = () => {
     }, [id]);
         
         useEffect(() => { 
-            fetch(`http://localhost:3030/post/${id}/comments`)
+            fetch(`http://https://fiyaskoblog-api.vercel.app/post/${id}/comments`)
             .then(response => response.json())
             .then(comments => setComments(comments))
     }, [id]);
     
     useEffect(() => {
-        fetch(`http://localhost:3030/post/${id}/likes`)
+        fetch(`http://https://fiyaskoblog-api.vercel.app/post/${id}/likes`)
           .then(response => response.json())
           .then(data => {
             setLikes(data.likes);
           });
 
-          fetch(`http://localhost:3030/post/${id}/hasLiked`,{
+          fetch(`http://https://fiyaskoblog-api.vercel.app/post/${id}/hasLiked`,{
               method: 'GET',
               credentials: 'include',
           })
@@ -54,13 +54,13 @@ const PostPage = () => {
     }, [id]);
 
     useEffect(() => {
-        fetch(`http://localhost:3030/post/${id}/superlikes`)
+        fetch(`http://https://fiyaskoblog-api.vercel.app/post/${id}/superlikes`)
           .then(response => response.json())
           .then(data => {
             setSuperLikes(data.superlikes);
           });
 
-        fetch(`http://localhost:3030/post/${id}/hasSuperLiked`,{
+        fetch(`http://https://fiyaskoblog-api.vercel.app/post/${id}/hasSuperLiked`,{
             method: 'GET',
             credentials: 'include',
         })
@@ -72,7 +72,7 @@ const PostPage = () => {
     
 const sendNotification = async (senderId, receiverId, postId, type) => {
     try {
-        const response = await fetch('http://localhost:3030/send-notification', {
+        const response = await fetch('http://https://fiyaskoblog-api.vercel.app/send-notification', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -96,7 +96,7 @@ const sendNotification = async (senderId, receiverId, postId, type) => {
 
 const deletePost = async () => {
     try {
-        const response = await fetch(`http://localhost:3030/post/${postInfo._id}`, {
+        const response = await fetch(`http://https://fiyaskoblog-api.vercel.app/post/${postInfo._id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -120,7 +120,7 @@ const deletePost = async () => {
 
 const toggleLike = async () => {
     try {
-      const response = await fetch(`http://localhost:3030/post/${id}/like`, {
+      const response = await fetch(`http://https://fiyaskoblog-api.vercel.app/post/${id}/like`, {
         method: 'POST',
         credentials: 'include',
       });
@@ -139,7 +139,7 @@ const toggleLike = async () => {
 
 const toggleSuperLike = async () => {
     try {
-      const response = await fetch(`http://localhost:3030/post/${id}/superlike`, {
+      const response = await fetch(`http://https://fiyaskoblog-api.vercel.app/post/${id}/superlike`, {
         method: 'POST',
         credentials: 'include',
       });
@@ -159,7 +159,7 @@ const toggleSuperLike = async () => {
 
 const addComment = async () => {
     try {
-        const response = await fetch(`http://localhost:3030/post/${id}/comment`, {
+        const response = await fetch(`http://https://fiyaskoblog-api.vercel.app/post/${id}/comment`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -171,7 +171,7 @@ const addComment = async () => {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const updatedComments = await fetch(`http://localhost:3030/post/${id}/comments`)
+        const updatedComments = await fetch(`http://https://fiyaskoblog-api.vercel.app/post/${id}/comments`)
             .then(response => response.json());
 
         setComments(updatedComments);
@@ -241,7 +241,7 @@ if (!postInfo) return <div>Loading...</div>
 
          {/* Bu alan post bilgilerini gösteriyor. */}
         <div className="image">
-            <img src={'http://localhost:3030/'+postInfo.cover} alt="img" />
+            <img src={'http://https://fiyaskoblog-api.vercel.app/'+postInfo.cover} alt="img" />
         </div>
         <div className='content' dangerouslySetInnerHTML={{__html:postInfo.content}} />
 
@@ -306,7 +306,7 @@ if (!postInfo) return <div>Loading...</div>
                             <div className="commentInfo">
                                 <div>
                                     <Link to={`/profile/${comment.author.username}`}>
-                                        <img src={`http://localhost:3030/${comment.author.profilePhoto}`} alt="*" />
+                                        <img src={`http://https://fiyaskoblog-api.vercel.app/${comment.author.profilePhoto}`} alt="*" />
                                     </Link>
                                     <span className='commentAuthorHeader'>Yazar: </span>
                                     <span className='commentAuthor'>

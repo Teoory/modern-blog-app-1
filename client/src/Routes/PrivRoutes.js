@@ -28,7 +28,7 @@ import VerifyPage from '../Pages/RegisterPage/VerifyPage';
 const PrivRoutes = () => {
     const { userInfo } = useContext(UserContext);
     useEffect(() => {
-        fetch('http://localhost:3030/profile', {
+        fetch('http://https://fiyaskoblog-api.vercel.app/profile', {
             credentials: 'include',
         });
     }, []);
