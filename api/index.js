@@ -46,6 +46,10 @@ const transporter = nodemailer.createTransport({
     },
 });
 
+app.get('/', (req, res) => {
+    res.json('Hello World');
+});
+
 //? Register & Login
 app.post ('/register', async (req, res) => {
     const {username, password, email} = req.body;
