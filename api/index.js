@@ -32,7 +32,7 @@ app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
 app.use('/profilephotos', express.static(__dirname + '/profilephotos'));
 
-mongoose.connect(`mongodb+srv://teory:eooTXqWvt1dhzl7y@cluster0.hd2atfr.mongodb.net/?retryWrites=true&w=majority`);
+mongoose.connect(`mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.hd2atfr.mongodb.net/?retryWrites=true&w=majority`);
 
 
 
