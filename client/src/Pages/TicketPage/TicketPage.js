@@ -9,7 +9,7 @@ const TicketPage = () => {
 
 
     useEffect(() => {
-        fetch('https://fiyaskoblog-api.vercel.app/ticket').then(response => {
+        fetch('http://localhost:3030/ticket').then(response => {
             response.json().then(previewTickets => {
                 setPreviewTickets(previewTickets);
             });
@@ -17,7 +17,7 @@ const TicketPage = () => {
     }, []);
     
     useEffect(() => {
-        fetch('https://fiyaskoblog-api.vercel.app/profile', {
+        fetch('http://localhost:3030/profile', {
             credentials: 'include',
         }).then(response => {
             response.json().then(userInfo => {
