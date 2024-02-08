@@ -9,7 +9,7 @@ const NotificationsPage = () => {
     const [notifications, setNotifications] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:3030/profile', {
+        fetch('https://fiyaskoblog-api.vercel.app/profile', {
             credentials: 'include',
         }).then(response => {
             response.json().then(userInfo => {
@@ -21,7 +21,7 @@ const NotificationsPage = () => {
     useEffect(() => {
         const fetchNotifications = async () => {
             try {
-                const response = await fetch(`http://localhost:3030/notifications/${userInfo.id}`);
+                const response = await fetch(`https://fiyaskoblog-api.vercel.app/notifications/${userInfo.id}`);
                 if (response.ok) {
                     const data = await response.json();
                     setNotifications(data);
@@ -39,7 +39,7 @@ const NotificationsPage = () => {
     useEffect(() => {
         const markAllNotificationsAsRead = async () => {
             try {
-                const response = await fetch('http://localhost:3030/mark-all-notifications-as-read', {
+                const response = await fetch('https://fiyaskoblog-api.vercel.app/mark-all-notifications-as-read', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

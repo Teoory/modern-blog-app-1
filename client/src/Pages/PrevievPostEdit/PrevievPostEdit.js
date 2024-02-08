@@ -13,7 +13,7 @@ const PrevievPostEdit = () => {
     const [availableTags, SetAvailableTags] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:3030/previevPost/'+id).then(response => {
+        fetch('https://fiyaskoblog-api.vercel.app/previevPost/'+id).then(response => {
             response.json().then(postInfo => {
                 setTitle(postInfo.title);
                 setSummary(postInfo.summary);
@@ -24,7 +24,7 @@ const PrevievPostEdit = () => {
     }, []);
 
     useEffect(() => {
-        fetch('http://localhost:3030/availableTags')
+        fetch('https://fiyaskoblog-api.vercel.app/availableTags')
             .then(response => response.json())
             .then(data => {
                 SetAvailableTags(data.availableTags);
@@ -42,7 +42,7 @@ const PrevievPostEdit = () => {
         if(files?.[0]) {
             data.set('file', files?.[0]);
         }
-        const response = await fetch('http://localhost:3030/previevPost', {
+        const response = await fetch('https://fiyaskoblog-api.vercel.app/previevPost', {
             method: 'PUT',
             body: data,
             credentials: 'include',

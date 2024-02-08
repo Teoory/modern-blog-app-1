@@ -9,7 +9,7 @@ const Ticket = ({_id, title, content, author, status, createdAt}) => {
     const locales = { tr, eu };
     
     useEffect(() => {
-        fetch('http://localhost:3030/profile', {
+        fetch('https://fiyaskoblog-api.vercel.app/profile', {
             credentials: 'include',
         }).then(response => {
             response.json().then(userInfo => {
