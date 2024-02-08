@@ -26,7 +26,7 @@ require('dotenv').config();
 const salt = bcrypt.genSaltSync(10);
 const secret = 'secret';
 
-app.use (cors ({credentials: true, methods:["POST", "GET"], origin: 'https://fiyaskoblog-frontend.vercel.app'}));
+app.use (cors ({credentials: true, methods:["POST", "PUT", "GET"], origin: 'https://fiyaskoblog-frontend.vercel.app'}));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
