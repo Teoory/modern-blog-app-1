@@ -14,7 +14,7 @@ const EditPost = () => {
     const [availableTags, SetAvailableTags] = useState([]);
 
     useEffect(() => {
-        fetch('http://https://fiyaskoblog-api.vercel.app/post/'+id).then(response => {
+        fetch('https://fiyaskoblog-api.vercel.app/post/'+id).then(response => {
             response.json().then(postInfo => {
                 setTitle(postInfo.title);
                 setSummary(postInfo.summary);
@@ -25,7 +25,7 @@ const EditPost = () => {
     }, []);
 
     useEffect(() => {
-        fetch('http://https://fiyaskoblog-api.vercel.app/availableTags')
+        fetch('https://fiyaskoblog-api.vercel.app/availableTags')
             .then(response => response.json())
             .then(data => {
                 SetAvailableTags(data.availableTags);
@@ -43,7 +43,7 @@ const EditPost = () => {
         if(files?.[0]) {
             data.set('file', files?.[0]);
         }
-        const response = await fetch('http://https://fiyaskoblog-api.vercel.app/post', {
+        const response = await fetch('https://fiyaskoblog-api.vercel.app/post', {
             method: 'PUT',
             body: data,
             credentials: 'include',

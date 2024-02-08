@@ -5,7 +5,7 @@ import '../../QuillSnow.css';
 const PrevievPage = () => {
     const [previevPosts, setPrevievPosts] = useState([]);
     useEffect(() => {
-        fetch('http://https://fiyaskoblog-api.vercel.app/previevPost').then(response => {
+        fetch('https://fiyaskoblog-api.vercel.app/previevPost').then(response => {
             response.json().then(previevPosts => {
                 setPrevievPosts(previevPosts);
             });

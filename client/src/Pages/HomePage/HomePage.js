@@ -9,13 +9,13 @@ const HomePage = () => {
   const [availableTags, SetAvailableTags] = useState([]);
   const [selectedView, setSelectedView] = useState(false);
   useEffect(() => {
-    fetch('http://https://fiyaskoblog-api.vercel.app/post').then(response => {
+    fetch('https://fiyaskoblog-api.vercel.app/post').then(response => {
       response.json().then(posts => {
         setPosts(posts);
       });
     });
     
-    fetch('http://https://fiyaskoblog-api.vercel.app/availableTags')
+    fetch('https://fiyaskoblog-api.vercel.app/availableTags')
       .then(response => response.json())
       .then(data => SetAvailableTags(data.availableTags));
 

@@ -9,7 +9,7 @@ const AdminPage = () => {
   const [postCount, setPostCount] = useState('');
 
   useEffect(() => {
-    fetch('http://https://fiyaskoblog-api.vercel.app/users', {
+    fetch('https://fiyaskoblog-api.vercel.app/users', {
       method: 'GET',
       credentials: 'include',
     })
@@ -17,7 +17,7 @@ const AdminPage = () => {
       .then(data => setUsers(data))
       .catch(error => console.error('Error fetching users:', error));
     
-    fetch('http://https://fiyaskoblog-api.vercel.app/previevPost', {
+    fetch('https://fiyaskoblog-api.vercel.app/previevPost', {
       method: 'GET',
       credentials: 'include',
     })
@@ -27,7 +27,7 @@ const AdminPage = () => {
   }, []);
 
   const handleChangeTag = (username, newTag) => {
-    fetch('http://https://fiyaskoblog-api.vercel.app/changeTag', {
+    fetch('https://fiyaskoblog-api.vercel.app/changeTag', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ const AdminPage = () => {
     ev.preventDefault();
     const title = document.getElementById('title').value;
     const message = document.getElementById('message').value;
-    fetch('http://https://fiyaskoblog-api.vercel.app/warning', {
+    fetch('https://fiyaskoblog-api.vercel.app/warning', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

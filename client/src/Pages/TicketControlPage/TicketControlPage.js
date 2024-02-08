@@ -13,7 +13,7 @@ const TicketControlPage = () => {
     const { id } = useParams();
 
     useEffect(() => {
-        fetch(`http://https://fiyaskoblog-api.vercel.app/ticket/${id}`).then(response => {
+        fetch(`https://fiyaskoblog-api.vercel.app/ticket/${id}`).then(response => {
             response.json().then(ticketInfo => {
                 setTicketInfo(ticketInfo);
             })
@@ -21,7 +21,7 @@ const TicketControlPage = () => {
     }, []);
 
     useEffect(() => {
-        fetch('http://https://fiyaskoblog-api.vercel.app/profile', {
+        fetch('https://fiyaskoblog-api.vercel.app/profile', {
             credentials: 'include',
         });
     }, []);
@@ -31,7 +31,7 @@ const TicketControlPage = () => {
         const data = new FormData();
         data.set('status', status);
         ev.preventDefault();
-        const response = await fetch(`http://https://fiyaskoblog-api.vercel.app/ticket/${id}`, {
+        const response = await fetch(`https://fiyaskoblog-api.vercel.app/ticket/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'

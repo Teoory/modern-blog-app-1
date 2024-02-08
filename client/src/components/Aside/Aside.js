@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 const Aside = () => {
   const [posts, setPosts] = useState([]);
   useEffect(() => {
-    fetch('http://https://fiyaskoblog-api.vercel.app/post').then(response => {
+    fetch('https://fiyaskoblog-api.vercel.app/post').then(response => {
       response.json().then(posts => {
         setPosts(posts);
       });
