@@ -9,7 +9,7 @@ import PostPage from '../Pages/PostPage/PostPage';
 const AppRoutes = () => {
     const { userInfo } = useContext(UserContext);
     useEffect(() => {
-        fetch('https://fiyaskoblog-api.vercel.app/profile', {
+        fetch('http://localhost:3030/profile', {
             credentials: 'include',
         });
     }, []);
