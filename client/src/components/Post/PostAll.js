@@ -2,6 +2,7 @@ import React from 'react'
 import { format } from "date-fns";
 import { tr, eu } from 'date-fns/locale';
 import { Link } from 'react-router-dom';
+import Image from '../Image';
 
 const PostAll = ({_id,title, summary,cover,content,createdAt, author, PostTags}) => {
 
@@ -10,7 +11,9 @@ const PostAll = ({_id,title, summary,cover,content,createdAt, author, PostTags})
     <div className="allPosts">
       <div className="image">
         <Link to={`/post/${_id}`}>
-          <img src={'https://modern-blog-app-1.vercel.app/'+cover} alt="img" loading='layz' decoding='async' />
+          {/* <img src={'http://localhost:3030/'+cover} alt="img" loading='layz' decoding='async' />  */}
+          {/* AWS için kapatıldı! */}
+          <Image src={cover} alt="img" loading='layz'/>
         </Link>
       </div>
       <div className="text">

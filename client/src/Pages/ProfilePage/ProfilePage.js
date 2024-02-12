@@ -10,7 +10,7 @@ const ProfilePage = (ProfilePhoto) => {
   const [redirect, setRedirect] = useState(false);
 
   useEffect(() => {
-    fetch('https://modern-blog-app-1.vercel.app/profile', {
+    fetch('http://localhost:3030/profile', {
       credentials: 'include',
     }).then(response => {
       response.json().then(userInfo => {
@@ -18,7 +18,7 @@ const ProfilePage = (ProfilePhoto) => {
       });
     });
 
-  fetch('https://modern-blog-app-1.vercel.app/profilephoto', {
+  fetch('http://localhost:3030/profilephoto', {
       credentials: 'include',
     })
       .then(response => response.json())
@@ -32,7 +32,7 @@ const ProfilePage = (ProfilePhoto) => {
     ev.preventDefault();
     const data = new FormData();
     data.append('file', files[0]);
-    const response = await fetch('https://modern-blog-app-1.vercel.app/profilePhoto', {
+    const response = await fetch('http://localhost:3030/profilePhoto', {
       method: 'POST',
       body: data,
       credentials: 'include',
@@ -62,7 +62,7 @@ const ProfilePage = (ProfilePhoto) => {
               <div className="ppContent">
                 <input  className="ChangePP" type="file" onChange={ev => {setFiles(ev.target.files);}} />
                 {profilePhoto && (
-                  <img src={`https://modern-blog-app-1.vercel.app/${profilePhoto}`} alt="Profile" />
+                  <img src={`http://localhost:3030/${profilePhoto}`} alt="Profile" />
                   )}
                 </div>
                 {!isFileSelected 

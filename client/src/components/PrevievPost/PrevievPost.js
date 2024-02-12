@@ -9,7 +9,7 @@ const PrevievPost = ({_id,title, summary,cover,content,createdAt, author, PostTa
         <div className="post">
           <div className="image">
             <Link to={`/previevPost/${_id}`}>
-              <img src={'https://modern-blog-app-1.vercel.app/'+cover} alt="img" loading='layz' decoding='async'/>
+              <img src={'http://localhost:3030/'+cover} alt="img" loading='layz' decoding='async'/>
             </Link>
           </div>
           <div className="text">

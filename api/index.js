@@ -14,26 +14,30 @@ const bcrypt = require('bcryptjs');
 const app = express ();
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
-const multer = require('multer');
-const uploadMiddleware = multer({dest: 'uploads/'});
-const uploadProfilePhoto = multer({dest: 'profilephotos/'});
+const multer = require('multer'); // Local directory kaydetme, Artık AWS kaydedileceği için kapatıldı!
+// const uploadMiddleware = multer({dest: 'uploads/'});
+// const uploadProfilePhoto = multer({dest: 'profilephotos/'});
+const uploadMiddleware = multer({dest: '/tmp'});
+const uploadProfilePhoto = multer({dest: '/tmp'});
+const {S3Client, PutObjectCommand} = require('@aws-sdk/client-s3')
 const nodemailer = require('nodemailer');
 const path = require('path');
 const logoPath = path.join(__dirname, 'logo.png');
 const fs = require('fs');
+const { url } = require('inspector');
 require('dotenv').config();
 
 const salt = bcrypt.genSaltSync(10);
 const secret = 'secret';
 
-app.use (cors ({credentials: true, methods:["POST", "PUT", "GET", "DELETE"], origin: 'https://fiyaskoblog-frontend.vercel.app'}));
+app.use (cors ({credentials: true, methods:["POST", "PUT", "GET", "DELETE"], origin: 'http://localhost:3000'}));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
 app.use('/profilephotos', express.static(__dirname + '/profilephotos'));
 
-mongoose.connect(`mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.hd2atfr.mongodb.net/?retryWrites=true&w=majority`);
-
+mongoose.connect(process.env.MONGODB_URL);
+const bucket = 'fiyasko-blog-app';
 
 
 const transporter = nodemailer.createTransport({
@@ -46,12 +50,55 @@ const transporter = nodemailer.createTransport({
     },
 });
 
+async function uploadToS3(path, originalname, mimetype) {
+    const client = new S3Client({
+        region: 'eu-central-1',
+        credentials: {
+            accessKeyId: process.env.S3_ACCESS_KEY,
+            secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+        },
+    });
+    const parts = originalname.split('.');
+    const ext = parts[parts.length - 1];
+    const newFileName = `${Date.now()}_${Math.random().toString(36).substring(6)}.${ext}`;
+    await client.send(new PutObjectCommand({
+        Bucket: bucket,
+        Body: fs.readFileSync(path),
+        Key: 'uploads/'+newFileName,
+        ContentType: mimetype,
+        ACL: 'public-read',
+    }))
+    return `https://${bucket}.s3.eu-central-1.amazonaws.com/uploads/${newFileName}`;
+}
+
+async function uploadPPToS3(path, originalname, mimetype, info) {
+    const client = new S3Client({
+        region: 'eu-central-1',
+        credentials: {
+            accessKeyId: process.env.S3_ACCESS_KEY,
+            secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+        },
+    });
+    const parts = originalname.split('.');
+    const ext = parts[parts.length - 1];
+    const newFileName = `${Date.now()}_${Math.random().toString(36).substring(6)}.${ext}`;
+    await client.send(new PutObjectCommand({
+        Bucket: bucket,
+        Body: fs.readFileSync(path),
+        Key: 'profilePhotos/'+newFileName,
+        ContentType: mimetype,
+        ACL: 'public-read',
+    }))
+    return `https://${bucket}.s3.eu-central-1.amazonaws.com/profilePhotos/${newFileName}`;
+}
+
 app.get('/', (req, res) => {
     res.json('Hello World');
 });
 
 //? Register & Login
 app.post ('/register', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const {username, password, email} = req.body;
     try {
         const userDoc = await User.create({
@@ -67,6 +114,7 @@ app.post ('/register', async (req, res) => {
 });
 
 app.post('/request-verify-code', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const { email } = req.body;
 
     try {
@@ -133,6 +181,7 @@ app.post('/request-verify-code', async (req, res) => {
 });
 
 app.post('/verify-email', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const { verificationCode } = req.body;
     try {
       const verification = await MailVerification.findOne({ code: verificationCode });
@@ -154,6 +203,7 @@ app.post('/verify-email', async (req, res) => {
 
 
 app.post ('/login', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const {username, password} = req.body;
     const userDoc = await User.findOne({username});
     if (!userDoc) {
@@ -179,6 +229,7 @@ app.post ('/login', async (req, res) => {
 
 //? Profile
 app.get('/profile', (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, (err, info) => {
         if(err) throw err;
@@ -187,6 +238,7 @@ app.get('/profile', (req, res) => {
 });
 
 app.get('/profile/:username', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const { username } = req.params;
   
     try {
@@ -205,6 +257,7 @@ app.get('/profile/:username', async (req, res) => {
 
 
 app.get('/profile/:username/likedPosts', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const { username } = req.params;
   
     try {
@@ -224,6 +277,7 @@ app.get('/profile/:username/likedPosts', async (req, res) => {
 
 //? Notifications
 app.post('/notifications', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     try {
         const { sender, receiver, post, type } = req.body;
         const notification = await Notification.create({ sender, receiver, post, type });
@@ -234,6 +288,7 @@ app.post('/notifications', async (req, res) => {
 });
 
 app.get('/notifications/:userId', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const profilID = req.params.userId;
     try {
         const userId = req.params.userId;
@@ -245,6 +300,7 @@ app.get('/notifications/:userId', async (req, res) => {
 });
 
 app.post('/send-notification', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const { senderId, receiverId, postId, type } = req.body;
 
     const notification = new Notification({
@@ -259,6 +315,7 @@ app.post('/send-notification', async (req, res) => {
 });
 
 app.post('/mark-all-notifications-as-read', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     try {
         const { userId } = req.body;
         await Notification.updateMany({ receiver: userId }, { isRead: true });
@@ -269,6 +326,7 @@ app.post('/mark-all-notifications-as-read', async (req, res) => {
 });
 
 app.get('/check-new-notifications', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     try {
         const { userId } = req.query;
         const notifications = await Notification.find({ receiver: userId });
@@ -286,47 +344,57 @@ app.post('/logout', (req, res) => {
 
 //? Profile Photo
 app.post('/profilePhoto', uploadProfilePhoto.single('file'), async (req, res) => {
-    const {originalname,path} = req.file;
-    const parts= originalname.split('.');
-    const ext = parts[parts.length - 1];
+    mongoose.connect(process.env.MONGODB_URL);
+    const pp = [];
+    const {originalname,path, mimetype} = req.file;
+    // const parts= originalname.split('.');
+    // const ext = parts[parts.length - 1];
     // const newPath = path + '.' + ext;
     // fs.renameSync(path, newPath);
+    //!  AWS S3 için kapatıldı!
+    const url = await uploadPPToS3(path, originalname, mimetype);
+    pp.push(url);
 
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
 
         const userDoc = await User.findById(info.id);
-        const newFileName = `${userDoc.username}_profilePhoto.${ext}`;
-        const newPath = path + newFileName;
+        // const newFileName = `${userDoc.username}_profilePhoto.${ext}`;
+        // const newPath = path + newFileName;
 
-        fs.renameSync(path, newPath);
-        userDoc.profilePhoto = newPath;
+        // fs.renameSync(path, url);
+        userDoc.profilePhoto = url;
         await userDoc.save();
         res.json(userDoc);
     });
 });
 
-app.put('/profilePhoto', uploadProfilePhoto.single('file'), async (req, res) => {
+// app.put('/profilePhoto', uploadProfilePhoto.single('file'), async (req, res) => {
+app.put('/profilePhoto', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
+    const pp = [];
     let newPath = null; 
     if(req.file) {
-        const {originalname,path} = req.file;
-        const parts= originalname.split('.');
-        const ext = parts[parts.length - 1];
+        const {originalname,path, mimetype} = req.file;
+        // const parts= originalname.split('.');
+        // const ext = parts[parts.length - 1];
         // newPath = path + '.' + ext;
         // fs.renameSync(path, newPath);
+    const url = await uploadPPToS3(path, originalname, mimetype);
+    pp.push(url);
     }
 
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
 
-        const userDoc = await User.findById(info.id);
-        const newFileName = `${userDoc.username}_profilePhoto.${ext}`;
-        const newPath = path + newFileName;
+        // const userDoc = await User.findById(info.id);
+        // const newFileName = `${userDoc.username}_profilePhoto.${ext}`;
+        // const newPath = path + newFileName;
 
-        fs.renameSync(path, newPath);
-        userDoc.profilePhoto = newPath;
+        // fs.renameSync(path, url);
+        userDoc.profilePhoto = url;
         
         // userDoc.profilePhoto = newPath?newPath:userDoc.profilePhoto;
         await userDoc.save();
@@ -335,6 +403,7 @@ app.put('/profilePhoto', uploadProfilePhoto.single('file'), async (req, res) => 
 });
 
 app.get('/profilephoto', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
@@ -345,6 +414,7 @@ app.get('/profilephoto', async (req, res) => {
 
 //? DarkMode
 app.put('/darkmode', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
@@ -356,6 +426,7 @@ app.put('/darkmode', async (req, res) => {
 });
 
 app.get('/darkmode', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
@@ -366,11 +437,16 @@ app.get('/darkmode', async (req, res) => {
 
 //? Post
 app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
-    const {originalname,path} = req.file;
-    const parts= originalname.split('.');
-    const ext = parts[parts.length - 1];
-    const newPath = path + '.' + ext;
-    fs.renameSync(path, newPath);
+    mongoose.connect(process.env.MONGODB_URL);
+    const cover = [];
+    const {originalname,path, mimetype} = req.file;
+    // const parts= originalname.split('.');
+    // const ext = parts[parts.length - 1];
+    // const newPath = path + '.' + ext;
+    // fs.renameSync(path, newPath);
+    //!  AWS S3 için kapatıldı!
+    const url = await uploadToS3(path, originalname, mimetype);
+    cover.push(url);
 
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
@@ -381,7 +457,8 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
                 title,
                 summary,
                 content,
-                cover: newPath,
+                // cover: newPath,
+                cover: url,
                 author: info.id,
                 previev,
                 PostTags,
@@ -391,13 +468,17 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 });
 
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
+    const cover = [];
     let newPath = null; 
     if(req.file) {
-        const {originalname,path} = req.file;
-        const parts= originalname.split('.');
-        const ext = parts[parts.length - 1];
-        newPath = path + '.' + ext;
-        fs.renameSync(path, newPath);
+        const {originalname,path, mimetype} = req.file;
+        // const parts= originalname.split('.');
+        // const ext = parts[parts.length - 1];
+        // newPath = path + '.' + ext;
+        // fs.renameSync(path, newPath);
+        const url = await uploadToS3(path, originalname, mimetype);
+        cover.push(url);
     }
 
     const {token} = req.cookies;
@@ -419,7 +500,7 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
             title, 
             summary, 
             content, 
-            cover: newPath?newPath:postDoc.cover,
+            cover: url?url:postDoc.cover,
             previev,
             PostTags,
         });
@@ -429,6 +510,7 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
 });
 
 app.get('/post', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     res.json(
         await Post.find()
         .populate('author', ['username'])
@@ -438,6 +520,8 @@ app.get('/post', async (req, res) => {
 });
 
 app.get('/post/:id', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
+mongoose.connect(process.env.MONGODB_URL);
     try {
         const { id } = req.params;
         const postDoc = await Post.findById(id).populate('author', ['username']);
@@ -454,6 +538,7 @@ app.get('/post/:id', async (req, res) => {
 });
 
 app.delete('/post/:id', async (req, res) => {
+mongoose.connect(process.env.MONGODB_URL);
     const { id } = req.params;
     const { token } = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
@@ -472,11 +557,13 @@ app.delete('/post/:id', async (req, res) => {
 
 //? Post Tags
 app.get('/availableTags', async (req, res) => {
+mongoose.connect(process.env.MONGODB_URL);
     const enumValues = Post.schema.path('PostTags').enumValues;
     res.json({availableTags: enumValues});
 })
 
 app.get('/posts/:tag', async (req, res) => {
+mongoose.connect(process.env.MONGODB_URL);
     const { tag } = req.params;
 
     try {
@@ -490,6 +577,7 @@ app.get('/posts/:tag', async (req, res) => {
 
 //* Ticket
 app.post('/ticket', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
@@ -505,6 +593,7 @@ app.post('/ticket', async (req, res) => {
 });
 
 app.put('/ticket', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
@@ -532,6 +621,7 @@ app.put('/ticket', async (req, res) => {
 });
 
 app.get('/ticket', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     res.json(
         await Ticket.find()
         .populate('author', ['username'])
@@ -541,6 +631,7 @@ app.get('/ticket', async (req, res) => {
 });
 
 app.get('/ticket/:id', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     try {
         const { id } = req.params;
         const ticketDoc = await Ticket.findById(id).populate('author', ['username']);
@@ -557,6 +648,7 @@ app.get('/ticket/:id', async (req, res) => {
 });
 
 app.delete('/ticket/:id', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const { id } = req.params;
     const { token } = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
@@ -578,6 +670,7 @@ app.delete('/ticket/:id', async (req, res) => {
 
 //* Like
 app.post('/post/:id/like', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const { id } = req.params;
     const { token } = req.cookies;
   
@@ -616,6 +709,7 @@ app.post('/post/:id/like', async (req, res) => {
   
 
 app.get('/post/:id/likes', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
   const { id } = req.params;
 
   try {
@@ -629,6 +723,7 @@ app.get('/post/:id/likes', async (req, res) => {
   
 
 app.get('/post/:id/hasLiked', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
   const { id } = req.params;
   const { token } = req.cookies;
 
@@ -652,6 +747,7 @@ app.get('/post/:id/hasLiked', async (req, res) => {
 
 //* SuperLike
 app.post('/post/:id/superlike', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const { id } = req.params;
     const { token } = req.cookies;
   
@@ -678,6 +774,7 @@ app.post('/post/:id/superlike', async (req, res) => {
 });
 
 app.get('/post/:id/superlikes', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
   const { id } = req.params;
 
   try {
@@ -691,6 +788,7 @@ app.get('/post/:id/superlikes', async (req, res) => {
   
 
 app.get('/post/:id/hasSuperLiked', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
   const { id } = req.params;
   const { token } = req.cookies;
 
@@ -714,12 +812,17 @@ app.get('/post/:id/hasSuperLiked', async (req, res) => {
 
 
 //? Previev Post
-app.post('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
-    const {originalname,path} = req.file;
-    const parts= originalname.split('.');
-    const ext = parts[parts.length - 1];
-    const newPath = path + '.' + ext;
-    fs.renameSync(path, newPath);
+// app.post('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
+app.post('/previevPost', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
+    const cover = [];
+    const {originalname,path, mimetype} = req.file;
+    // const parts= originalname.split('.');
+    // const ext = parts[parts.length - 1];
+    // const newPath = path + '.' + ext;
+    // fs.renameSync(path, newPath);
+    const url = await uploadToS3(path, originalname, mimetype);
+    cover.push(url);
 
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
@@ -730,7 +833,8 @@ app.post('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
                 title,
                 summary,
                 content,
-                cover: newPath,
+                // cover: newPath,
+                cover: url,
                 author: info.id,
                 previev,
                 PostTags,
@@ -739,14 +843,19 @@ app.post('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
         });
 });
 
-app.put('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
+// app.put('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
+app.put('/previevPost', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
+    const cover = [];
     let newPath = null; 
     if(req.file) {
-        const {originalname,path} = req.file;
-        const parts= originalname.split('.');
-        const ext = parts[parts.length - 1];
-        newPath = path + '.' + ext;
-        fs.renameSync(path, newPath);
+        const {originalname,path, mimetype} = req.file;
+        // const parts= originalname.split('.');
+        // const ext = parts[parts.length - 1];
+        // newPath = path + '.' + ext;
+        // fs.renameSync(path, newPath);
+        const url = await uploadToS3(path, originalname, mimetype);
+        cover.push(url);
     }
 
     const {token} = req.cookies;
@@ -766,7 +875,8 @@ app.put('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
             title, 
             summary, 
             content, 
-            cover: newPath?newPath:postDoc.cover,
+            // cover: newPath?newPath:postDoc.cover,
+            cover: url?url:postDoc.cover,
             previev,
             PostTags,
         });
@@ -776,6 +886,7 @@ app.put('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
 });
 
 app.get('/previevPost', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     res.json(
         await PrevievPost.find()
         .populate('author', ['username'])
@@ -785,6 +896,7 @@ app.get('/previevPost', async (req, res) => {
 });
 
 app.get('/previevPost/:id', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const {id} = req.params;
     const postDoc = await PrevievPost.findById(id).populate('author', ['username'])
     res.json(postDoc);
@@ -809,6 +921,7 @@ app.delete('/previevPost/:id', async (req, res) => {
 
 //? Approve Post
 app.get('/approvePost', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     res.json(
         await PrevievPost.find()
         .populate('author', ['username'])
@@ -818,12 +931,14 @@ app.get('/approvePost', async (req, res) => {
 });
 
 app.get('/approvePost/:id', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const {id} = req.params;
     const postDoc = await PrevievPost.findById(id).populate('author', ['username'])
     res.json(postDoc);
 });
 
 app.put('/approvePost/:id', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const {id} = req.params;
     const {token} = req.cookies;
 
@@ -868,88 +983,88 @@ app.put('/approvePost/:id', async (req, res) => {
 
 
 
-//? Tests 
-app.post('/test', uploadMiddleware.single('file'), async (req, res) => {
-    const {originalname,path} = req.file;
-    const parts= originalname.split('.');
-    const ext = parts[parts.length - 1];
-    const newPath = path + '.' + ext;
-    fs.renameSync(path, newPath);
+// //? Tests 
+// app.post('/test', uploadMiddleware.single('file'), async (req, res) => {
+//     const {originalname,path} = req.file;
+//     const parts= originalname.split('.');
+//     const ext = parts[parts.length - 1];
+//     const newPath = path + '.' + ext;
+//     fs.renameSync(path, newPath);
 
-    const {token} = req.cookies;
-    jwt.verify(token, secret, {}, async (err, info) => {
-        if(err) throw err;
+//     const {token} = req.cookies;
+//     jwt.verify(token, secret, {}, async (err, info) => {
+//         if(err) throw err;
 
-        const {id, title, summary, content, previev} = req.body;
-            const testDoc = await Test.create({
-                title,
-                summary,
-                content,
-                cover: newPath,
-                author: info.id,
-                previev,
-            });
-            res.json({testDoc});
-        });
-});
+//         const {id, title, summary, content, previev} = req.body;
+//             const testDoc = await Test.create({
+//                 title,
+//                 summary,
+//                 content,
+//                 cover: newPath,
+//                 author: info.id,
+//                 previev,
+//             });
+//             res.json({testDoc});
+//         });
+// });
 
-app.put('/test', uploadMiddleware.single('file'), async (req, res) => {
-    let newPath = null;
-    if(req.file) {
-        const {originalname,path} = req.file;
-        const parts= originalname.split('.');
-        const ext = parts[parts.length - 1];
-        newPath = path + '.' + ext;
-        fs.renameSync(path, newPath);
-    }
+// app.put('/test', uploadMiddleware.single('file'), async (req, res) => {
+//     let newPath = null;
+//     if(req.file) {
+//         const {originalname,path} = req.file;
+//         const parts= originalname.split('.');
+//         const ext = parts[parts.length - 1];
+//         newPath = path + '.' + ext;
+//         fs.renameSync(path, newPath);
+//     }
 
-    const {token} = req.cookies;
-    jwt.verify(token, secret, {}, async (err, info) => {
-        if(err) throw err;
-        const {id, title, summary, content, previev} = req.body;
-        const testDoc = await Test.findById(id);
-        const isAuthor = JSON.stringify(testDoc.author) === JSON.stringify(info.id);
-        const isAdmin = info.tags.includes('admin');
-        const isModerator = info.tags.includes('moderator');
-        const isEditor = info.tags.includes('editor');
-        if(!isAuthor && !isAdmin && !isModerator && !isEditor) {
-            return res.status(400).json('You don\'t have permission.');
-        }
+//     const {token} = req.cookies;
+//     jwt.verify(token, secret, {}, async (err, info) => {
+//         if(err) throw err;
+//         const {id, title, summary, content, previev} = req.body;
+//         const testDoc = await Test.findById(id);
+//         const isAuthor = JSON.stringify(testDoc.author) === JSON.stringify(info.id);
+//         const isAdmin = info.tags.includes('admin');
+//         const isModerator = info.tags.includes('moderator');
+//         const isEditor = info.tags.includes('editor');
+//         if(!isAuthor && !isAdmin && !isModerator && !isEditor) {
+//             return res.status(400).json('You don\'t have permission.');
+//         }
 
-        await Test.findByIdAndUpdate(id, {
-            title, 
-            summary, 
-            content, 
-            cover: newPath?newPath:testDoc.cover,
-            previev,
-        });
+//         await Test.findByIdAndUpdate(id, {
+//             title, 
+//             summary, 
+//             content, 
+//             cover: newPath?newPath:testDoc.cover,
+//             previev,
+//         });
 
-        res.json(testDoc);
-    });
-});
+//         res.json(testDoc);
+//     });
+// });
 
-app.get('/test/:id', async (req, res) => {
-    const {id} = req.params;
-    const testDoc = await Test.findById(id).populate('author', ['username'])
-    res.json(testDoc);
-});
+// app.get('/test/:id', async (req, res) => {
+//     const {id} = req.params;
+//     const testDoc = await Test.findById(id).populate('author', ['username'])
+//     res.json(testDoc);
+// });
 
-app.delete('/test/:id', async (req, res) => {
-    const { id } = req.params;
-    const { token } = req.cookies;
-    jwt.verify(token, secret, {}, async (err, info) => {
-        if(err) throw err;
-        const testDoc = await Test.findById(id);
-        const isAuthor = JSON.stringify(testDoc.author) === JSON.stringify(info.id);
-        const isAdmin = info.tags.includes('admin');
-        const isModerator = info.tags.includes('moderator');
-        if(!isAuthor && !isAdmin && !isModerator) {
-            return res.status(400).json('Your not ADMIN!');
-        }
-        await Test.findByIdAndDelete(id);
-        res.json({ message: 'Test deleted successfully' });
-    });
-});
+// app.delete('/test/:id', async (req, res) => {
+//     const { id } = req.params;
+//     const { token } = req.cookies;
+//     jwt.verify(token, secret, {}, async (err, info) => {
+//         if(err) throw err;
+//         const testDoc = await Test.findById(id);
+//         const isAuthor = JSON.stringify(testDoc.author) === JSON.stringify(info.id);
+//         const isAdmin = info.tags.includes('admin');
+//         const isModerator = info.tags.includes('moderator');
+//         if(!isAuthor && !isAdmin && !isModerator) {
+//             return res.status(400).json('Your not ADMIN!');
+//         }
+//         await Test.findByIdAndDelete(id);
+//         res.json({ message: 'Test deleted successfully' });
+//     });
+// });
 
 
 //? Search
@@ -961,12 +1076,14 @@ app.get('/search/:keyword', async (req, res) => {
 
 //? Tags
 app.get('/tags', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     res.json(
         await User.find({},'tags')
     );
 });
 
 app.get('/tags/:tag', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const {tag} = req.params;
     res.json(
         await User.find({tags: tag},'username email tags')
@@ -976,7 +1093,9 @@ app.get('/tags/:tag', async (req, res) => {
 
 //? Comments
 
-app.post('/post/:id/comment', uploadProfilePhoto.single('file'), async (req, res) => {
+// app.post('/post/:id/comment', uploadProfilePhoto.single('file'), async (req, res) => {
+app.post('/post/:id/comment', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const {id} = req.params;
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
@@ -999,6 +1118,7 @@ app.post('/post/:id/comment', uploadProfilePhoto.single('file'), async (req, res
 });
 
 app.get('/post/:id/comments', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const {id} = req.params;
     try {
         const comments = await Comment.find({post: id})
@@ -1016,6 +1136,7 @@ app.get('/post/:id/comments', async (req, res) => {
 
 //!Admin
 const isAdmin = (req, res, next) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const { token } = req.cookies;
 
     if (!token) {
@@ -1038,6 +1159,7 @@ const isAdmin = (req, res, next) => {
 
 
 app.get('/users', isAdmin, async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     res.json(
         await User.find({},'username email tags')
         .sort({createdAt: -1})
@@ -1045,6 +1167,7 @@ app.get('/users', isAdmin, async (req, res) => {
 });
 
 app.post('/changeTag', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const {username, newTag} = req.body;
     const userDoc = await User.findOne({username});
     userDoc.tags = [newTag];
@@ -1055,6 +1178,7 @@ app.post('/changeTag', async (req, res) => {
 
 //? Alert Message
 app.put('/warning', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     const {title, message} = req.body;
 
     try {
@@ -1077,6 +1201,7 @@ app.put('/warning', async (req, res) => {
 });
 
 app.get('/getWarning', async (req, res) => {
+    mongoose.connect(process.env.MONGODB_URL);
     res.json(
         await Warning.findOne({},'title message')
     );

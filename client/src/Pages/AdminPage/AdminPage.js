@@ -9,7 +9,7 @@ const AdminPage = () => {
   const [postCount, setPostCount] = useState('');
 
   useEffect(() => {
-    fetch('https://modern-blog-app-1.vercel.app/users', {
+    fetch('http://localhost:3030/users', {
       method: 'GET',
       credentials: 'include',
     })
@@ -17,7 +17,7 @@ const AdminPage = () => {
       .then(data => setUsers(data))
       .catch(error => console.error('Error fetching users:', error));
     
-    fetch('https://modern-blog-app-1.vercel.app/previevPost', {
+    fetch('http://localhost:3030/previevPost', {
       method: 'GET',
       credentials: 'include',
     })
@@ -27,7 +27,7 @@ const AdminPage = () => {
   }, []);
 
   const handleChangeTag = (username, newTag) => {
-    fetch('https://modern-blog-app-1.vercel.app/changeTag', {
+    fetch('http://localhost:3030/changeTag', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ const AdminPage = () => {
     ev.preventDefault();
     const title = document.getElementById('title').value;
     const message = document.getElementById('message').value;
-    fetch('https://modern-blog-app-1.vercel.app/warning', {
+    fetch('http://localhost:3030/warning', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

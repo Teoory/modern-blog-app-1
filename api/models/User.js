@@ -28,7 +28,7 @@ const UserSchema = new mongoose.Schema({
     },
     profilePhoto: {
         type: String,
-        default: './profilePhotos/default.jpg'
+        default: 'https://fiyasko-blog-app.s3.eu-central-1.amazonaws.com/profilePhotos/default.jpg'
     },
     darkMode: {
         type: Boolean,

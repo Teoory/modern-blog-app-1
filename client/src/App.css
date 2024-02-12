@@ -883,6 +883,13 @@ div.image img{
   color: inherit;
 }
 
+.teory {
+  background: linear-gradient(to right, #f32170, 
+          #ff6b08, #cf23cf, #eedd44); 
+  -webkit-text-fill-color: transparent; 
+  -webkit-background-clip: text; 
+}
+
 @media screen and (max-width: 768px) {
   div.post {
     grid-template-columns: 1fr;

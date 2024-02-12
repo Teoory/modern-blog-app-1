@@ -13,7 +13,7 @@ const TicketControlPage = () => {
     const { id } = useParams();
 
     useEffect(() => {
-        fetch(`https://modern-blog-app-1.vercel.app/ticket/${id}`).then(response => {
+        fetch(`http://localhost:3030/ticket/${id}`).then(response => {
             response.json().then(ticketInfo => {
                 setTicketInfo(ticketInfo);
             })
@@ -21,7 +21,7 @@ const TicketControlPage = () => {
     }, []);
 
     useEffect(() => {
-        fetch('https://modern-blog-app-1.vercel.app/profile', {
+        fetch('http://localhost:3030/profile', {
             credentials: 'include',
         });
     }, []);
@@ -31,7 +31,7 @@ const TicketControlPage = () => {
         const data = new FormData();
         data.set('status', status);
         ev.preventDefault();
-        const response = await fetch(`https://modern-blog-app-1.vercel.app/ticket/${id}`, {
+        const response = await fetch(`http://localhost:3030/ticket/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'

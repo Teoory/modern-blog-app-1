@@ -1,13 +1,14 @@
 import { useEffect, useState, useContext } from 'react';
 import { UserContext } from '../../Hooks/UserContext';
 import { useParams, Navigate, Link } from 'react-router-dom';
+import Image from '../../components/Image';
 
 const UserProfilePage = () => {
   const { username } = useParams();
   const [userProfile, setUserProfile] = useState(null);
 
   useEffect(() => {
-    fetch(`https://modern-blog-app-1.vercel.app/profile/${username}`)
+    fetch(`http://localhost:3030/profile/${username}`)
         .then(response => response.json())
         .then(data => setUserProfile(data));
   }, [username]);
@@ -21,7 +22,7 @@ const UserProfilePage = () => {
   const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
-    fetch('https://modern-blog-app-1.vercel.app/profile', {
+    fetch('http://localhost:3030/profile', {
       credentials: 'include',
     }).then(response => {
       response.json().then(userInfo => {
@@ -29,7 +30,7 @@ const UserProfilePage = () => {
       });
     });
 
-  fetch('https://modern-blog-app-1.vercel.app/profilephoto', {
+  fetch('http://localhost:3030/profilephoto', {
       credentials: 'include',
     })
       .then(response => response.json())
@@ -41,11 +42,11 @@ const UserProfilePage = () => {
 
   
   useEffect(() => {
-      fetch(`https://modern-blog-app-1.vercel.app/profile/${username}`)
+      fetch(`http://localhost:3030/profile/${username}`)
         .then(response => response.json())
         .then(data => setUserProfile(data));
     
-      fetch(`https://modern-blog-app-1.vercel.app/profile/${username}/likedPosts`)
+      fetch(`http://localhost:3030/profile/${username}/likedPosts`)
     .then(response => response.json())
     .then(data => {
       setLikedPosts(data.likedPosts);
@@ -62,7 +63,7 @@ const UserProfilePage = () => {
     ev.preventDefault();
     const data = new FormData();
     data.append('file', files[0]);
-    const response = await fetch('https://modern-blog-app-1.vercel.app/profilePhoto', {
+    const response = await fetch('http://localhost:3030/profilePhoto', {
       method: 'POST',
       body: data,
       credentials: 'include',
@@ -106,7 +107,8 @@ const UserProfilePage = () => {
                       <div className="ppContent">
                         <input  className="ChangePP" type="file" onChange={ev => {setFiles(ev.target.files);}} />
                         {profilePhoto && (
-                          <img src={`https://modern-blog-app-1.vercel.app/${user.profilePhoto}`} alt="Profile" />
+                          // <img src={`http://localhost:3030/${user.profilePhoto}`} alt="Profile" />
+                          <Image src={user.profilePhoto} alt="img" />
                           )}
                         </div>
                         {!isFileSelected 
@@ -118,11 +120,13 @@ const UserProfilePage = () => {
                           </div>
                         }
                     </form>
-                    : <img src={`https://modern-blog-app-1.vercel.app/${user.profilePhoto}`} alt="Profile" />
+                    // : <img src={`http://localhost:3030/${user.profilePhoto}`} alt="Profile" />
+                    : <Image src={user.profilePhoto} alt="img" />
                 }
               </div>
               <div className="infoArea">
-                <div className="username">{username}</div>
+                {/* <div className="username">{username}</div> */}
+                {username === 'teory' ? <div className="username teory">{username}</div> : <div className="username">{username}</div>}
                 <div className="email">{user.email}</div>
                 <div className={`tags ${user.tags.join(' ')}`}>{user.tags}</div>
               </div>
@@ -149,7 +153,8 @@ const UserProfilePage = () => {
                   {posts.map(post => (
                   <div key={post._id} className="LastPostImageOverlay">
                       <Link to={`/post/${post._id}`} className='BlogTitle'>
-                          <img src={'https://modern-blog-app-1.vercel.app/'+post.cover} alt="img" />
+                          {/* <img src={'http://localhost:3030/'+post.cover} alt="img" /> */}
+                          <Image src={post.cover} alt="img" />
                           <div className='LastPostTitle'>{post.title}</div>
                       </Link>
                       {/* <p className='BlogSummary'>{post.summary}</p> */}
@@ -168,7 +173,8 @@ const UserProfilePage = () => {
                 {likedPosts.slice(0, showAll ? likedPosts.length : 6).map(post => (
                   <div key={post._id} className='LastPostImageOverlay'>
                       <Link to={`/post/${post._id}`} className='BlogTitle'>
-                          <img src={'https://modern-blog-app-1.vercel.app/'+post.cover} alt="img" />
+                          {/* <img src={'http://localhost:3030/'+post.cover} alt="img" /> */}
+                          <Image src={post.cover} alt="img" />
                           <div className='LastPostTitle'>{post.title}</div>
                       </Link>
                   </div>
