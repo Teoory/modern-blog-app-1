@@ -9,7 +9,7 @@ import PostPage from '../Pages/PostPage/PostPage';
 const AppRoutes = () => {
     const { userInfo } = useContext(UserContext);
     useEffect(() => {
-        fetch('http://localhost:3030/profile', {
+        fetch('https://modern-blog-app-1.vercel.app/profile', {
             credentials: 'include',
         });
     }, []);

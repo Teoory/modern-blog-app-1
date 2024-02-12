@@ -13,7 +13,7 @@ const CreatePost = () => {
   const [availableTags, SetAvailableTags] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:3030/availableTags')
+    fetch('https://modern-blog-app-1.vercel.app/availableTags')
       .then(response => response.json())
       .then(data => SetAvailableTags(data.availableTags));
   }, []);
@@ -26,7 +26,7 @@ const CreatePost = () => {
     data.set('file', files[0]);
     data.set('PostTags', selectedTags);
     ev.preventDefault();
-    const response = await fetch('http://localhost:3030/post', {
+    const response = await fetch('https://modern-blog-app-1.vercel.app/post', {
       method: 'POST',
       body: data,
       credentials: 'include',

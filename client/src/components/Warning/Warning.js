@@ -6,7 +6,7 @@ const Warning = () => {
     const [warning, setWarning] = useState({});
   
     useEffect(() => {
-        fetch('http://localhost:3030/getWarning', {
+        fetch('https://modern-blog-app-1.vercel.app/getWarning', {
             method: 'GET',
             credentials: 'include',
         })

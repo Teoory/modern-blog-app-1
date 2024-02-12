@@ -11,7 +11,7 @@ const LoginPage = () => {
   const {setUserInfo} = useContext(UserContext);
   async function login(ev) {
     ev.preventDefault();
-    const response = await fetch('http://localhost:3030/login', {
+    const response = await fetch('https://modern-blog-app-1.vercel.app/login', {
       method: 'POST',
       body: JSON.stringify({username, password}),
       headers: {'Content-Type': 'application/json'},
