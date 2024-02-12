@@ -1,7 +1,5 @@
 {
   "buildCommand": "cd client && npm install && npm run build",
-  "devCommand": "cd client && npm install && npm start",
-  "startCommand": "cd client && npm install && npm start",
   "outputDirectory": "client/dist",
   "rewrites": [
     {
