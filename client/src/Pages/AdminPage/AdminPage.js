@@ -70,7 +70,7 @@ const AdminPage = () => {
 
   return (
     <div>
-      {!postCount == 0 &&
+      {!postCount === 0 &&
         <div className="PrevievShowButton">
           <Link to='/previev'>İnceleme Bloglarını Görüntüle</Link>
           {postCount > 0 && 
