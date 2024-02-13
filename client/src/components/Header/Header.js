@@ -27,7 +27,7 @@ const Header = () => {
             })
             .catch(error => console.error('Error fetching profile:', error));
             console.log(token);
-        }, []);
+    }, []);
 
     useEffect(() => {
         const checkNewNotifications = async () => {
@@ -116,6 +116,9 @@ const Header = () => {
     const getProfilePhoto = () => {
         fetch('https://fiyasko-blog-app.vercel.app/profilephoto', {
           credentials: 'include',
+          headers: {
+              'Authorization': `Bearer ${token}`
+          },
         })
           .then(response => response.json())
           .then(data => {
@@ -123,6 +126,22 @@ const Header = () => {
           })
           .catch(error => console.error('Error fetching profile photo:', error));
     };
+
+    const getProfile = () => {
+        fetch('https://fiyasko-blog-app.vercel.app/profile', {
+            credentials: 'include',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+        }).then(response => {
+            response.json().then(userInfo => {
+                    setUserInfo(userInfo);
+                });
+            })
+            .catch(error => console.error('Error fetching profile:', error));
+            console.log(token);
+    };
+
 
     const username = userInfo?.username;
     const tags = userInfo?.tags;
@@ -174,6 +193,7 @@ const Header = () => {
         }
     }
 
+    userInfo && getProfile();
     userInfo && getProfilePhoto();
   return (
     <>
