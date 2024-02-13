@@ -242,11 +242,10 @@ app.post ('/login', async (req, res) => {
                 likedPosts: userDoc.likedPosts,
             });
         });
+        console.log('User logged in:', userDoc.username);
     }else{
         res.status(400).json({message: 'Wrong password'});
     }
-    console.log('token: ', token);
-    console.success('token: ', token);
 });
 
 //? Profile
