@@ -13,7 +13,7 @@ const CreatePrevievPost = () => {
     const [availableTags, SetAvailableTags] = useState([]);
 
     useEffect(() => {
-      fetch('http://localhost:3030/availableTags')
+      fetch('https://fiyasko-blog-app.vercel.app/availableTags')
         .then(response => response.json())
         .then(data => SetAvailableTags(data.availableTags));
     }, []);
@@ -26,7 +26,7 @@ const CreatePrevievPost = () => {
         data.set('file', files[0]);
         data.set('PostTags', selectedTags);
         ev.preventDefault();
-        const response = await fetch('http://localhost:3030/previevPost', {
+        const response = await fetch('https://fiyasko-blog-app.vercel.app/previevPost', {
             method: 'POST',
             body: data,
             credentials: 'include',

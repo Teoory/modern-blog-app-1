@@ -9,7 +9,7 @@ const ProfilSettingsPage = () => {
     const [aside, setAside] = useState(false);
 
     useEffect(() => {
-        fetch('http://localhost:3030/profile', {
+        fetch('https://fiyasko-blog-app.vercel.app/profile', {
             credentials: 'include',
         }).then(response => {
             response.json().then(userInfo => {
@@ -23,7 +23,7 @@ const ProfilSettingsPage = () => {
             setDarkMode(!darkMode);
             return;
         };
-        fetch('http://localhost:3030/darkmode', {
+        fetch('https://fiyasko-blog-app.vercel.app/darkmode', {
             credentials: 'include',
             method: 'PUT',
             }).then(() => {
@@ -42,7 +42,7 @@ const ProfilSettingsPage = () => {
         if (userInfo === null) {
             return;
         };
-        fetch('http://localhost:3030/darkmode', {
+        fetch('https://fiyasko-blog-app.vercel.app/darkmode', {
             credentials: 'include',
         })
             .then(response => response.json())
@@ -53,7 +53,7 @@ const ProfilSettingsPage = () => {
     };
 
     function logout() {
-        fetch('http://localhost:3030/logout', {
+        fetch('https://fiyasko-blog-app.vercel.app/logout', {
           credentials: 'include',
           method: 'POST',
         }).then(() => {
