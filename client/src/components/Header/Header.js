@@ -12,17 +12,22 @@ const Header = () => {
     const [writerDropdown, setWriterDropdown] = useState(false);
     const [profilePhoto, setProfilePhoto] = useState(null);
     const [newNotification, setNewNotification] = useState(false);
+    const token = localStorage.getItem('token');
 
     useEffect(() => {
         fetch('https://fiyasko-blog-app.vercel.app/profile', {
             credentials: 'include',
-            }).then(response => {
-                response.json().then(userInfo => {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+        }).then(response => {
+            response.json().then(userInfo => {
                     setUserInfo(userInfo);
                 });
             })
             .catch(error => console.error('Error fetching profile:', error));
-    }, []);
+            console.log(token);
+        }, []);
 
     useEffect(() => {
         const checkNewNotifications = async () => {
