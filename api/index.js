@@ -250,9 +250,19 @@ app.post ('/login', async (req, res) => {
 //? Profile
 app.get('/profile', cors(), (req, res) => {
     // const {token} = req.cookies;
-    const token = req.headers.authorization.split(' ')[1];
+    const authorizationHeader = req.headers.authorization;
+    if (!authorizationHeader) {
+        return res.status(401).json({ message: 'Unauthorized: No Authorization header' });
+    }
+
+    const tokenParts = authorizationHeader.split(' ');
+    if (tokenParts.length !== 2 || tokenParts[0] !== 'Bearer') {
+        return res.status(401).json({ message: 'Unauthorized: Invalid Authorization header format' });
+    }
+
+    const token = tokenParts[1];
+    
     jwt.verify(token, secret, {}, (err, info) => {
-        console.error('token:', token);
         if(err) throw err;
         res.json(info);
     });
