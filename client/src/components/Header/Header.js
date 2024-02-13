@@ -14,17 +14,21 @@ const Header = () => {
     const [newNotification, setNewNotification] = useState(false);
 
     useEffect(() => {
+        const token = localStorage.getItem('token');
         fetch('https://fiyasko-blog-app.vercel.app/profile', {
             credentials: 'include',
+            method: 'GET',
             headers: {
-                authorization: `Bearer ${localStorage.getItem('token')}`,
+                'Authorization': `Bearer ${token}`,
             },
-        }).then(response => {
+            }).then(response => {
                 response.json().then(userInfo => {
                     setUserInfo(userInfo);
                 });
             })
-            console.log(`Bearer ${localStorage.getItem('token')}`);
+            .catch(error => {
+                console.error('Error fetching profile data:', error);
+            });
     }, []);
 
     useEffect(() => {
@@ -114,9 +118,6 @@ const Header = () => {
     const getProfilePhoto = () => {
         fetch('https://fiyasko-blog-app.vercel.app/profilephoto', {
           credentials: 'include',
-          headers: {
-              authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
         })
           .then(response => response.json())
           .then(data => {
