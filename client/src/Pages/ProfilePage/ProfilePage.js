@@ -11,7 +11,7 @@ const ProfilePage = (ProfilePhoto) => {
 
   useEffect(() => {
     fetch('https://fiyasko-blog-app.vercel.app/profile', {
-		credentials: 'include',
+      credentials: 'include',
 		headers: {
 			'Authorization': `Bearer ${token}`,
 			'Content-Type': 'application/json',
