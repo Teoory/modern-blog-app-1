@@ -25,11 +25,16 @@ import TicketCreatePage from '../Pages/TicketCreatePage/TicketCreatePage';
 import TicketControlPage from '../Pages/TicketControlPage/TicketControlPage';
 import VerifyPage from '../Pages/RegisterPage/VerifyPage';
 
+const token = localStorage.getItem('token');
 const PrivRoutes = () => {
     const { userInfo } = useContext(UserContext);
     useEffect(() => {
         fetch('https://fiyasko-blog-app.vercel.app/profile', {
             credentials: 'include',
+			headers: {
+				'Authorization': `Bearer ${token}`,
+				'Content-Type': 'application/json',
+			},
         });
     }, []);
     

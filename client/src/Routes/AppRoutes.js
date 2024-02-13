@@ -6,11 +6,16 @@ import DefRoutes from './DefRoutes';
 import HomePage from '../Pages/HomePage/HomePage';
 import PostPage from '../Pages/PostPage/PostPage';
 
+const token = localStorage.getItem('token');
 const AppRoutes = () => {
     const { userInfo } = useContext(UserContext);
     useEffect(() => {
         fetch('https://fiyasko-blog-app.vercel.app/profile', {
             credentials: 'include',
+			headers: {
+				'Authorization': `Bearer ${token}`,
+				'Content-Type': 'application/json',
+			},
         });
     }, []);
     
