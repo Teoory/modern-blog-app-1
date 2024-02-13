@@ -250,8 +250,8 @@ app.post ('/login', async (req, res) => {
 //? Profile
 app.get('/profile', cors(), (req, res) => {
     const {token} = req.cookies;
-    console.error('token:', token);
     jwt.verify(token, secret, {}, (err, info) => {
+        console.error('token:', token);
         if(err) throw err;
         res.json(info);
     });
