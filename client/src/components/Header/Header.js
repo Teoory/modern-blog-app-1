@@ -14,21 +14,14 @@ const Header = () => {
     const [newNotification, setNewNotification] = useState(false);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
         fetch('https://fiyasko-blog-app.vercel.app/profile', {
             credentials: 'include',
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
             }).then(response => {
                 response.json().then(userInfo => {
                     setUserInfo(userInfo);
                 });
             })
-            .catch(error => {
-                console.error('Error fetching profile data:', error);
-            });
+            .catch(error => console.error('Error fetching profile:', error));
     }, []);
 
     useEffect(() => {
