@@ -229,7 +229,6 @@ app.post ('/login', async (req, res) => {
 
 //? Profile
 app.get('/profile', (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, (err, info) => {
         if(err) throw err;
@@ -1093,8 +1092,8 @@ app.get('/tags/:tag', async (req, res) => {
 
 //? Comments
 
-// app.post('/post/:id/comment', uploadProfilePhoto.single('file'), async (req, res) => {
-app.post('/post/:id/comment', async (req, res) => {
+app.post('/post/:id/comment', uploadProfilePhoto.single('file'), async (req, res) => {
+// app.post('/post/:id/comment', async (req, res) => {
     mongoose.connect(process.env.MONGODB_URL);
     const {id} = req.params;
     const {token} = req.cookies;
