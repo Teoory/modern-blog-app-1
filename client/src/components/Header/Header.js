@@ -16,6 +16,9 @@ const Header = () => {
     useEffect(() => {
         fetch('https://fiyasko-blog-app.vercel.app/profile', {
             credentials: 'include',
+            headers: {
+                authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
         }).then(response => {
                 response.json().then(userInfo => {
                     setUserInfo(userInfo);
