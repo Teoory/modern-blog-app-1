@@ -245,24 +245,14 @@ app.post ('/login', async (req, res) => {
     }else{
         res.status(400).json({message: 'Wrong password'});
     }
+    console.log('token: ', token);
 });
 
 //? Profile
 app.get('/profile', cors(), (req, res) => {
-    // const {token} = req.cookies;
-    const authorizationHeader = req.headers.authorization;
-    if (!authorizationHeader) {
-        return res.status(401).json({ message: 'Unauthorized: No Authorization header' });
-    }
-
-    const tokenParts = authorizationHeader.split(' ');
-    if (tokenParts.length !== 2 || tokenParts[0] !== 'Bearer') {
-        return res.status(401).json({ message: 'Unauthorized: Invalid Authorization header format' });
-    }
-
-    const token = tokenParts[1];
-    
+    const {token} = req.cookies;
     jwt.verify(token, secret, {}, (err, info) => {
+        console.error('token:', token);
         if(err) throw err;
         res.json(info);
     });
