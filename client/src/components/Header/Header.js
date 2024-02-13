@@ -14,17 +14,13 @@ const Header = () => {
     const [newNotification, setNewNotification] = useState(false);
 
     useEffect(() => {
-        try{
-        fetch(`https://fiyasko-blog-app.vercel.app/profile/${userInfo.username}`, {
+        fetch('https://fiyasko-blog-app.vercel.app/profile', {
             credentials: 'include',
         }).then(response => {
                 response.json().then(userInfo => {
                     setUserInfo(userInfo);
                 });
             })
-        } catch (error) {
-            console.error('Bir hata oluştu:', error);
-        }
     }, []);
 
     useEffect(() => {
