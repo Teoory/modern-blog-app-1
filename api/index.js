@@ -230,6 +230,7 @@ app.post ('/login', async (req, res) => {
 //? Profile
 app.get('/profile', cors(), (req, res) => {
     const {token} = req.cookies;
+    console.error('token:', token);
     jwt.verify(token, secret, {}, (err, info) => {
         if(err) throw err;
         res.json(info);
@@ -256,7 +257,6 @@ app.get('/profile/:username', async (req, res) => {
 
 
 app.get('/profile/:username/likedPosts', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
     const { username } = req.params;
   
     try {
