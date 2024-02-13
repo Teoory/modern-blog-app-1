@@ -30,15 +30,7 @@ require('dotenv').config();
 const salt = bcrypt.genSaltSync(10);
 const secret = 'secret';
 
-app.use (cors ({credentials: true, methods:["POST", "PUT", "GET", "DELETE"], origin: 'https://fiyaskoblog-frontend.vercel.app'}));
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'https://fiyaskoblog-frontend.vercel.app');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    next();
-  });
-app.use(express.urlencoded({extended: true}));
+app.use (cors ({credentials: true, methods:["POST", "PUT", "GET", "DELETE"], origin: ['https://fiyaskoblog-frontend.vercel.app', 'http://localhost:3000']}));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
