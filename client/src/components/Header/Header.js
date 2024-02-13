@@ -14,7 +14,7 @@ const Header = () => {
     const [newNotification, setNewNotification] = useState(false);
 
     useEffect(() => {
-        fetch('https://fiyasko-blog-app.vercel.app/profile', {
+        fetch(`https://fiyasko-blog-app.vercel.app/profile/${userInfo.username}`, {
             credentials: 'include',
         }).then(response => {
                 response.json().then(userInfo => {
