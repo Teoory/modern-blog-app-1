@@ -19,7 +19,7 @@ const LoginPage = () => {
     });
     if (response.ok) {
       response.json().then(userInfo => {
-        localStorage.setItem('token', userInfo.token);
+        document.cookie = `token=${userInfo.token}; path=/;`;
         console.log(userInfo.token);
         setUserInfo(userInfo);
         setRedirect(true);
