@@ -28,7 +28,7 @@ const { url } = require('inspector');
 require('dotenv').config();
 
 const salt = bcrypt.genSaltSync(10);
-const secret = 'secret';
+const secret = 'fasefraw4r5r3wq45wdfgw34twdfg';
 
 const corsOptions = {
     origin: ['https://fiyaskoblog-frontend.vercel.app', 'http://localhost:3000', 'https://fiyaskoblog-frontend.vercel.app/profile'],
