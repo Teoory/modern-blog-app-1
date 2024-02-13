@@ -24,6 +24,7 @@ const Header = () => {
                     setUserInfo(userInfo);
                 });
             })
+            console.log(`Bearer ${localStorage.getItem('token')}`);
     }, []);
 
     useEffect(() => {
@@ -113,6 +114,9 @@ const Header = () => {
     const getProfilePhoto = () => {
         fetch('https://fiyasko-blog-app.vercel.app/profilephoto', {
           credentials: 'include',
+          headers: {
+              authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
         })
           .then(response => response.json())
           .then(data => {
