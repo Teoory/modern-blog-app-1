@@ -246,6 +246,7 @@ app.post ('/login', async (req, res) => {
         res.status(400).json({message: 'Wrong password'});
     }
     console.log('token: ', token);
+    console.success('token: ', token);
 });
 
 //? Profile
