@@ -30,7 +30,7 @@ require('dotenv').config();
 const salt = bcrypt.genSaltSync(10);
 const secret = 'secret';
 
-app.use (cors ({credentials: true, methods:["POST", "PUT", "GET", "DELETE"], origin: 'https://fiyaskoblog-frontend.vercel.app/'}));
+app.use (cors ({credentials: true, methods:["POST", "PUT", "GET", "DELETE"], origin: 'https://fiyaskoblog-frontend.vercel.app'}));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
@@ -228,7 +228,7 @@ app.post ('/login', async (req, res) => {
 });
 
 //? Profile
-app.get('/profile', (req, res) => {
+app.get('/profile', cors(), (req, res) => {
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, (err, info) => {
         if(err) throw err;
@@ -424,7 +424,7 @@ app.put('/darkmode', async (req, res) => {
     });
 });
 
-app.get('/darkmode', async (req, res) => {
+app.get('/darkmode', cors(), async (req, res) => {
     mongoose.connect(process.env.MONGODB_URL);
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
