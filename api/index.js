@@ -31,20 +31,13 @@ const salt = bcrypt.genSaltSync(10);
 const secret = 'fasefraw4r5r3wq45wdfgw34twdfg';
 
 const corsOptions = {
-    origin: ['https://fiyaskoblog-frontend.vercel.app', 'http://localhost:3000'],
+    origin: ['http://localhost:3000'],
     credentials: true,
     methods: ["POST", "PUT", "GET", "DELETE"],
     allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept', 'Set-Cookie', 'Cookie', 'token', 'x-auth-token', 'x-xsrf-token', 'x-csrf-token', 'x-csrf', 'x-csrf-header', 'x-csrf-cookie']
 };
 
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'https://fiyaskoblog-frontend.vercel.app');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    next();
-});
-// app.use (cors ({credentials: true, methods:["POST", "PUT", "GET", "DELETE"], origin: ['https://fiyaskoblog-frontend.vercel.app', 'http://localhost:3000', 'https://fiyaskoblog-frontend.vercel.app/profile']}));
+// app.use (cors ({credentials: true, methods:["POST", "PUT", "GET", "DELETE"], origin: ['https://fiyaskoblog-frontend.vercel.app', 'http://localhost:3000']}));
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
@@ -246,9 +239,6 @@ app.post ('/login', async (req, res) => {
 //? Profile
 app.get('/profile', cors(), (req, res) => {
     const {token} = req.cookies;
-    if (!token) {
-        return res.status(401).json({ error: 'Token not provided' });
-    }
     jwt.verify(token, secret, {}, (err, info) => {
         console.error('token:', token);
         if(err) throw err;
@@ -422,9 +412,6 @@ app.put('/profilePhoto', async (req, res) => {
 
 app.get('/profilephoto', async (req, res) => {
     const {token} = req.cookies;
-    if (!token) {
-        return res.status(401).json({ error: 'Token not provided' });
-    }
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
         const userDoc = await User.findById(info.id);

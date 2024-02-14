@@ -15,7 +15,7 @@ const TicketCreatePage = () => {
         data.set('content', content);
         data.set('status', status);
         ev.preventDefault();
-        const response = await fetch('https://fiyasko-blog-app.vercel.app/ticket', {
+        const response = await fetch('http://localhost:3030/ticket', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

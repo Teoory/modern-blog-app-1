@@ -9,7 +9,7 @@ const DarkMode = () => {
         if (userInfo === null) {
             return;
         };
-        fetch('https://fiyasko-blog-app.vercel.app/darkmode', {
+        fetch('http://localhost:3030/darkmode', {
             credentials: 'include'
         })
             .then(response => response.json())

@@ -14,7 +14,7 @@ const Header = () => {
     const [newNotification, setNewNotification] = useState(false);
 
     useEffect(() => {
-        fetch('https://fiyasko-blog-app.vercel.app/profile', {
+        fetch('http://localhost:3030/profile', {
             credentials: 'include'
         }).then(response => {
             response.json().then(userInfo => {
@@ -27,7 +27,7 @@ const Header = () => {
     useEffect(() => {
         const checkNewNotifications = async () => {
             try {
-                const response = await fetch(`https://fiyasko-blog-app.vercel.app/check-new-notifications?userId=${userInfo.id}`);
+                const response = await fetch(`http://localhost:3030/check-new-notifications?userId=${userInfo.id}`);
                 if (response.ok) {
                     const { newNotificationExists } = await response.json();
                     setNewNotification(newNotificationExists);
@@ -48,7 +48,7 @@ const Header = () => {
     setTimeout(() => {
         const checkNewNotifications = async () => {
             try {
-                const response = await fetch(`https://fiyasko-blog-app.vercel.app/check-new-notifications?userId=${userInfo.id}`);
+                const response = await fetch(`http://localhost:3030/check-new-notifications?userId=${userInfo.id}`);
                 if (response.ok) {
                     const { newNotificationExists } = await response.json();
                     setNewNotification(newNotificationExists);
@@ -100,7 +100,7 @@ const Header = () => {
     }, []);
 
     function logout() {
-        fetch('https://fiyasko-blog-app.vercel.app/logout', {
+        fetch('http://localhost:3030/logout', {
           credentials: 'include',
           method: 'POST',
         }).then(() => {
@@ -109,7 +109,7 @@ const Header = () => {
     }
 
     const getProfilePhoto = () => {
-        fetch('https://fiyasko-blog-app.vercel.app/profilephoto', {
+        fetch('http://localhost:3030/profilephoto', {
           credentials: 'include'
         })
           .then(response => response.json())
@@ -270,7 +270,7 @@ const Header = () => {
                 <div className="dropdown">
                     <a className="dropbtn" onClick={() => setShowDropdown(!showDropdown)}>
                     {profilePhoto ? (
-                        // <img className='ProfilePhoto' src={`https://fiyasko-blog-app.vercel.app/${profilePhoto}`} alt="Profile" />
+                        // <img className='ProfilePhoto' src={`http://localhost:3030/${profilePhoto}`} alt="Profile" />
                         <Image className='ProfilePhoto' src={profilePhoto} alt="img" />
                     ) : (
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -472,7 +472,7 @@ const Header = () => {
             <div className="profileButton">
                 <Link to={`/profile/${username}`}>
                 {profilePhoto ? (
-                    // <img className='ProfilePhoto' src={`https://fiyasko-blog-app.vercel.app/${profilePhoto}`} alt="Profile" />
+                    // <img className='ProfilePhoto' src={`http://localhost:3030/${profilePhoto}`} alt="Profile" />
                     <Image className='ProfilePhoto' src={profilePhoto} alt="img" />
                 ) : (
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
