@@ -6,9 +6,9 @@ const Footer = () => {
         <footer className="footer">
             <div className="ft-top">
                 <div className="ft-top-tx">
-                    <Link to="/" className="ft-href">Blog</Link>
-                    <Link to="/" className="ft-href">Hakkımda</Link>
-                    <Link to="/" className="ft-href">İletişim</Link>
+                    <Link to="/" className="ft-href">Ana Sayfa</Link>
+                    <Link to="/settings" className="ft-href">Ayarlar</Link>
+                    <a href='mailto:kkslab.info@gmail.com' className="ft-href">İletişim</a>
                 </div>
                 <div className="ft-bot-tx">
                     <a target="_blank" href="https://www.linkedin.com/in/berkay-koksal/">

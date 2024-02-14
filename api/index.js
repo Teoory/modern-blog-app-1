@@ -15,8 +15,11 @@ const app = express ();
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const multer = require('multer');
-const uploadMiddleware = multer({dest: 'uploads/'});
-const uploadProfilePhoto = multer({dest: 'profilephotos/'});
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+// const uploadMiddleware = multer({dest: 'uploads/'});
+// const uploadProfilePhoto = multer({dest: 'profilephotos/'});
+const uploadMiddleware = multer({dest: '/tmp'});
+const uploadProfilePhoto = multer({dest: '/tmp'});
 const nodemailer = require('nodemailer');
 const path = require('path');
 const logoPath = path.join(__dirname, 'logo.png');
@@ -26,14 +29,22 @@ require('dotenv').config();
 const salt = bcrypt.genSaltSync(10);
 const secret = 'secret';
 
-app.use (cors ({credentials: true, origin: 'http://localhost:3000'}));
+const corsOptions = {
+    origin: ['http://localhost:3000', 'http://localhost:3030'],
+    credentials: true,
+    methods: 'GET, POST, PUT, DELETE, OPTIONS',
+    allowedHeaders: 'Content-Type, Authorization',
+};
+
+app.use (cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
 app.use('/profilephotos', express.static(__dirname + '/profilephotos'));
 
-mongoose.connect(`mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.hd2atfr.mongodb.net/?retryWrites=true&w=majority`);
 
+mongoose.connect(process.env.MONGODB_URL);
+const bucket = 'fiyasko-blog-app';
 
 
 const transporter = nodemailer.createTransport({
@@ -45,6 +56,48 @@ const transporter = nodemailer.createTransport({
         pass: `${process.env.YANDEXSMTP_PASSWORD}` // E-posta şifreniz
     },
 });
+
+async function uploadToS3(path, originalname, mimetype, info) {
+    const client = new S3Client({
+        region: 'eu-central-1',
+        credentials: {
+            accessKeyId: process.env.S3_ACCESS_KEY,
+            secretAccessKey: process.env.S3_SECRET_ACCESS_KEY
+        },
+    });
+    const parts = originalname.split('.');
+    const ext = parts[parts.length - 1];
+    const newFileName = `${Date.now()}_${Math.random().toString(36).substring(6)}.${ext}`;
+    await client.send(new PutObjectCommand({
+        Bucket: bucket,
+        Body: fs.readFileSync(path),
+        Key: 'uploads/' + newFileName,
+        contentType: mimetype,
+        ACL: 'public-read',
+    }))
+    return `https://${bucket}.s3.eu-central-1.amazonaws.com/uploads/${newFileName}`;
+}
+
+async function uploadPpToS3(path, originalname, mimetype, info) {
+    const client = new S3Client({
+        region: 'eu-central-1',
+        credentials: {
+            accessKeyId: process.env.S3_ACCESS_KEY,
+            secretAccessKey: process.env.S3_SECRET_ACCESS_KEY
+        },
+    });
+    const parts = originalname.split('.');
+    const ext = parts[parts.length - 1];
+    const newFileName = `${Date.now()}_${Math.random().toString(36).substring(6)}.${ext}`;
+    await client.send(new PutObjectCommand({
+        Bucket: bucket,
+        Body: fs.readFileSync(path),
+        Key: 'profilePhotos/' + newFileName,
+        contentType: mimetype,
+        ACL: 'public-read',
+    }))
+    return `https://${bucket}.s3.eu-central-1.amazonaws.com/profilePhotos/${newFileName}`;
+}
 
 //? Register & Login
 app.post ('/register', async (req, res) => {
@@ -71,7 +124,8 @@ app.post('/request-verify-code', async (req, res) => {
   
       // Eğer varsa, güncelle
       if (existingVerification) {
-        existingVerification.code = Math.random().toString(36).substring(6);
+        // existingVerification.code = Math.random().toString(36).substring(6);
+        existingVerification.code = Math.floor(100000 + Math.random() * 900000);
         await existingVerification.save();
       }
       // Yoksa, yeni doğrulama kodu oluştur
@@ -94,7 +148,7 @@ app.post('/request-verify-code', async (req, res) => {
                         <h1 style="color: #333;padding-bottom: 5px;border-bottom: 1px solid #aaa;">E-posta Doğrulama Kodu</h1>
                         <p style="color: #445;">Merhaba,</p>
                         <p style="color: #445;">Kaydınızı onaylamak için aşağıdaki doğrulama kodunu kullanın:</p>
-                        <h2 style="color: #fff;background: #00466a;margin: 10px auto;padding: 10px;border-radius: 4px;width: max-content;">${existingVerification.code}</h2>
+                        <h2 style="color: #fff;background: #00466a;margin: 10px auto;padding: 10px;border-radius: 4px;width: max-content;letter-spacing: 10px;">${existingVerification.code}</h2>
                         <p style="color: #888;margin-top: -5px;">Doğrulama kodunu kimseyle paylaşmayın.</p>
                         <p style="color: #888;">Eğer bu e-postayı siz talep etmediyseniz, lütfen dikkate almayın.</p>
                         <hr style="border:none;border-top:1px solid #cdcdcd" />
@@ -282,35 +336,41 @@ app.post('/logout', (req, res) => {
 
 //? Profile Photo
 app.post('/profilePhoto', uploadProfilePhoto.single('file'), async (req, res) => {
-    const {originalname,path} = req.file;
-    const parts= originalname.split('.');
-    const ext = parts[parts.length - 1];
+    const pp = [];
+    const {originalname,path,mimetype} = req.file;
+    // const parts= originalname.split('.');
+    // const ext = parts[parts.length - 1];
     // const newPath = path + '.' + ext;
     // fs.renameSync(path, newPath);
+    const url = await uploadPpToS3(path, originalname, mimetype);
+    pp.push(url);
 
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
 
         const userDoc = await User.findById(info.id);
-        const newFileName = `${userDoc.username}_profilePhoto.${ext}`;
-        const newPath = path + newFileName;
+        // const newFileName = `${userDoc.username}_profilePhoto.${ext}`;
+        // const newPath = path + newFileName;
 
-        fs.renameSync(path, newPath);
-        userDoc.profilePhoto = newPath;
+        // fs.renameSync(path, newPath);
+        userDoc.profilePhoto = url;
         await userDoc.save();
         res.json(userDoc);
     });
 });
 
 app.put('/profilePhoto', uploadProfilePhoto.single('file'), async (req, res) => {
+    const pp = [];
     let newPath = null; 
     if(req.file) {
-        const {originalname,path} = req.file;
-        const parts= originalname.split('.');
-        const ext = parts[parts.length - 1];
+        const {originalname,path,mimetype} = req.file;
+        // const parts= originalname.split('.');
+        // const ext = parts[parts.length - 1];
         // newPath = path + '.' + ext;
         // fs.renameSync(path, newPath);
+        const url = await uploadPpToS3(path, originalname, mimetype);
+        pp.push(url);
     }
 
     const {token} = req.cookies;
@@ -318,11 +378,11 @@ app.put('/profilePhoto', uploadProfilePhoto.single('file'), async (req, res) => 
         if(err) throw err;
 
         const userDoc = await User.findById(info.id);
-        const newFileName = `${userDoc.username}_profilePhoto.${ext}`;
-        const newPath = path + newFileName;
+        // const newFileName = `${userDoc.username}_profilePhoto.${ext}`;
+        // const newPath = path + newFileName;
 
         fs.renameSync(path, newPath);
-        userDoc.profilePhoto = newPath;
+        userDoc.profilePhoto = url;
         
         // userDoc.profilePhoto = newPath?newPath:userDoc.profilePhoto;
         await userDoc.save();
@@ -362,11 +422,14 @@ app.get('/darkmode', async (req, res) => {
 
 //? Post
 app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
-    const {originalname,path} = req.file;
-    const parts= originalname.split('.');
-    const ext = parts[parts.length - 1];
-    const newPath = path + '.' + ext;
-    fs.renameSync(path, newPath);
+    const cover = [];
+    const {originalname,path,mimetype} = req.file;
+    // const parts= originalname.split('.');
+    // const ext = parts[parts.length - 1];
+    // const newPath = path + '.' + ext;
+    // fs.renameSync(path, newPath);
+    const url = await uploadToS3(path, originalname, mimetype);
+    cover.push(url);
 
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
@@ -377,7 +440,8 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
                 title,
                 summary,
                 content,
-                cover: newPath,
+                // cover: newPath,
+                cover: url,
                 author: info.id,
                 previev,
                 PostTags,
@@ -387,13 +451,16 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 });
 
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
+    const cover = [];
     let newPath = null; 
     if(req.file) {
-        const {originalname,path} = req.file;
-        const parts= originalname.split('.');
-        const ext = parts[parts.length - 1];
-        newPath = path + '.' + ext;
-        fs.renameSync(path, newPath);
+        const {originalname,path,mimetype} = req.file;
+        // const parts= originalname.split('.');
+        // const ext = parts[parts.length - 1];
+        // newPath = path + '.' + ext;
+        // fs.renameSync(path, newPath);
+        const url = await uploadToS3(path, originalname, mimetype);
+        cover.push(url);
     }
 
     const {token} = req.cookies;
@@ -415,7 +482,8 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
             title, 
             summary, 
             content, 
-            cover: newPath?newPath:postDoc.cover,
+            // cover: newPath?newPath:postDoc.cover,
+            cover: url?url:postDoc.cover,
             previev,
             PostTags,
         });
@@ -711,11 +779,14 @@ app.get('/post/:id/hasSuperLiked', async (req, res) => {
 
 //? Previev Post
 app.post('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
-    const {originalname,path} = req.file;
-    const parts= originalname.split('.');
-    const ext = parts[parts.length - 1];
-    const newPath = path + '.' + ext;
-    fs.renameSync(path, newPath);
+    const cover = [];
+    const {originalname,path,mimetype} = req.file;
+    // const parts= originalname.split('.');
+    // const ext = parts[parts.length - 1];
+    // const newPath = path + '.' + ext;
+    // fs.renameSync(path, newPath);
+    const url = await uploadToS3(path, originalname, mimetype);
+    cover.push(url);
 
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
@@ -726,7 +797,8 @@ app.post('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
                 title,
                 summary,
                 content,
-                cover: newPath,
+                // cover: newPath,
+                cover: url,
                 author: info.id,
                 previev,
                 PostTags,
@@ -736,13 +808,16 @@ app.post('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
 });
 
 app.put('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
+    const cover = [];
     let newPath = null; 
     if(req.file) {
-        const {originalname,path} = req.file;
-        const parts= originalname.split('.');
-        const ext = parts[parts.length - 1];
-        newPath = path + '.' + ext;
-        fs.renameSync(path, newPath);
+        const {originalname,path,mimetype} = req.file;
+        // const parts= originalname.split('.');
+        // const ext = parts[parts.length - 1];
+        // newPath = path + '.' + ext;
+        // fs.renameSync(path, newPath);
+        const url = await uploadToS3(path, originalname, mimetype);
+        cover.push(url);
     }
 
     const {token} = req.cookies;
@@ -762,7 +837,8 @@ app.put('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
             title, 
             summary, 
             content, 
-            cover: newPath?newPath:postDoc.cover,
+            // cover: newPath?newPath:postDoc.cover,
+            cover: url?url:postDoc.cover,
             previev,
             PostTags,
         });

@@ -757,6 +757,13 @@ div.image img{
   margin-left: 10px;
 }
 
+.NotificationArea {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3px;
+}
+
 .NotificationArea a {
   text-decoration: none;
   color: var(--color-info);

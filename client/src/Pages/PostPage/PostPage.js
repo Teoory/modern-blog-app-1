@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { tr, eu } from 'date-fns/locale';
 import { UserContext } from '../../Hooks/UserContext';
 import '../../QuillSnow.css';
+import Image from '../../components/Image';
 
 const PostPage = () => {
     const [postInfo, setPostInfo] = useState(null);
@@ -177,6 +178,7 @@ const addComment = async () => {
         setComments(updatedComments);
         setNewComment('');
         
+        if (userInfo.id !== postInfo.author._id)
         await sendNotification(userInfo.id, postInfo.author._id, postInfo._id, 'Yorum');
     } catch (error) {
         console.error('Error adding comment:', error.message);
@@ -241,7 +243,8 @@ if (!postInfo) return <div>Loading...</div>
 
          {/* Bu alan post bilgilerini gösteriyor. */}
         <div className="image">
-            <img src={'http://localhost:3030/'+postInfo.cover} alt="img" />
+            {/* <img src={'http://localhost:3030/'+postInfo.cover} alt="img" /> */}
+            <Image src={postInfo.cover} alt="img" />
         </div>
         <div className='content' dangerouslySetInnerHTML={{__html:postInfo.content}} />
 
@@ -306,7 +309,8 @@ if (!postInfo) return <div>Loading...</div>
                             <div className="commentInfo">
                                 <div>
                                     <Link to={`/profile/${comment.author.username}`}>
-                                        <img src={`http://localhost:3030/${comment.author.profilePhoto}`} alt="*" />
+                                        {/* <img src={`http://localhost:3030/${comment.author.profilePhoto}`} alt="*" /> */}
+                                        <Image src={comment.author.profilePhoto} alt="*" />
                                     </Link>
                                     <span className='commentAuthorHeader'>Yazar: </span>
                                     <span className='commentAuthor'>

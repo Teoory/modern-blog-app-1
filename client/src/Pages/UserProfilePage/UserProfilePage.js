@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { UserContext } from '../../Hooks/UserContext';
 import { useParams, Navigate, Link } from 'react-router-dom';
+import Image from '../../components/Image';
 
 const UserProfilePage = () => {
   const { username } = useParams();
@@ -106,7 +107,8 @@ const UserProfilePage = () => {
                       <div className="ppContent">
                         <input  className="ChangePP" type="file" onChange={ev => {setFiles(ev.target.files);}} />
                         {profilePhoto && (
-                          <img src={`http://localhost:3030/${user.profilePhoto}`} alt="Profile" />
+                          // <img src={`http://localhost:3030/${user.profilePhoto}`} alt="Profile" />
+                          <Image src={user.profilePhoto} alt="Profile" />
                           )}
                         </div>
                         {!isFileSelected 
@@ -118,7 +120,8 @@ const UserProfilePage = () => {
                           </div>
                         }
                     </form>
-                    : <img src={`http://localhost:3030/${user.profilePhoto}`} alt="Profile" />
+                    // : <img src={`http://localhost:3030/${user.profilePhoto}`} alt="Profile" />
+                    : <Image src={user.profilePhoto} alt="Profile" />
                 }
               </div>
               <div className="infoArea">
@@ -149,7 +152,8 @@ const UserProfilePage = () => {
                   {posts.map(post => (
                   <div key={post._id} className="LastPostImageOverlay">
                       <Link to={`/post/${post._id}`} className='BlogTitle'>
-                          <img src={'http://localhost:3030/'+post.cover} alt="img" />
+                          {/* <img src={'http://localhost:3030/'+post.cover} alt="img" /> */}
+                          <Image src={post.cover} alt="img" />
                           <div className='LastPostTitle'>{post.title}</div>
                       </Link>
                       {/* <p className='BlogSummary'>{post.summary}</p> */}
@@ -168,7 +172,8 @@ const UserProfilePage = () => {
                 {likedPosts.slice(0, showAll ? likedPosts.length : 6).map(post => (
                   <div key={post._id} className='LastPostImageOverlay'>
                       <Link to={`/post/${post._id}`} className='BlogTitle'>
-                          <img src={'http://localhost:3030/'+post.cover} alt="img" />
+                          {/* <img src={'http://localhost:3030/'+post.cover} alt="img" /> */}
+                          <Image src={post.cover} alt="img" />
                           <div className='LastPostTitle'>{post.title}</div>
                       </Link>
                   </div>
