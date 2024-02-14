@@ -5,7 +5,8 @@ const DarkMode = () => {
     const { userInfo } = useContext(UserContext);
     const [darkMode, setDarkMode] = useState(false);
     const token = document.cookie
-                    .find(cookie => cookie.startsWith('token'))
+                    .split('; ')
+                    .find(row => row.startsWith('token'))
                     .split('=')[1];
     if(token) console.log('Token: ' + token);
     
