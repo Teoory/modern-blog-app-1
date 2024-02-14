@@ -114,7 +114,7 @@ app.get('/', (req, res) => {
 
 //? Register & Login
 app.post ('/register', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const {username, password, email} = req.body;
     try {
         const userDoc = await User.create({
@@ -130,7 +130,7 @@ app.post ('/register', async (req, res) => {
 });
 
 app.post('/request-verify-code', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const { email } = req.body;
 
     try {
@@ -197,7 +197,7 @@ app.post('/request-verify-code', async (req, res) => {
 });
 
 app.post('/verify-email', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const { verificationCode } = req.body;
     try {
       const verification = await MailVerification.findOne({ code: verificationCode });
@@ -219,7 +219,7 @@ app.post('/verify-email', async (req, res) => {
 
 
 app.post ('/login', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const {username, password} = req.body;
     const userDoc = await User.findOne({username});
     if (!userDoc) {
@@ -258,7 +258,7 @@ app.get('/profile', cors(), (req, res) => {
 });
 
 app.get('/profile/:username', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const { username } = req.params;
   
     try {
@@ -296,7 +296,7 @@ app.get('/profile/:username/likedPosts', async (req, res) => {
 
 //? Notifications
 app.post('/notifications', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     try {
         const { sender, receiver, post, type } = req.body;
         const notification = await Notification.create({ sender, receiver, post, type });
@@ -307,7 +307,7 @@ app.post('/notifications', async (req, res) => {
 });
 
 app.get('/notifications/:userId', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const profilID = req.params.userId;
     try {
         const userId = req.params.userId;
@@ -319,7 +319,7 @@ app.get('/notifications/:userId', async (req, res) => {
 });
 
 app.post('/send-notification', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const { senderId, receiverId, postId, type } = req.body;
 
     const notification = new Notification({
@@ -334,7 +334,7 @@ app.post('/send-notification', async (req, res) => {
 });
 
 app.post('/mark-all-notifications-as-read', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     try {
         const { userId } = req.body;
         await Notification.updateMany({ receiver: userId }, { isRead: true });
@@ -345,7 +345,7 @@ app.post('/mark-all-notifications-as-read', async (req, res) => {
 });
 
 app.get('/check-new-notifications', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     try {
         const { userId } = req.query;
         const notifications = await Notification.find({ receiver: userId });
@@ -363,7 +363,7 @@ app.post('/logout', (req, res) => {
 
 //? Profile Photo
 app.post('/profilePhoto', uploadProfilePhoto.single('file'), async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const pp = [];
     const {originalname,path, mimetype} = req.file;
     // const parts= originalname.split('.');
@@ -391,7 +391,7 @@ app.post('/profilePhoto', uploadProfilePhoto.single('file'), async (req, res) =>
 
 // app.put('/profilePhoto', uploadProfilePhoto.single('file'), async (req, res) => {
 app.put('/profilePhoto', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const pp = [];
     let newPath = null; 
     if(req.file) {
@@ -422,8 +422,10 @@ app.put('/profilePhoto', async (req, res) => {
 });
 
 app.get('/profilephoto', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
     const {token} = req.cookies;
+    if (!token) {
+        return res.status(401).json({ error: 'Token not provided' });
+    }
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
         const userDoc = await User.findById(info.id);
@@ -433,7 +435,6 @@ app.get('/profilephoto', async (req, res) => {
 
 //? DarkMode
 app.put('/darkmode', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
@@ -445,7 +446,6 @@ app.put('/darkmode', async (req, res) => {
 });
 
 app.get('/darkmode', cors(), async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
@@ -456,7 +456,7 @@ app.get('/darkmode', cors(), async (req, res) => {
 
 //? Post
 app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const cover = [];
     const {originalname,path, mimetype} = req.file;
     // const parts= originalname.split('.');
@@ -487,7 +487,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 });
 
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const cover = [];
     let newPath = null; 
     if(req.file) {
@@ -529,7 +529,7 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
 });
 
 app.get('/post', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     res.json(
         await Post.find()
         .populate('author', ['username'])
@@ -539,8 +539,8 @@ app.get('/post', async (req, res) => {
 });
 
 app.get('/post/:id', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
-mongoose.connect(process.env.MONGODB_URL);
+    
+
     try {
         const { id } = req.params;
         const postDoc = await Post.findById(id).populate('author', ['username']);
@@ -557,7 +557,7 @@ mongoose.connect(process.env.MONGODB_URL);
 });
 
 app.delete('/post/:id', async (req, res) => {
-mongoose.connect(process.env.MONGODB_URL);
+
     const { id } = req.params;
     const { token } = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
@@ -576,13 +576,13 @@ mongoose.connect(process.env.MONGODB_URL);
 
 //? Post Tags
 app.get('/availableTags', async (req, res) => {
-mongoose.connect(process.env.MONGODB_URL);
+
     const enumValues = Post.schema.path('PostTags').enumValues;
     res.json({availableTags: enumValues});
 })
 
 app.get('/posts/:tag', async (req, res) => {
-mongoose.connect(process.env.MONGODB_URL);
+
     const { tag } = req.params;
 
     try {
@@ -596,7 +596,7 @@ mongoose.connect(process.env.MONGODB_URL);
 
 //* Ticket
 app.post('/ticket', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
@@ -612,7 +612,7 @@ app.post('/ticket', async (req, res) => {
 });
 
 app.put('/ticket', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
@@ -640,7 +640,7 @@ app.put('/ticket', async (req, res) => {
 });
 
 app.get('/ticket', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     res.json(
         await Ticket.find()
         .populate('author', ['username'])
@@ -650,7 +650,7 @@ app.get('/ticket', async (req, res) => {
 });
 
 app.get('/ticket/:id', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     try {
         const { id } = req.params;
         const ticketDoc = await Ticket.findById(id).populate('author', ['username']);
@@ -667,7 +667,7 @@ app.get('/ticket/:id', async (req, res) => {
 });
 
 app.delete('/ticket/:id', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const { id } = req.params;
     const { token } = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
@@ -689,7 +689,7 @@ app.delete('/ticket/:id', async (req, res) => {
 
 //* Like
 app.post('/post/:id/like', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const { id } = req.params;
     const { token } = req.cookies;
   
@@ -728,7 +728,7 @@ app.post('/post/:id/like', async (req, res) => {
   
 
 app.get('/post/:id/likes', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
   const { id } = req.params;
 
   try {
@@ -742,7 +742,7 @@ app.get('/post/:id/likes', async (req, res) => {
   
 
 app.get('/post/:id/hasLiked', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
   const { id } = req.params;
   const { token } = req.cookies;
 
@@ -766,7 +766,7 @@ app.get('/post/:id/hasLiked', async (req, res) => {
 
 //* SuperLike
 app.post('/post/:id/superlike', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const { id } = req.params;
     const { token } = req.cookies;
   
@@ -793,7 +793,7 @@ app.post('/post/:id/superlike', async (req, res) => {
 });
 
 app.get('/post/:id/superlikes', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
   const { id } = req.params;
 
   try {
@@ -807,7 +807,7 @@ app.get('/post/:id/superlikes', async (req, res) => {
   
 
 app.get('/post/:id/hasSuperLiked', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
   const { id } = req.params;
   const { token } = req.cookies;
 
@@ -833,7 +833,7 @@ app.get('/post/:id/hasSuperLiked', async (req, res) => {
 //? Previev Post
 // app.post('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
 app.post('/previevPost', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const cover = [];
     const {originalname,path, mimetype} = req.file;
     // const parts= originalname.split('.');
@@ -864,7 +864,7 @@ app.post('/previevPost', async (req, res) => {
 
 // app.put('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
 app.put('/previevPost', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const cover = [];
     let newPath = null; 
     if(req.file) {
@@ -905,7 +905,7 @@ app.put('/previevPost', async (req, res) => {
 });
 
 app.get('/previevPost', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     res.json(
         await PrevievPost.find()
         .populate('author', ['username'])
@@ -915,7 +915,7 @@ app.get('/previevPost', async (req, res) => {
 });
 
 app.get('/previevPost/:id', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const {id} = req.params;
     const postDoc = await PrevievPost.findById(id).populate('author', ['username'])
     res.json(postDoc);
@@ -940,7 +940,7 @@ app.delete('/previevPost/:id', async (req, res) => {
 
 //? Approve Post
 app.get('/approvePost', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     res.json(
         await PrevievPost.find()
         .populate('author', ['username'])
@@ -950,14 +950,14 @@ app.get('/approvePost', async (req, res) => {
 });
 
 app.get('/approvePost/:id', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const {id} = req.params;
     const postDoc = await PrevievPost.findById(id).populate('author', ['username'])
     res.json(postDoc);
 });
 
 app.put('/approvePost/:id', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const {id} = req.params;
     const {token} = req.cookies;
 
@@ -1095,14 +1095,14 @@ app.get('/search/:keyword', async (req, res) => {
 
 //? Tags
 app.get('/tags', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     res.json(
         await User.find({},'tags')
     );
 });
 
 app.get('/tags/:tag', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const {tag} = req.params;
     res.json(
         await User.find({tags: tag},'username email tags')
@@ -1114,7 +1114,7 @@ app.get('/tags/:tag', async (req, res) => {
 
 app.post('/post/:id/comment', uploadProfilePhoto.single('file'), async (req, res) => {
 // app.post('/post/:id/comment', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const {id} = req.params;
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
@@ -1137,7 +1137,7 @@ app.post('/post/:id/comment', uploadProfilePhoto.single('file'), async (req, res
 });
 
 app.get('/post/:id/comments', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const {id} = req.params;
     try {
         const comments = await Comment.find({post: id})
@@ -1155,7 +1155,7 @@ app.get('/post/:id/comments', async (req, res) => {
 
 //!Admin
 const isAdmin = (req, res, next) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const { token } = req.cookies;
 
     if (!token) {
@@ -1178,7 +1178,7 @@ const isAdmin = (req, res, next) => {
 
 
 app.get('/users', isAdmin, async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     res.json(
         await User.find({},'username email tags')
         .sort({createdAt: -1})
@@ -1186,7 +1186,7 @@ app.get('/users', isAdmin, async (req, res) => {
 });
 
 app.post('/changeTag', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const {username, newTag} = req.body;
     const userDoc = await User.findOne({username});
     userDoc.tags = [newTag];
@@ -1197,7 +1197,7 @@ app.post('/changeTag', async (req, res) => {
 
 //? Alert Message
 app.put('/warning', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     const {title, message} = req.body;
 
     try {
@@ -1220,7 +1220,7 @@ app.put('/warning', async (req, res) => {
 });
 
 app.get('/getWarning', async (req, res) => {
-    mongoose.connect(process.env.MONGODB_URL);
+    
     res.json(
         await Warning.findOne({},'title message')
     );
