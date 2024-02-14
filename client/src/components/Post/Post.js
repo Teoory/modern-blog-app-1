@@ -12,8 +12,7 @@ const Post = ({_id,title, summary,cover,content,createdAt, author, PostTags}) =>
       <div className="image">
         <Link to={`/post/${_id}`}>
           {/* <img src={'http://localhost:3030/'+cover} alt="img" loading='layz' decoding='async'/> */}
-          {/* AWS için kapatıldı! */}
-          <Image src={cover} alt="img" loading='layz'/>
+          <Image src={cover} alt="img" loading='layz' decoding='async' />
         </Link>
       </div>
       <div className="text">

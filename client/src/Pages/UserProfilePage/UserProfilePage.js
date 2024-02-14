@@ -108,7 +108,7 @@ const UserProfilePage = () => {
                         <input  className="ChangePP" type="file" onChange={ev => {setFiles(ev.target.files);}} />
                         {profilePhoto && (
                           // <img src={`http://localhost:3030/${user.profilePhoto}`} alt="Profile" />
-                          <Image src={user.profilePhoto} alt="img" />
+                          <Image src={user.profilePhoto} alt="Profile" />
                           )}
                         </div>
                         {!isFileSelected 
@@ -121,12 +121,11 @@ const UserProfilePage = () => {
                         }
                     </form>
                     // : <img src={`http://localhost:3030/${user.profilePhoto}`} alt="Profile" />
-                    : <Image src={user.profilePhoto} alt="img" />
+                    : <Image src={user.profilePhoto} alt="Profile" />
                 }
               </div>
               <div className="infoArea">
-                {/* <div className="username">{username}</div> */}
-                {username === 'teory' ? <div className="username teory">{username}</div> : <div className="username">{username}</div>}
+                <div className="username">{username}</div>
                 <div className="email">{user.email}</div>
                 <div className={`tags ${user.tags.join(' ')}`}>{user.tags}</div>
               </div>
