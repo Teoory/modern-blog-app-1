@@ -34,7 +34,7 @@ const corsOptions = {
     origin: ['https://fiyaskoblog-frontend.vercel.app', 'http://localhost:3000'],
     credentials: true,
     methods: ["POST", "PUT", "GET", "DELETE"],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept', 'Set-Cookie', 'Cookie', 'token', 'x-auth-token', 'x-xsrf-token', 'x-csrf-token', 'x-csrf', 'x-csrf-header', 'x-csrf-cookie']
+    allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
 
