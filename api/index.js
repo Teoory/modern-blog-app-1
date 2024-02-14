@@ -240,8 +240,10 @@ app.post ('/login', async (req, res) => {
 
 //? Profile
 app.get('/profile', cors(), (req, res) => {
-    // const {token} = req.cookies;
-  const token = req.headers.authorization.split(' ')[1];
+    const {token} = req.cookies;
+    if (!token) {
+        return res.status(401).json({ error: 'Token not provided' });
+    }
     jwt.verify(token, secret, {}, (err, info) => {
         console.error('token:', token);
         if(err) throw err;
@@ -1222,4 +1224,3 @@ app.get('/getWarning', async (req, res) => {
 app.listen(3030, () => {
     console.log('Server listening on port 3030 || nodemon index.js')
 });
-
