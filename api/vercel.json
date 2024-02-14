@@ -27,7 +27,7 @@
                 },
                 {
                     "key": "Access-Control-Allow-Headers",
-                    "value": "X-Requested-With, Content-Type, Accept"
+                    "value": "X-Requested-With, Content-Type, Accept, X-CSRF-Token, Accept-Version, Content-Length, Content-MD5, Date, X-Api-Version"
                 },
                 {
                     "key": "Access-Control-Allow-Credentials",
