@@ -4,11 +4,6 @@ import { UserContext } from '../Hooks/UserContext';
 const DarkMode = () => {
     const { userInfo } = useContext(UserContext);
     const [darkMode, setDarkMode] = useState(false);
-    const token = document.cookie
-                    .split('; ')
-                    .find(row => row.startsWith('token'))
-                    .split('=')[1];
-    if(token) console.log('Token: ' + token);
     
     const GetDarkMode = () => {
         if (userInfo === null) {

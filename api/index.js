@@ -219,7 +219,6 @@ app.post('/verify-email', async (req, res) => {
 
 
 app.post ('/login', async (req, res) => {
-    
     const {username, password} = req.body;
     const userDoc = await User.findOne({username});
     if (!userDoc) {
