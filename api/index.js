@@ -33,7 +33,8 @@ const secret = 'fasefraw4r5r3wq45wdfgw34twdfg';
 const corsOptions = {
     origin: ['https://fiyaskoblog-frontend.vercel.app', 'http://localhost:3000'],
     credentials: true,
-    methods: ["POST", "PUT", "GET", "DELETE"]
+    methods: ["POST", "PUT", "GET", "DELETE"],
+    allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
 
