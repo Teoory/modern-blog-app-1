@@ -11,10 +11,7 @@ const DarkMode = () => {
             return;
         };
         fetch('https://fiyasko-blog-app.vercel.app/darkmode', {
-            credentials: 'include',
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
+            credentials: 'include'
         })
             .then(response => response.json())
             .then(data => {

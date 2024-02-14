@@ -37,7 +37,13 @@ const corsOptions = {
     allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept', 'Set-Cookie', 'Cookie', 'token', 'x-auth-token', 'x-xsrf-token', 'x-csrf-token', 'x-csrf', 'x-csrf-header', 'x-csrf-cookie']
 };
 
-
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', 'https://fiyaskoblog-frontend.vercel.app');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    next();
+});
 // app.use (cors ({credentials: true, methods:["POST", "PUT", "GET", "DELETE"], origin: ['https://fiyaskoblog-frontend.vercel.app', 'http://localhost:3000', 'https://fiyaskoblog-frontend.vercel.app/profile']}));
 app.use(cors(corsOptions));
 app.use(express.json());
