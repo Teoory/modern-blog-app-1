@@ -12,7 +12,6 @@ const Header = () => {
     const [writerDropdown, setWriterDropdown] = useState(false);
     const [profilePhoto, setProfilePhoto] = useState(null);
     const [newNotification, setNewNotification] = useState(false);
-    const token = localStorage.getItem('token');
 
     useEffect(() => {
         fetch('https://fiyasko-blog-app.vercel.app/profile', {
@@ -111,10 +110,7 @@ const Header = () => {
 
     const getProfilePhoto = () => {
         fetch('https://fiyasko-blog-app.vercel.app/profilephoto', {
-          credentials: 'include',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+          credentials: 'include'
         })
           .then(response => response.json())
           .then(data => {
