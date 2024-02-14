@@ -4,13 +4,17 @@ import { UserContext } from '../Hooks/UserContext';
 const DarkMode = () => {
     const { userInfo } = useContext(UserContext);
     const [darkMode, setDarkMode] = useState(false);
-
+    const token = localStorage.getItem('token');
+    
     const GetDarkMode = () => {
         if (userInfo === null) {
             return;
         };
         fetch('https://fiyasko-blog-app.vercel.app/darkmode', {
             credentials: 'include',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
         })
             .then(response => response.json())
             .then(data => {
