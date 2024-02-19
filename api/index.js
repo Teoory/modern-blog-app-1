@@ -212,7 +212,11 @@ app.post ('/login', async (req, res) => {
     const  passOk = bcrypt.compareSync(password, userDoc.password);
     if(passOk){
         jwt.sign({username, profilePhoto:userDoc.profilePhoto , email:userDoc.email, tags:userDoc.tags, id:userDoc._id, likedPosts:userDoc.likedPosts}, secret, {} , (err, token) => {
-            if (err) throw err;
+            if (err) {
+                console.error('Token oluşturulamadı:', err);
+                return res.status(500).json({ error: 'Token oluşturulamadı' });
+            }
+            
             res.cookie('token', token,{maxAge: 1000 * 60 * 10, httpOnly: false, secure: false}).json({
                 id:userDoc._id,
                 username,
