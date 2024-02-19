@@ -217,6 +217,7 @@ header .nav {
 
 .dropbtn span {
   text-transform: capitalize;
+  user-select: none;
 }
 
 .notificationsButton {
