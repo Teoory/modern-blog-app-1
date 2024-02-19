@@ -572,6 +572,17 @@ div.post p.summary {
   line-height: 1.4rem;
 }
 
+div.post p.summary::after {
+  content: ' ...';
+}
+
+div.post p.summary::first-letter {
+  color: gold;
+  text-transform: uppercase;
+  font-size: x-large;
+  font-weight: 600;
+}
+
 /* Login & Register Css */
 input,
 select {

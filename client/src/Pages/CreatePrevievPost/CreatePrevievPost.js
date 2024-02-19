@@ -60,6 +60,7 @@ const CreatePrevievPost = () => {
 
       <input  type="summary" 
               placeholder={'Summary'} 
+              maxLength={125}
               value={summary}
               onChange={ev => setSummary(ev.target.value)}/>
 
