@@ -12,6 +12,8 @@ const ProfilePage = (ProfilePhoto) => {
   useEffect(() => {
     fetch('http://localhost:3030/profile', {
       credentials: 'include',
+      mode: 'cors',
+      redirect: 'follow',
     }).then(response => {
       response.json().then(userInfo => {
         setUserInfo(userInfo);

@@ -13,9 +13,11 @@ const LoginPage = () => {
     ev.preventDefault();
     const response = await fetch('http://localhost:3030/login', {
       method: 'POST',
-      body: JSON.stringify({username, password}),
-      headers: {'Content-Type': 'application/json'},
+      mode: 'cors',
+      redirect: 'follow',
       credentials: 'include',
+      headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+      body: JSON.stringify({username, password}),
     });
     if (response.ok) {
       response.json().then(userInfo => {

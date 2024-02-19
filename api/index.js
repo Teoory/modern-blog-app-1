@@ -213,7 +213,7 @@ app.post ('/login', async (req, res) => {
     if(passOk){
         jwt.sign({username, profilePhoto:userDoc.profilePhoto , email:userDoc.email, tags:userDoc.tags, id:userDoc._id, likedPosts:userDoc.likedPosts}, secret, {} , (err, token) => {
             if (err) throw err;
-            res.cookie('token', token).json({
+            res.cookie('token', token,{maxAge: 1000 * 60 * 10, httpOnly: false, secure: false}).json({
                 id:userDoc._id,
                 username,
                 email:userDoc.email,
@@ -221,6 +221,7 @@ app.post ('/login', async (req, res) => {
                 profilePhoto: userDoc.profilePhoto,
                 likedPosts: userDoc.likedPosts,
             });
+            console.log('Logged in, Token olusturuldu.');
         });
     }else{
         res.status(400).json({message: 'Wrong password'});

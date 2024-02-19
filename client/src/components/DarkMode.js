@@ -3,7 +3,7 @@ import { UserContext } from '../Hooks/UserContext';
 
 const DarkMode = () => {
     const { userInfo } = useContext(UserContext);
-    const [darkMode, setDarkMode] = useState(false);
+    const [darkMode, setDarkMode] = useState(true);
     
     const GetDarkMode = () => {
         if (userInfo === null) {

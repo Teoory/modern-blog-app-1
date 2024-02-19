@@ -5,7 +5,6 @@ import { tr, eu } from 'date-fns/locale';
 import { UserContext } from '../../Hooks/UserContext';
 import Image from '../../components/Image';
 import '../../QuillSnow.css';
-import Image from '../../components/Image';
 
 const PostPage = () => {
     const [postInfo, setPostInfo] = useState(null);
