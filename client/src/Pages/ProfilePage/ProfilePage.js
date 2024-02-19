@@ -10,7 +10,7 @@ const ProfilePage = (ProfilePhoto) => {
   const [redirect, setRedirect] = useState(false);
 
   useEffect(() => {
-    fetch('http://localhost:3030/profile', {
+    fetch('https://fiyasko-blog-api.vercel.app/profile', {
       credentials: 'include',
       mode: 'cors',
       redirect: 'follow',
@@ -20,7 +20,7 @@ const ProfilePage = (ProfilePhoto) => {
       });
     });
 
-  fetch('http://localhost:3030/profilephoto', {
+  fetch('https://fiyasko-blog-api.vercel.app/profilephoto', {
       credentials: 'include',
     })
       .then(response => response.json())
@@ -34,7 +34,7 @@ const ProfilePage = (ProfilePhoto) => {
     ev.preventDefault();
     const data = new FormData();
     data.append('file', files[0]);
-    const response = await fetch('http://localhost:3030/profilePhoto', {
+    const response = await fetch('https://fiyasko-blog-api.vercel.app/profilePhoto', {
       method: 'POST',
       body: data,
       credentials: 'include',
@@ -64,7 +64,7 @@ const ProfilePage = (ProfilePhoto) => {
               <div className="ppContent">
                 <input  className="ChangePP" type="file" onChange={ev => {setFiles(ev.target.files);}} />
                 {profilePhoto && (
-                  <img src={`http://localhost:3030/${profilePhoto}`} alt="Profile" />
+                  <img src={`https://fiyasko-blog-api.vercel.app/${profilePhoto}`} alt="Profile" />
                   )}
                 </div>
                 {!isFileSelected 

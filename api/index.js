@@ -30,7 +30,7 @@ const salt = bcrypt.genSaltSync(10);
 const secret = 'secret';
 
 const corsOptions = {
-    origin: ['http://localhost:3000', 'http://localhost:3030'],
+    origin: ['http://localhost:3000', 'http://localhost:3030', 'https://fiyasko-blog-api.vercel.app', 'https://fiyaskoblog-frontend.vercel.app'],
     credentials: true,
     methods: 'GET, POST, PUT, DELETE, OPTIONS',
     allowedHeaders: 'Content-Type, Authorization',

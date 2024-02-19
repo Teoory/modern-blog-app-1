@@ -8,7 +8,7 @@ const UserProfilePage = () => {
   const [userProfile, setUserProfile] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:3030/profile/${username}`)
+    fetch(`https://fiyasko-blog-api.vercel.app/profile/${username}`)
         .then(response => response.json())
         .then(data => setUserProfile(data));
   }, [username]);
@@ -22,7 +22,7 @@ const UserProfilePage = () => {
   const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
-    fetch('http://localhost:3030/profile', {
+    fetch('https://fiyasko-blog-api.vercel.app/profile', {
       credentials: 'include',
     }).then(response => {
       response.json().then(userInfo => {
@@ -30,7 +30,7 @@ const UserProfilePage = () => {
       });
     });
 
-  fetch('http://localhost:3030/profilephoto', {
+  fetch('https://fiyasko-blog-api.vercel.app/profilephoto', {
       credentials: 'include',
     })
       .then(response => response.json())
@@ -42,11 +42,11 @@ const UserProfilePage = () => {
 
   
   useEffect(() => {
-      fetch(`http://localhost:3030/profile/${username}`)
+      fetch(`https://fiyasko-blog-api.vercel.app/profile/${username}`)
         .then(response => response.json())
         .then(data => setUserProfile(data));
     
-      fetch(`http://localhost:3030/profile/${username}/likedPosts`)
+      fetch(`https://fiyasko-blog-api.vercel.app/profile/${username}/likedPosts`)
     .then(response => response.json())
     .then(data => {
       setLikedPosts(data.likedPosts);
@@ -63,7 +63,7 @@ const UserProfilePage = () => {
     ev.preventDefault();
     const data = new FormData();
     data.append('file', files[0]);
-    const response = await fetch('http://localhost:3030/profilePhoto', {
+    const response = await fetch('https://fiyasko-blog-api.vercel.app/profilePhoto', {
       method: 'POST',
       body: data,
       credentials: 'include',
@@ -107,7 +107,7 @@ const UserProfilePage = () => {
                       <div className="ppContent">
                         <input  className="ChangePP" type="file" onChange={ev => {setFiles(ev.target.files);}} />
                         {profilePhoto && (
-                          // <img src={`http://localhost:3030/${user.profilePhoto}`} alt="Profile" />
+                          // <img src={`https://fiyasko-blog-api.vercel.app/${user.profilePhoto}`} alt="Profile" />
                           <Image src={user.profilePhoto} alt="Profile" />
                           )}
                         </div>
@@ -120,7 +120,7 @@ const UserProfilePage = () => {
                           </div>
                         }
                     </form>
-                    // : <img src={`http://localhost:3030/${user.profilePhoto}`} alt="Profile" />
+                    // : <img src={`https://fiyasko-blog-api.vercel.app/${user.profilePhoto}`} alt="Profile" />
                     : <Image src={user.profilePhoto} alt="Profile" />
                 }
               </div>
@@ -152,7 +152,7 @@ const UserProfilePage = () => {
                   {posts.map(post => (
                   <div key={post._id} className="LastPostImageOverlay">
                       <Link to={`/post/${post._id}`} className='BlogTitle'>
-                          {/* <img src={'http://localhost:3030/'+post.cover} alt="img" /> */}
+                          {/* <img src={'https://fiyasko-blog-api.vercel.app/'+post.cover} alt="img" /> */}
                           <Image src={post.cover} alt="img" />
                           <div className='LastPostTitle'>{post.title}</div>
                       </Link>
@@ -172,7 +172,7 @@ const UserProfilePage = () => {
                 {likedPosts.slice(0, showAll ? likedPosts.length : 6).map(post => (
                   <div key={post._id} className='LastPostImageOverlay'>
                       <Link to={`/post/${post._id}`} className='BlogTitle'>
-                          {/* <img src={'http://localhost:3030/'+post.cover} alt="img" /> */}
+                          {/* <img src={'https://fiyasko-blog-api.vercel.app/'+post.cover} alt="img" /> */}
                           <Image src={post.cover} alt="img" />
                           <div className='LastPostTitle'>{post.title}</div>
                       </Link>

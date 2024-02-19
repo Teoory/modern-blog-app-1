@@ -29,7 +29,7 @@ const token = localStorage.getItem('token');
 const PrivRoutes = () => {
     const { userInfo } = useContext(UserContext);
     useEffect(() => {
-        fetch('http://localhost:3030/profile', {
+        fetch('https://fiyasko-blog-api.vercel.app/profile', {
             credentials: 'include'
         });
     }, []);
