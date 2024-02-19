@@ -40,18 +40,27 @@ Quill.register(HorizontalLine);
 
 
 window.onscroll = function() {scrollFunction()};
+let scrollPosition = 0;
+
+window.addEventListener('scroll', () => {
+  scrollPosition = window.scrollY;
+});
+Quill.on('text-change', () => {
+  window.scrollTo(0, scrollPosition);
+});
 
 function scrollFunction() {
   if (document.querySelector(".ql-toolbar.ql-snow") === null) return;
   const toolbar = document.querySelector(".ql-toolbar.ql-snow");
   if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
     toolbar.style.position = "fixed";
-    toolbar.style.top = 0;
+    toolbar.style.bottom = "auto";
     toolbar.style.zIndex = 999;
     toolbar.style.backgroundColor = "white";
   } else if (document.body.scrollTop < 200 || document.documentElement.scrollTop < 200) {
     toolbar.style.position = "relative";
-  } else return;
+  }
+  else return;
 }
 
   return (
