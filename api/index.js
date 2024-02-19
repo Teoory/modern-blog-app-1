@@ -216,8 +216,8 @@ app.post ('/login', async (req, res) => {
                 console.error('Token oluşturulamadı:', err);
                 return res.status(500).json({ error: 'Token oluşturulamadı' });
             }
-            
-            res.cookie('token', token,{maxAge: 1000 * 60 * 10, httpOnly: false, secure: false}).json({
+
+            res.cookie('token', token,{maxAge: 1000 * 60 * 10, httpOnly: true, secure: true}).json({
                 id:userDoc._id,
                 username,
                 email:userDoc.email,
@@ -225,6 +225,7 @@ app.post ('/login', async (req, res) => {
                 profilePhoto: userDoc.profilePhoto,
                 likedPosts: userDoc.likedPosts,
             });
+            console.log('token:', token)
             console.log('Logged in, Token olusturuldu.');
         });
     }else{
