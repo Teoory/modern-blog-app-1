@@ -25,7 +25,6 @@ import TicketCreatePage from '../Pages/TicketCreatePage/TicketCreatePage';
 import TicketControlPage from '../Pages/TicketControlPage/TicketControlPage';
 import VerifyPage from '../Pages/RegisterPage/VerifyPage';
 
-const token = localStorage.getItem('token');
 const PrivRoutes = () => {
     const { userInfo } = useContext(UserContext);
     useEffect(() => {
