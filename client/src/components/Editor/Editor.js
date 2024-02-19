@@ -40,14 +40,6 @@ Quill.register(HorizontalLine);
 
 
 window.onscroll = function() {scrollFunction()};
-let scrollPosition = 0;
-
-window.addEventListener('scroll', () => {
-  scrollPosition = window.scrollY;
-});
-Quill.on('text-change', () => {
-  window.scrollTo(0, scrollPosition);
-});
 
 function scrollFunction() {
   if (document.querySelector(".ql-toolbar.ql-snow") === null) return;

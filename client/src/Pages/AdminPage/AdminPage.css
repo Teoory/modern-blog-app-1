@@ -34,6 +34,12 @@ body {
   color: #007bff;
 }
 
+.adminBadge {
+  background: linear-gradient(to right, #f32170, #ff6b08,#cf23cf);
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+}
+
 .tags {    text-transform: uppercase;
   font-size: 14px;
   color: #888;

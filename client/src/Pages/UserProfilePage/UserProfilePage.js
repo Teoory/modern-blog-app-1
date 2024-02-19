@@ -125,7 +125,11 @@ const UserProfilePage = () => {
                 }
               </div>
               <div className="infoArea">
-                <div className="username">{username}</div>
+                {username === 'admin' && username === 'teory' 
+                  ? <div className="adminBadge">{username}</div> 
+                  : <div className="username">{username}</div>}
+
+                {/* <div className="username">{username}</div> */}
                 <div className="email">{user.email}</div>
                 <div className={`tags ${user.tags.join(' ')}`}>{user.tags}</div>
               </div>
