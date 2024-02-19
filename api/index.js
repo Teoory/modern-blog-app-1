@@ -217,7 +217,7 @@ app.post ('/login', async (req, res) => {
                 return res.status(500).json({ error: 'Token oluşturulamadı' });
             }
 
-            res.cookie('token', token,{maxAge: 1000 * 60 * 10, httpOnly: true, secure: true}).json({
+            res.cookie('token', token,{maxAge: 1000 * 60 * 10, httpOnly: false, secure: false}).json({
                 id:userDoc._id,
                 username,
                 email:userDoc.email,
