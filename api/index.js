@@ -225,8 +225,7 @@ app.post ('/login', async (req, res) => {
                 profilePhoto: userDoc.profilePhoto,
                 likedPosts: userDoc.likedPosts,
             });
-            console.log('token:', token)
-            console.log('Logged in, Token olusturuldu.');
+            console.log('Logged in, Token olusturuldu.', token);
         });
     }else{
         res.status(400).json({message: 'Wrong password'});
