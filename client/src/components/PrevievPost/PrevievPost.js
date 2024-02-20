@@ -2,6 +2,7 @@ import react from 'react'
 import { format } from "date-fns";
 import { tr, eu } from 'date-fns/locale';
 import { Link } from 'react-router-dom';
+import Image from '../Image';
 
 const PrevievPost = ({_id,title, summary,cover,content,createdAt, author, PostTags}) => {
     const locales = { tr, eu };
@@ -9,7 +10,7 @@ const PrevievPost = ({_id,title, summary,cover,content,createdAt, author, PostTa
         <div className="post">
           <div className="image">
             <Link to={`/previevPost/${_id}`}>
-              <img src={'https://fiyasko-blog-api.vercel.app/'+cover} alt="img" loading='layz' decoding='async'/>
+              <Image src={cover} alt="img" loading='layz' decoding='async' />
             </Link>
           </div>
           <div className="text">
