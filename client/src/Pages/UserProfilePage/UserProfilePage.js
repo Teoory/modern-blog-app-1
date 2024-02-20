@@ -136,8 +136,8 @@ const UserProfilePage = () => {
             </div>
         </div>
 
-        <div>
-          {(!user.isVerified && userInfo.username === username) ? (<span>E-posta adresinizi doğrulayarak Writer yetkisine terfi alabilirsiniz.</span>) : null}
+        <div style={"display: flex;justify-content: center;"}>
+          {(!user.isVerified && userInfo.username === username) ? (<span style={"color: red;background: var(--color-dark);padding: 6px;margin: 5px;border-radius: 20px;text-align: center;font-weight: 600;text-transform: uppercase;"}>E-posta adresinizi doğrulayarak Writer yetkisine terfi alabilirsiniz.</span>) : null}
         </div>
 
         <div className="verifyArea">
