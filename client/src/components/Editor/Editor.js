@@ -46,7 +46,7 @@ function scrollFunction() {
   const toolbar = document.querySelector(".ql-toolbar.ql-snow");
   if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
     toolbar.style.position = "fixed";
-    toolbar.style.bottom = "300px";
+    toolbar.style.top = "80px";
     toolbar.style.zIndex = 999;
     toolbar.style.backgroundColor = "white";
   } else if (document.body.scrollTop < 200 || document.documentElement.scrollTop < 200) {
