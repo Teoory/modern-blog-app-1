@@ -990,4 +990,8 @@ div.image img{
   .content {
     padding: 0 1px;
   }
+
+  pre.ql-syntax {
+    font-size: xx-small;
+  }
 }

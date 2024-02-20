@@ -601,3 +601,10 @@ header .nav {
     display: none;
   } */
 }
+
+@media (max-width: 300px) {
+  .exchange-rate {
+    font-size: 10px;
+    font-weight: 600;
+  }
+}
