@@ -337,7 +337,8 @@ app.get('/check-new-notifications', async (req, res) => {
 
 //? Logout
 app.post('/logout', (req, res) => {
-    res.clearCookie('token').json('ok');
+    res.clearCookie('token');
+    res.json({message: 'Logged out'});
     res.sesion.destroy();
     res.redirect('/');
 });
