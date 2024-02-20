@@ -191,12 +191,7 @@ app.post('/verify-email', async (req, res) => {
           return res.status(404).json({ error: 'Geçersiz doğrulama kodu.' });
         }
 
-        const UserCheck = await User.findOne({ username });
-        if (UserCheck.tags === 'user') {
         await User.findOneAndUpdate({ email: verification.email }, { isVerified: true, tags: ['writer'] });
-        } else {
-            await User.findOneAndUpdate({ email: verification.email }, { isVerified: true });
-        }
 
         
         await MailVerification.deleteOne({ _id: verification._id });
