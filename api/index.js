@@ -458,13 +458,14 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
     const cover = [];
     let newPath = null; 
+    const url = null;
     if(req.file) {
         const {originalname,path,mimetype} = req.file;
         // const parts= originalname.split('.');
         // const ext = parts[parts.length - 1];
         // newPath = path + '.' + ext;
         // fs.renameSync(path, newPath);
-        const url = await uploadToS3(path, originalname, mimetype);
+        url = await uploadToS3(path, originalname, mimetype);
         cover.push(url);
     }
 

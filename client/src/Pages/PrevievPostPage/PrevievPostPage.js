@@ -3,6 +3,7 @@ import { Link, useParams, Navigate } from 'react-router-dom';
 import { format } from "date-fns";
 import { tr, eu } from 'date-fns/locale';
 import { UserContext } from '../../Hooks/UserContext';
+import Image from '../../components/Image';
 
 const PrevievPostPage = () => {
     const [postInfo, setPostInfo] = useState(null);
@@ -118,7 +119,7 @@ const PrevievPostPage = () => {
             ) : null}            
     
             <div className="image">
-                <img src={'https://fiyasko-blog-api.vercel.app/'+postInfo.cover} alt="img" />
+                <Image src={postInfo.cover} alt="img" />
             </div>
             <div className='content' dangerouslySetInnerHTML={{__html:postInfo.content}} />
     
