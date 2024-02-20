@@ -8,6 +8,7 @@ import ProfilePage from '../Pages/ProfilePage/ProfilePage';
 import UserProfilePage from '../Pages/UserProfilePage/UserProfilePage';
 import ProfileSettingsPage from '../Pages/ProfilSettingsPage/ProfilSettingsPage';
 import NotificationsPage from '../Pages/NotificationsPage/NotificationsPage';
+import Privacy from '../Pages/PrivacyPage';
 
 import PostPage from '../Pages/PostPage/PostPage';
 import CreatePost from '../Pages/CreatePost/CreatePost';
@@ -55,6 +56,7 @@ const PrivRoutes = () => {
                         <Route path="/settings" element={<ProfileSettingsPage />} />
                         <Route path="/verify-email" element={<VerifyPage/>} />
                         <Route path="/notifications" element={<NotificationsPage />} />
+                        <Route path="/privacy" element={<Privacy />} />
                     </>
 
                 :   <> 
@@ -63,6 +65,7 @@ const PrivRoutes = () => {
                         <Route path="/tickets/:id" element={<TicketControlPage username={username} isAdmin={isAdmin}/>} />
                         <Route path="/settings" element={<ProfileSettingsPage />} />
                         <Route path="/verify-email" element={<VerifyPage/>} />
+                        <Route path="/privacy" element={<Privacy />} />
                     </>
             }
             

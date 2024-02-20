@@ -7,6 +7,7 @@ import PostPage from '../Pages/PostPage/PostPage';
 // import UserProfilePage from '../Pages/UserProfilePage/UserProfilePage';
 import VerifyPage from '../Pages/RegisterPage/VerifyPage';
 import PublicSettingsPage from '../Pages/ProfilSettingsPage/PublicSettingsPage';
+import Privacy from '../Pages/PrivacyPage'
 
 const DefRoutes = () => {
   return (
@@ -19,6 +20,7 @@ const DefRoutes = () => {
       <Route path="/verify-email" element={<VerifyPage/>} />
       <Route path="/settings" element={<PublicSettingsPage/>} />
       <Route path="/notifications" element={<LoginPage />} />
+      <Route path="/privacy" element={<Privacy />} />
     </Routes>
   )
 }
