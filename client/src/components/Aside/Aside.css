@@ -83,3 +83,9 @@
         margin-bottom: 50px;
     }
 }
+
+@media (max-width: 768px) {
+    .aside {
+        top: 75px;
+    }
+}
