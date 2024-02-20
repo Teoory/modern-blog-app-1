@@ -976,11 +976,18 @@ div.image img{
 
 @media screen and (max-width: 430px) {
   .content {
-    padding: 0 10px;
+    padding: 0 3px;
+    max-width: 430px;
+  }
+}
+@media screen and (max-width: 360px) {
+  .content {
+    padding: 0 3px;
+    max-width: 360px;
   }
 }
 @media screen and (max-width: 300px) {
   .content {
-    padding: 0 5px;
+    padding: 0 1px;
   }
 }
