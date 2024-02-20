@@ -136,6 +136,10 @@ const UserProfilePage = () => {
             </div>
         </div>
 
+        <div>
+          {!user.isVerified && userInfo.username === username ? (<span style={"color: red;background: white;"}>E-posta adresinizi doğrulayarak Writer yetkisine terfi alabilirsiniz.</span>) : null}
+        </div>
+
         <div className="verifyArea">
           <div className={`verify ${user.isVerified ? 'MailVerified' : 'MailNotVerified'}`}>
             {user.isVerified ? 'E-posta doğrulanmış' : 'E-posta doğrulanmamış'}
@@ -149,7 +153,7 @@ const UserProfilePage = () => {
 
         <div>
           <div className='LastArea'>
-            <h2><span>{user.username}</span>'nin Paylaşımları:</h2>
+            <h2><span>{user.username}</span> Kullanıcısının Paylaşımları:</h2>
             {posts.length === 0 && <p>Bu kullanıcının henüz bir paylaşımı yok.</p>}
             {posts.length > 0 ? (
               <div className='LastPostImage'>
@@ -170,7 +174,7 @@ const UserProfilePage = () => {
           <hr />
               
           <div className='LastArea'>
-            <h2><span>{user.username}</span>'nin Beğendiği Gönderiler:</h2>
+            <h2><span>{user.username}</span> Kullanıcısının Beğendiği Gönderiler:</h2>
             {likedPosts.length > 0 ? (
               <div className='LastPostImage'>
                 {likedPosts.slice(0, showAll ? likedPosts.length : 6).map(post => (

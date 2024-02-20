@@ -337,6 +337,8 @@ app.get('/check-new-notifications', async (req, res) => {
 //? Logout
 app.post('/logout', (req, res) => {
     res.clearCookie('token').json('ok');
+    res.sesion.destroy();
+    res.redirect('/');
 });
 
 //? Profile Photo
