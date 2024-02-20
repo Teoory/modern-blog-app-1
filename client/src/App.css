@@ -979,11 +979,20 @@ div.image img{
     padding: 0 3px;
     max-width: 430px;
   }
+
+  pre.ql-syntax {
+    overflow: scroll !important;
+  }
 }
 @media screen and (max-width: 360px) {
   .content {
     padding: 0 3px;
     max-width: 360px;
+    font-size: small;
+  }
+
+  pre.ql-syntax {
+    overflow: scroll !important;
   }
 }
 @media screen and (max-width: 300px) {
@@ -993,5 +1002,6 @@ div.image img{
 
   pre.ql-syntax {
     font-size: xx-small;
+    overflow: scroll !important;
   }
 }
