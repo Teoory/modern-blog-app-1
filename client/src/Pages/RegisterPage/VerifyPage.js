@@ -9,7 +9,7 @@ const VerifyPage = () => {
 
     
   useEffect(() => {
-        fetch('http://localhost:3030/profile', {
+        fetch('https://fiyasko-blog-api.vercel.app/profile', {
           credentials: 'include',
         }).then(response => {
           response.json().then(userInfo => {
@@ -22,7 +22,7 @@ const VerifyPage = () => {
         ev.preventDefault();
 
         // Verification code'yi doğrulama işlemi
-        const response = await fetch('http://localhost:3030/verify-email', {
+        const response = await fetch('https://fiyasko-blog-api.vercel.app/verify-email', {
             method: 'POST',
             body: JSON.stringify({ verificationCode }),
             headers: { 'Content-Type': 'application/json' },
@@ -39,7 +39,7 @@ const VerifyPage = () => {
 
     const requestNewCode = async () => {
         // Yeni bir doğrulama kodu isteği
-        const response = await fetch('http://localhost:3030/request-verify-code', {
+        const response = await fetch('https://fiyasko-blog-api.vercel.app/request-verify-code', {
             method: 'POST',
             body: JSON.stringify({ email }), // E-posta adresini gönder
             headers: { 'Content-Type': 'application/json' },
