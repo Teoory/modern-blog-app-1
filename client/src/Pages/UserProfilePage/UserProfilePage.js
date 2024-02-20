@@ -125,7 +125,7 @@ const UserProfilePage = () => {
                 }
               </div>
               <div className="infoArea">
-                {user.username === 'admin' && user.username === 'teory'
+                {username === 'admin' || username === 'teory'
                   ? <div className="adminBadge">{username}</div> 
                   : <div className="username">{username}</div>}
 
