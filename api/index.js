@@ -185,20 +185,24 @@ app.post('/request-verify-code', async (req, res) => {
 app.post('/verify-email', async (req, res) => {
     const { verificationCode } = req.body;
     try {
-      const verification = await MailVerification.findOne({ code: verificationCode });
-  
-      if (!verification) {
-        return res.status(404).json({ error: 'Geçersiz doğrulama kodu.' });
-      }
-      
-      await User.findOneAndUpdate({ email: verification.email }, { isVerified: true, tags: ['writer'] });
-  
-      await MailVerification.deleteOne({ _id: verification._id });
-  
-      res.status(200).json({ message: 'E-posta adresi başarıyla doğrulandı.' });
+        const verification = await MailVerification.findOne({ code: verificationCode });
+        
+        if (!verification) {
+          return res.status(404).json({ error: 'Geçersiz doğrulama kodu.' });
+        }
+        if (User.tags === 'user') {
+        await User.findOneAndUpdate({ email: verification.email }, { isVerified: true, tags: ['writer'] });
+        } else {
+            await User.findOneAndUpdate({ email: verification.email }, { isVerified: true });
+        }
+
+        
+        await MailVerification.deleteOne({ _id: verification._id });
+        
+        res.status(200).json({ message: 'E-posta adresi başarıyla doğrulandı.' });
     } catch (error) {
-      console.error('Doğrulama hatası:', error);
-      res.status(500).json({ error: 'Doğrulama hatası.' });
+        console.error('Doğrulama hatası:', error);
+        res.status(500).json({ error: 'Doğrulama hatası.' });
     }
 });
 
