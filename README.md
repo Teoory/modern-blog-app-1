@@ -4,6 +4,9 @@
 
 
 Dilerseniz Youtube'dan videolara ulaşabilirsiniz.
+
+<h1>Artık https://fiyasko.online/ adresinden ulaşabilirsiniz.</h1> 
+
 <br/>
 [Playlist](https://youtube.com/playlist?list=PLR_-EKc5hBrEuh7I2JvghWuuaxa6XbCNj&si=a7IW0qtQxUpKbO8t)
 
