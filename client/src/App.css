@@ -1049,14 +1049,13 @@ div.image img{
 @media screen and (max-width: 300px) {
   .content {
     padding: 0 1px;
-    font-size: x-small;
-    max-width: 280px;
   }
-  .div.allPosts {
+  div.allPosts {
     width: 260px;
+    font-size: x-small;
   }
 
-  .div.allPosts h1, div.allPosts p.summary {
+  div.allPosts h1, div.allPosts p.summary {
     display: -webkit-box;
   }
 
