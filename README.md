@@ -28,6 +28,13 @@ mongoose.connect('mongodb+srv://username:password@cluster0.hd2atfr.mongodb.net/?
 <hr>
 
 # Son Değişiklikler:</br>
+### V2.2.1
+- Search Page Added
+- Header Search Button Added
+- Responsive Search Button Added
+
+<hr>
+
 ### V2.1.1
 - New Domain: https://fiyasko.online/
 - Vercel Server
