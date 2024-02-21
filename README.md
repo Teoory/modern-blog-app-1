@@ -25,6 +25,18 @@ mongoose.connect('mongodb+srv://username:password@cluster0.hd2atfr.mongodb.net/?
 <hr>
 
 # Son Değişiklikler:</br>
+### V2.1.1
+- New Domain: https://fiyasko.online/
+- Vercel Server
+- Responsive Fix
+- Adsense Added
+- Counters
+  - Total User Counter
+  - Total View on Page Counter
+  - Total Likes on Page Counter
+
+<hr>
+
 ### V1.8.1
 - Hatalar giderildi
   - style hataları giderildi
