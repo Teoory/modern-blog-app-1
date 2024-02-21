@@ -15,7 +15,11 @@ const Footer = () => {
         });
     };
 
-    setInterval(updateOnlineStats, 120000);
+    setInterval(updateOnlineStats, 2400000);
+    
+    useEffect(() => {
+        updateOnlineStats();
+    }, []);
 
     return (
         <footer className="footer">

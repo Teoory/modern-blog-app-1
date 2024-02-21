@@ -114,8 +114,10 @@ const AdminPage = () => {
             .map((user) => (
               <tr key={user.username}>
                 <td>
-                  <span className={`username ${user.tags.join(' ')}`}>
-                    {user.username}
+                  <span className={`username`}>
+                    <Link to={`/profile/${user.username}`}>
+                      {user.username}
+                    </Link>
                   </span>
                 </td>
                 <td>
