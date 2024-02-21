@@ -24,10 +24,12 @@ const nodemailer = require('nodemailer');
 const path = require('path');
 const logoPath = path.join(__dirname, 'logo.png');
 const fs = require('fs');
+const session = require('express-session');
+const { count } = require('console');
 require('dotenv').config();
 
 const salt = bcrypt.genSaltSync(10);
-const secret = 'secret';
+const secret = '582905839824723984723749872938479823798huhsıufhsdfuhsdıu8789a67868768678a6s7d87a9';
 
 const corsOptions = {
     origin: ['http://localhost:3000', 'http://localhost:3030', 'https://fiyasko-blog-api.vercel.app', 'https://fiyaskoblog-frontend.vercel.app', 'https://fiyasko.online'],
@@ -41,6 +43,12 @@ app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
 app.use('/profilephotos', express.static(__dirname + '/profilephotos'));
+
+app.use(session({
+    secret: '582905839824723984723749872938479823798huhsıufhsdfuhsdıu8789a67868768678a6s7d87a9',
+    resave: false,
+    saveUninitialized: true
+  }));
 
 
 mongoose.connect(process.env.MONGODB_URL);
@@ -520,6 +528,8 @@ app.get('/post/:id', async (req, res) => {
             return res.redirect('/');
         }
 
+        postDoc.totalViews++;
+        await postDoc.save();
         res.json(postDoc);
     } catch (error) {
         console.error('Error fetching post:', error);
@@ -1095,6 +1105,44 @@ app.get('/post/:id/comments', async (req, res) => {
     }
 });
 
+app.get('/post/:id/comment/:id', async (req, res) => {
+    const {id} = req.params;
+    try {
+        const commentDoc = await Comment.findById(id)
+        .populate('author', ['username', 'profilePhoto'])
+
+        res.json(commentDoc);
+    } catch (e) {
+        console.error('Error with get comment',e);
+        res.status(500).json({e:'server error'});
+    }   
+});
+
+app.get('/comments', async (req, res) => {
+    try {
+        res.json(
+            await Comment.find()
+            .populate('author', ['username'])
+            .sort({createdAt: -1})
+        );
+    } catch (e) {
+        console.error('Error with get comments',e);
+        res.status(500).json({e:'server error'});
+    }
+});
+
+//? Delete Comment
+app.delete('/post/:id/comment/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        await Comment.findByIdAndDelete(id);
+        res.json({ message: 'Comment deleted successfully' });
+    } catch (e) {
+        console.error('Error with delete comment',e);
+        res.status(500).json({e:'server error'});
+    }
+});
+
 
 //!Admin
 const isAdmin = (req, res, next) => {
@@ -1163,6 +1211,50 @@ app.get('/getWarning', async (req, res) => {
         await Warning.findOne({},'title message')
     );
 });
+
+//? Total registered users
+app.get('/totalUsers', async (req, res) => {
+    res.json(
+        await User.find().countDocuments()
+    );
+});
+
+//? Total posts
+app.get('/totalPosts', async (req, res) => {
+    res.json(
+        await Post.find().countDocuments()
+    );
+});
+
+//? Total comments
+app.get('/totalComments', async (req, res) => {
+    res.json(
+        await Comment.find().countDocuments()
+    );
+});
+
+//? Delete User
+// app.delete('/user/:id', async (req, res) => {
+//     const { id } = req.params;
+//     await User.findByIdAndDelete(id);
+//     res.json({ message: 'User deleted successfully' });
+// });
+
+
+//? Delete Notification
+app.delete('/notification/:id', async (req, res) => {
+    const { id } = req.params;
+    await Notification.findByIdAndDelete(id);
+    res.json({ message: 'Notification deleted successfully' });
+});
+
+//? Delete Ticket
+app.delete('/ticket/:id', async (req, res) => {
+    const { id } = req.params;
+    await Ticket.findByIdAndDelete(id);
+    res.json({ message: 'Ticket deleted successfully' });
+});
+
 
 
 app.listen(3030, () => {

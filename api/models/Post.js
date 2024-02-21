@@ -6,6 +6,10 @@ const PostSchema = new mongoose.Schema({
     summary: String,
     content: String,
     cover:String,
+    totalViews: {
+        type: Number,
+        default: 0
+    },
     author:{
         type:Schema.Types.ObjectId, 
         ref:'User'

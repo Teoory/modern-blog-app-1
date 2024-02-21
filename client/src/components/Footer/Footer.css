@@ -53,6 +53,12 @@
     transition: color 0.3s ease-in-out;
 }
 
+.ft-top-tw {
+    position: absolute;
+    left: 25px;
+    color: black;
+}
+
 
 @media (max-width: 855px) {
     .ft-top-tx {
@@ -61,5 +67,14 @@
     }
     .ft-href {
         padding-bottom: 20px;
+    }
+}
+
+@media (max-width: 600px) {
+    .ft-top-tw {
+        position: inherit;
+    }
+    .footer {
+        margin-bottom: 60px;
     }
 }

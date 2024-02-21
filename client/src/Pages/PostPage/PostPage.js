@@ -215,6 +215,10 @@ if (!postInfo) return <div>Loading...</div>
         <time>{format(new Date(postInfo.createdAt), "HH:MM | dd MMMM yyyy", {locale: locales["tr"],})}</time>
         <div className="author">Yazar: @<Link to={`/profile/${postInfo.author.username}`}>{postInfo.author.username}</Link></div>
         <div className="PostTags"><span>{postInfo.PostTags}</span></div>
+        <div className="author">
+            <span className='postInfoWnL'>📃 {postInfo.totalViews}</span>
+            <span className='postInfoWnL'>😍 {likes+superlikes}</span>
+        </div>
 
         {userInfo === null ? (
             <span></span>
@@ -295,7 +299,7 @@ if (!postInfo) return <div>Loading...</div>
                         cols="50"
                         maxLength={256}
                     />
-                    <button onClick={addComment}>Yorum Yap</button>
+                    <button className='CommAddButton' onClick={addComment}>Yorum Yap</button>
                 </div>
             ) : (
                 <span className='CommentLogin'>Yorum yapmak için <Link to="/login">giriş yapın</Link></span>
@@ -305,6 +309,7 @@ if (!postInfo) return <div>Loading...</div>
             ?   <h3>Buralar biraz sessiz!</h3>
             :   <div>
                     {comments.map(comment => (
+                        <>
                         <div key={comment._id} className="comment">
                             <div className="commentInfo">
                                 <div>
@@ -322,6 +327,22 @@ if (!postInfo) return <div>Loading...</div>
 
                             <p>{comment.content}</p>
                         </div>
+                        {userInfo !== null && (userInfo.id === comment.author._id || isAdmin || isModerator || isEditor) &&
+                            <>
+                                <button className='CommDelButton' onClick={() => {
+                                    if(window.confirm('Bu işlem geri alınamaz. Silmek istediğinize emin misiniz?')) {
+                                        fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/comment/${comment._id}`, {
+                                            method: 'DELETE',
+                                            credentials: 'include',
+                                        }).then(() => {
+                                            const updatedComments = comments.filter(c => c._id !== comment._id);
+                                            setComments(updatedComments);
+                                        });
+                                    }
+                                }}>Delete</button>
+                            </>
+                        }
+                        </>
                     ))}
                 </div>
             }
