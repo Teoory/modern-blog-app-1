@@ -1049,6 +1049,15 @@ div.image img{
 @media screen and (max-width: 300px) {
   .content {
     padding: 0 1px;
+    font-size: x-small;
+    max-width: 280px;
+  }
+  .div.allPosts {
+    width: 260px;
+  }
+
+  .div.allPosts h1, div.allPosts p.summary {
+    display: -webkit-box;
   }
 
   pre.ql-syntax {
