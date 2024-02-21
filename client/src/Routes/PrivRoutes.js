@@ -26,6 +26,8 @@ import TicketCreatePage from '../Pages/TicketCreatePage/TicketCreatePage';
 import TicketControlPage from '../Pages/TicketControlPage/TicketControlPage';
 import VerifyPage from '../Pages/RegisterPage/VerifyPage';
 
+import SearchPage from '../Pages/SearchPage/SearchPage';
+
 const PrivRoutes = () => {
     const { userInfo } = useContext(UserContext);
     useEffect(() => {
@@ -57,6 +59,7 @@ const PrivRoutes = () => {
                         <Route path="/verify-email" element={<VerifyPage/>} />
                         <Route path="/notifications" element={<NotificationsPage />} />
                         <Route path="/privacy" element={<Privacy />} />
+                        <Route path="/search" element={<SearchPage />} />
                     </>
 
                 :   <> 
@@ -66,6 +69,7 @@ const PrivRoutes = () => {
                         <Route path="/settings" element={<ProfileSettingsPage />} />
                         <Route path="/verify-email" element={<VerifyPage/>} />
                         <Route path="/privacy" element={<Privacy />} />
+                        <Route path="/search" element={<SearchPage />} />
                     </>
             }
             

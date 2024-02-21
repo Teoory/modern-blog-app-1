@@ -1212,6 +1212,8 @@ app.get('/getWarning', async (req, res) => {
     );
 });
 
+
+
 //? Total registered users
 app.get('/totalUsers', async (req, res) => {
     res.json(

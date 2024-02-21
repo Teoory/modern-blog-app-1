@@ -541,8 +541,9 @@ header .nav {
   .setttingsButton,
   .homePageButton,
   .createBlogButton,
-  .profileButton {
-    width: 25%;
+  .profileButton,
+  .searchPageButton {
+    width: 20%;
     display: flex;
     justify-content: center;
     vertical-align: middle;
@@ -550,14 +551,16 @@ header .nav {
 
   .setttingsButton,
   .homePageButton,
-  .createBlogButton {
+  .createBlogButton,
+  .searchPageButton {
     border-right: 1px solid rgba(54, 54, 54, 0.3);
   }
 
   .setttingsButton svg,
   .homePageButton svg,
   .createBlogButton svg,
-  .profileButton svg {
+  .profileButton svg,
+  .searchPageButton svg {
     width: 36px;
     height: 36px;
     align-items: center;
@@ -566,7 +569,8 @@ header .nav {
   .setttingsButton a,
   .homePageButton a,
   .createBlogButton a,
-  .profileButton a {
+  .profileButton a,
+  .searchPageButton a{
     text-decoration: none;
     color: #000;
   }
