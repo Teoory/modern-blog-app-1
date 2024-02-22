@@ -31,8 +31,8 @@ const PostPage = () => {
             })
     }, [id]);
         
-        useEffect(() => { 
-            fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/comments`)
+    useEffect(() => { 
+        fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/comments`)
             .then(response => response.json())
             .then(comments => setComments(comments))
     }, [id]);
@@ -71,143 +71,155 @@ const PostPage = () => {
             });
     }, [id]);
     
-const sendNotification = async (senderId, receiverId, postId, type) => {
-    try {
-        const response = await fetch('https://fiyasko-blog-api.vercel.app/send-notification', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                senderId: senderId,
-                receiverId: receiverId,
-                postId: postId,
-                type: type
-            })
-        });
-        if (response.ok) {
-            // console.log('Bildirim gönderildi.');
-        } else {
-            console.error('Bildirim gönderilirken bir hata oluştu.');
+    const sendNotification = async (senderId, receiverId, postId, type) => {
+        try {
+            const response = await fetch('http://localhost:3030/send-notification', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    senderId: senderId,
+                    receiverId: receiverId,
+                    postId: postId,
+                    type: type
+                })
+            });
+            if (response.ok) {
+                // console.log('Bildirim gönderildi.');
+            } else {
+                console.error('Bildirim gönderilirken bir hata oluştu.');
+            }
+        } catch (error) {
+            console.error('Bildirim gönderilirken bir hata oluştu.', error);
         }
-    } catch (error) {
-        console.error('Bildirim gönderilirken bir hata oluştu.', error);
-    }
-};
-
-const deletePost = async () => {
-    try {
-        const response = await fetch(`https://fiyasko-blog-api.vercel.app/post/${postInfo._id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({}),
-            credentials: 'include',
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        setRedirect(true);
-
-        const data = await response.json();
-        console.log(data);
-    } catch (error) {
-        console.error('Error deleting post:', error.message);
-    }
-};
-
-const toggleLike = async () => {
-    try {
-      const response = await fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/like`, {
-        method: 'POST',
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const updatedData = await response.json();
-      setLikes(updatedData.likes);
-      setIsLiked(updatedData.isLiked);
-    } catch (error) {
-      console.error('Error toggling like:', error.message);
-    }
-};
-
-const toggleSuperLike = async () => {
-    try {
-      const response = await fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/superlike`, {
-        method: 'POST',
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const updatedData = await response.json();
-      setSuperLikes(updatedData.superlikes);
-      setHasSuperLiked(updatedData.isSuperLiked);
-
-    } catch (error) {
-      console.error('Error toggling superlike:', error.message);
-    }
-};
-
-const addComment = async () => {
-    try {
-        const response = await fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/comment`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ content: newComment }),
-            credentials: 'include',
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const updatedComments = await fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/comments`)
-            .then(response => response.json());
-
-        setComments(updatedComments);
-        setNewComment('');
-        
-        if (userInfo.id !== postInfo.author._id)
-        await sendNotification(userInfo.id, postInfo.author._id, postInfo._id, 'Yorum');
-    } catch (error) {
-        console.error('Error adding comment:', error.message);
-    }
-};
-
-const formatDate = (dateString) => {
-    const opt = {
-        hour: 'numeric',
-        minute: 'numeric',
-        day: 'numeric',
-        month: 'numeric',
-        year: 'numeric',
     };
 
-    return new Date(dateString).toLocaleDateString('tr-TR', opt);
-};
+    const deletePost = async () => {
+        try {
+            const response = await fetch(`https://fiyasko-blog-api.vercel.app/post/${postInfo._id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({}),
+                credentials: 'include',
+            });
 
-if(redirect) {
-    return <Navigate to={'/'}/>
-}
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            setRedirect(true);
+
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error('Error deleting post:', error.message);
+        }
+    };
+
+    const toggleLike = async () => {
+        try {
+          const response = await fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/like`, {
+            method: 'POST',
+            credentials: 'include',
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const updatedData = await response.json();
+          setLikes(updatedData.likes);
+          setIsLiked(updatedData.isLiked);
+        } catch (error) {
+          console.error('Error toggling like:', error.message);
+        }
+    };
+
+    const toggleSuperLike = async () => {
+        try {
+          const response = await fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/superlike`, {
+            method: 'POST',
+            credentials: 'include',
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const updatedData = await response.json();
+          setSuperLikes(updatedData.superlikes);
+          setHasSuperLiked(updatedData.isSuperLiked);
+
+        } catch (error) {
+          console.error('Error toggling superlike:', error.message);
+        }
+    };
+
+    const addComment = async () => {
+        try {
+            const response = await fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/comment`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ content: newComment }),
+                credentials: 'include',
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const updatedComments = await fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/comments`)
+                .then(response => response.json());
+
+            setComments(updatedComments);
+            setNewComment('');
+
+            const mentionedUsers = newComment.match(/@(\w+)/g);
+            if (mentionedUsers) {
+                await Promise.all(mentionedUsers.map(async (username) => {
+                    const receiverUser = await fetch(`https://fiyasko-blog-api.vercel.app/profile/${username.slice(1)}`)
+                        .then(response => response.json());
+                    if (receiverUser && receiverUser.user._id !== userInfo.id) {
+                        await sendNotification(userInfo.id, receiverUser.user._id, postInfo._id, 'Bahset');
+                    }
+                }));
+            }                   
+
+            if (userInfo.id !== postInfo.author._id)
+            await sendNotification(userInfo.id, postInfo.author._id, postInfo._id, 'Yorum');
+        } catch (error) {
+            console.error('Error adding comment:', error.message);
+        }
+    };
+
+    const formatDate = (dateString) => {
+        const opt = {
+            hour: 'numeric',
+            minute: 'numeric',
+            day: 'numeric',
+            month: 'numeric',
+            year: 'numeric',
+        };
+
+        return new Date(dateString).toLocaleDateString('tr-TR', opt);
+    };
+    // document.title = postInfo?.title + " | Fiyasko Blog" || 'Yükleniyor...';
+
+    if(redirect) {
+        return <Navigate to={'/'}/>
+    }
 
 
-const tags = userInfo?.tags;
-const isAdmin = tags?.includes('admin');
-const isModerator = tags?.includes('moderator');
-const isEditor = tags?.includes('editor');
+    const tags = userInfo?.tags;
+    const isAdmin = tags?.includes('admin');
+    const isModerator = tags?.includes('moderator');
+    const isEditor = tags?.includes('editor');
 
-if (!postInfo) return <div>Loading...</div>
+    if (!postInfo) return <div>Loading...</div>
     const locales = { tr, eu };
   return (
     <div className="post-page">

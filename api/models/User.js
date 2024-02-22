@@ -17,6 +17,10 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please provide a password'],
     },
+    bio: {
+        type: String,
+        default: ''
+    },
     isVerified: {
         type: Boolean,
         default: false 

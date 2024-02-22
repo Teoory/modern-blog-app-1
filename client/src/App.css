@@ -566,6 +566,22 @@ button.CommDelButton {
   color: rgb(201, 201, 201);
   font-weight: 600;
 }
+button.NotificationDelButton {
+  position: absolute;
+  margin-top: -50px;
+  width: 120px;
+  height: 20px;
+  font-size: 11px;
+  margin-left: 400px;
+  border-radius: 20px;
+  text-align: center;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-danger);
+  color: rgb(201, 201, 201);
+  font-weight: 600;
+}
 
 span.commentTime::before {
   content: '| ';
@@ -629,6 +645,44 @@ div.post p.summary::first-letter {
 div.allPosts p.summary::first-letter {
   color: goldenrod;
 }
+
+div.bioArea {
+  display: grid;
+  justify-items: center;
+}
+
+div.bioArea form {
+  width: 80%;
+}
+
+div.bioArea .bioEditArea {
+  text-align: center;
+}
+
+div.bioArea .bioEditArea textarea {
+  width: 100%;
+  height: 360px;
+  padding: 5px 7px;
+  border: 2px solid var(--color-white2);
+  border-radius: 5px;
+  background-color: var(--color-white2);
+  resize: none;
+}
+
+div.bioArea .bioEditButton {
+  width: 30%;
+  background-color: var(--color-info);
+  color: white;
+  font-weight: 600;
+  border-radius: 25px;
+  margin-bottom: 10px;
+}
+
+div.bioArea .bioApplyButton {
+  background-color: var(--color-success);
+  font-size: large;
+}
+
 
 /* Login & Register Css */
 input,
@@ -1025,10 +1079,21 @@ div.image img{
   .content {
     padding: 0 3px;
     max-width: 430px;
+    min-height: 585px;
+  }
+
+  .NotificationListItem {
+    flex-wrap: wrap;
+    gap: 0;
   }
 
   button.CommDelButton {
     margin-left: 215px;
+  }
+
+  button.NotificationDelButton {
+    margin-left: 290px;
+    margin-top: 90px;
   }
 
   pre.ql-syntax {
@@ -1049,6 +1114,7 @@ div.image img{
 @media screen and (max-width: 300px) {
   .content {
     padding: 0 1px;
+    min-height: 290px;
   }
   div.allPosts {
     width: 260px;
@@ -1057,6 +1123,15 @@ div.image img{
 
   div.allPosts h1, div.allPosts p.summary {
     display: -webkit-box;
+  }
+
+  button.NotificationDelButton {
+    margin-left: 140px;
+    margin-top: 150px;
+  }
+
+  button.CommDelButton {
+    margin-left: 138px;
   }
 
   pre.ql-syntax {

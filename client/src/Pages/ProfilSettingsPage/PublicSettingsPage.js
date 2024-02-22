@@ -5,7 +5,7 @@ import { UserContext } from '../../Hooks/UserContext';
 
 const ProfilSettingsPage = () => {
     const { setUserInfo, userInfo } = useContext(UserContext);
-    const [darkMode, setDarkMode] = useState(false);
+    const [darkMode, setDarkMode] = useState(true);
 
     const darkModeToggle = () => {
         if (userInfo === null) {
@@ -21,6 +21,18 @@ const ProfilSettingsPage = () => {
     } else {
         document.body.classList.remove('dark-mode-variables');
     }
+
+    useEffect(() => {
+      const element = document.querySelector('.aside');
+      element.style.display = 'none';
+      return () => {
+          if(window.innerWidth > 1280)
+          element.style.display = 'block';
+          else if (window.innerWidth <= 1280)
+          element.style.display = 'contents';
+      };
+    }, []);
+  
 
     return (
     <div className='settingsArea'>

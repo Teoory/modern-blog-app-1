@@ -20,6 +20,8 @@ const UserProfilePage = () => {
   const [redirect, setRedirect] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [showAll, setShowAll] = useState(false);
+  const [bio, setBio] = useState('');
+  const [editableBio, setEditableBio] = useState(false);
 
   useEffect(() => {
     fetch('https://fiyasko-blog-api.vercel.app/profile', {
@@ -54,10 +56,21 @@ const UserProfilePage = () => {
     })
     .catch(error => console.error('Error fetching liked posts:', error));
   }, [username]);
+  
+  useEffect(() => {
+    const element = document.querySelector('.aside');
+    element.style.display = 'none';
+    return () => {
+        if(window.innerWidth > 1280)
+        element.style.display = 'block';
+        else if (window.innerWidth <= 1280)
+        element.style.display = 'contents';
+    };
+  }, []);
 
-    if (!userInfo) {
-      return <Navigate to="/" replace />;
-    }
+  if (!userInfo) {
+    return <Navigate to="/" replace />;
+  }
 
   async function newProfilePhoto(ev) {
     ev.preventDefault();
@@ -72,6 +85,35 @@ const UserProfilePage = () => {
       setRedirect(true);
     }
   }
+
+  const handleEditProfileBio = async (ev) => {
+    ev.preventDefault();
+    try {
+      const response = await fetch(`https://fiyasko-blog-api.vercel.app/userBio/${username}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ bio }),
+        credentials: 'include',
+      });
+      if (response.ok) {
+        console.log('Biyografi güncellendi');
+        setEditableBio(false);
+        window.location.reload();
+      } else {
+        console.error('Biyografi güncelleme başarısız');
+      }
+    } catch (error) {
+      console.error('Bir hata oluştu:', error.message);
+    }
+  };
+  
+  const handleBioChange = (ev) => {
+    setBio(ev.target.value);
+  };
+
+  
 
   const handleShowMore = () => {
     setShowMore(false);
@@ -93,6 +135,7 @@ const UserProfilePage = () => {
   if (!userProfile.user) {
     return <Navigate to="/" replace />;
   }
+
 
   const { user, posts } = userProfile;
 
@@ -149,6 +192,37 @@ const UserProfilePage = () => {
               </Link>
             )}
           </div>
+        </div>
+
+        <div className="bioArea">
+          <h2>Biyografi</h2>
+          {userInfo.username === username ? (
+            <>
+            <button className='bioEditButton' onClick={() => setEditableBio(!editableBio)}>
+              {editableBio ? 'Vazgeç' : 'Biyografiyi Düzenle'}
+            </button>
+            {editableBio && 
+            <form onSubmit={handleEditProfileBio}>
+              <div>
+                <div className='bioEditArea'>
+                    <textarea name="bio" onChange={handleBioChange} maxLength={1800} disabled={!editableBio}>
+                      {user.bio}
+                    </textarea>
+                </div>
+                <button className='bioApplyButton' disabled={!editableBio}>Biyografiyi Güncelle</button>
+              </div>
+            </form>
+            
+            }
+            </>
+          ) : null}
+          {!editableBio && 
+            <div className='bioEditArea' style={{width:"80%"}}>
+              <textarea disabled="true">
+                {(user.bio && user.bio.length) > 0 ? user.bio : 'Bu kullanıcının henüz bir biyografisi yok.'}
+              </textarea>
+            </div>
+          }
         </div>
 
         <div>

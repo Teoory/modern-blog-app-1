@@ -19,7 +19,7 @@ const NotificationSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ['Yorum', 'superlike', 'share'], // Bildirim türleri
+        enum: ['Yorum', 'like', 'share', 'Bahset'], // Bildirim türleri
         required: true
     },
     isRead: {

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import SearchBox from '../../components/Searchbox/SearchBox';
 import { Link } from 'react-router-dom';
 import Image from '../../components/Image';
@@ -19,6 +19,16 @@ const SearchPage = () => {
             console.error('Error searching:', error.message);
         }
     };
+    useEffect(() => {
+      const element = document.querySelector('.aside');
+      element.style.display = 'none';
+      return () => {
+          if(window.innerWidth > 1280)
+          element.style.display = 'block';
+          else if (window.innerWidth <= 1280)
+          element.style.display = 'contents';
+      };
+    }, []);
 
     const [minSearchResults, setMinSearchResults] = useState(0);
     const [maxSearchResults, setMaxSearchResults] = useState(10);
@@ -26,26 +36,6 @@ const SearchPage = () => {
         <div className='content'>
             <SearchBox onSearch={handleSearch} />
             <div>
-                {/* {searchResults.map((result) => (
-                    // <Link to={"https://fiyasko.online/post/"+result._id} key={result._id}>{result.title}</Link>
-                    <Link style={{textDecoration: "none"}} to={"/post/"+result._id} key={result._id}>
-                        <div className="post">
-                            <div className="image">
-                                <Image src={result.cover} alt="img" loading='layz' decoding='async' />
-                            </div>
-                            <div className="text">
-                                <span className='PostTagsArea'>{result.PostTags}</span>
-                                <h1>{result.title}</h1>
-                                <p className="info">
-                                    <Link to={"/profile/"+result.author.username} className="author">{result.author.username}</Link>
-                                    <time>{result.createdAt}</time>
-                                </p>
-                                <p className="summary">{result.summary}</p>
-                            </div>
-                        </div>                        
-                    </Link>
-                ))} */}
-
                 {searchResults.slice(minSearchResults, maxSearchResults).map((result) => (
                     <Link style={{textDecoration: "none"}} to={"/post/"+result._id} key={result._id}>
                         <div className="post">

@@ -114,6 +114,7 @@ app.post ('/register', async (req, res) => {
         const userDoc = await User.create({
             username,
             email,
+            bio: '',
             password:bcrypt.hashSync(password, salt),
             tags: ['user'],
         })
@@ -230,6 +231,7 @@ app.post ('/login', async (req, res) => {
                 id:userDoc._id,
                 username,
                 email:userDoc.email,
+                bio:userDoc.bio,
                 tags:userDoc.tags,
                 profilePhoto: userDoc.profilePhoto,
                 likedPosts: userDoc.likedPosts,
@@ -297,6 +299,26 @@ app.post('/notifications', async (req, res) => {
     }
 });
 
+app.get('/notifications/:userId/:id', async (req, res) => {
+    try {
+        const { userId, id } = req.params;
+        const notification = await Notification.findById(id).populate('sender').populate('post');
+        res.json(notification);
+    } catch (error) {
+        res.status(500).json({ message: 'Bildirim getirilirken bir hata oluştu.' });
+    }
+});
+
+app.delete('/notifications/:userId/:id', async (req, res) => {
+    try {
+        const { userId, id } = req.params;
+        await Notification.findByIdAndDelete(id);
+        res.json({ message: 'Bildirim başarıyla silindi.' });
+    } catch (error) {
+        res.status(500).json({ message: 'Bildirim silinirken bir hata oluştu.' });
+    }
+});
+
 app.get('/notifications/:userId', async (req, res) => {
     const profilID = req.params.userId;
     try {
@@ -349,6 +371,36 @@ app.post('/logout', (req, res) => {
     res.json({message: 'Logged out'});
     res.sesion.destroy();
     res.redirect('/');
+});
+
+//? User Bio
+app.post('/userBio/:username', async (req, res) => {
+    const { username } = req.params;
+    const { bio } = req.body;
+    try {
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.status(404).json({ error: 'Kullanıcı bulunamadı.' });
+        }
+        user.bio = bio;
+        await user.save();
+        res.json({ bio: user.bio });
+    } catch (error) {
+        res.status(500).json({ message: 'Bir hata oluştu, kullanıcı biyografisi güncellenemedi.' });
+    }
+});
+  
+app.get('/userBio/:username', async (req, res) => {
+    const { username } = req.params;
+    try {
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.status(404).json({ error: 'Kullanıcı bulunamadı.' });
+        }
+        res.json({ bio: user.bio });
+    } catch (error) {
+        res.status(500).json({ message: 'Bir hata oluştu, kullanıcı biyografisi getirilemedi.' });
+    }
 });
 
 //? Profile Photo
@@ -1242,13 +1294,6 @@ app.get('/totalComments', async (req, res) => {
 //     res.json({ message: 'User deleted successfully' });
 // });
 
-
-//? Delete Notification
-app.delete('/notification/:id', async (req, res) => {
-    const { id } = req.params;
-    await Notification.findByIdAndDelete(id);
-    res.json({ message: 'Notification deleted successfully' });
-});
 
 //? Delete Ticket
 app.delete('/ticket/:id', async (req, res) => {

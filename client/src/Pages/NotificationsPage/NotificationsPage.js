@@ -61,23 +61,36 @@ const NotificationsPage = () => {
     }, [userInfo]);
     
 
-const formatDate = (dateString) => {
-    const opt = {
-        hour: 'numeric',
-        minute: 'numeric',
-        day: 'numeric',
-        month: 'numeric',
-        year: 'numeric',
+    const formatDate = (dateString) => {
+        const opt = {
+            hour: 'numeric',
+            minute: 'numeric',
+            day: 'numeric',
+            month: 'numeric',
+            year: 'numeric',
+        };
+        return new Date(dateString).toLocaleDateString('tr-TR', opt);
     };
 
-    return new Date(dateString).toLocaleDateString('tr-TR', opt);
-};
+    // document.title = 'Bildirimler - Fiyasko Blog';
+    useEffect(() => {
+        const element = document.querySelector('.aside');
+        element.style.display = 'none';
+        return () => {
+            if(window.innerWidth > 1280)
+            element.style.display = 'block';
+            else if (window.innerWidth <= 1280)
+            element.style.display = 'contents';
+        };
+    }, []);
+
 
     const locales = { tr, eu };
     return (
         <div>
             <h1>Bildirimler</h1>
-            <ul>
+            <div>
+                {notifications.length === 0 && <h5>Bildiriminiz bulunmamaktadır.</h5>}
                 {notifications.map(notification => (
                     <>
                     {notification.sender.username !== userInfo.username &&
@@ -85,9 +98,26 @@ const formatDate = (dateString) => {
                         <div className="NotificationArea">
                             <Image src={notification.sender.profilePhoto} alt={notification.sender.username} className='ProfilePhoto'/>
                             <Link to={`/profile/${notification.sender.username}`}> @{notification.sender.username} </Link>  kullanıcısı,
-                            "<Link to={`/post/${notification.post._id}`}>{notification.post.title}</Link>" adlı postuna 
-                            <span> {notification.type} yaptı.</span>
+                            <Link to={`/post/${notification.post._id}`}>"{notification.post.title}"</Link>
+                            {notification.type === 'Yorum' && <span> paylaşımına yorum yaptı.</span>}
+                            {notification.type === 'like' && <span> paylaşımını beğendi.</span>}
+                            {notification.type === 'Bahset' && <span> paylaşımında senden bahsetti.</span>}
+                            {/* <span> {notification.type} yaptı.</span> */}
                         </div>
+                        <button className='NotificationDelButton' onClick={() => {
+                            fetch(`https://fiyasko-blog-api.vercel.app/notifications/${userInfo.id}/${notification._id}`, {
+                                method: 'DELETE',
+                                credentials: 'include'
+                            }).then(response => {
+                                if (response.ok) {
+                                    setNotifications(notifications.filter(n => n._id !== notification._id));
+                                } else {
+                                    console.error('Bildirim silinemedi.');
+                                }
+                            }
+                            );
+                        }
+                        }>Sil</button>
 
                         <span className='commentTime'><time>{format(new Date(notification.createdAt), "HH:MM / dd MMMM yyyy", {locale: locales["tr"],})}</time></span>
                         {/* <span className='commentTime'>{formatDate(notification.createdAt)}</span> */}
@@ -95,7 +125,7 @@ const formatDate = (dateString) => {
                     }
                     </>
                 ))}
-            </ul>
+            </div>
         </div>
     );
 };
