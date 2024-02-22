@@ -73,7 +73,7 @@ const PostPage = () => {
     
     const sendNotification = async (senderId, receiverId, postId, type) => {
         try {
-            const response = await fetch('http://localhost:3030/send-notification', {
+            const response = await fetch('https://fiyasko-blog-api.vercel.app//send-notification', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
