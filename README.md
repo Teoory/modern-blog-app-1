@@ -28,7 +28,7 @@ mongoose.connect('mongodb+srv://username:password@cluster0.hd2atfr.mongodb.net/?
 <hr>
 
 # Son Değişiklikler:</br>
-### V2.2.1
+### V2.2.2
 - Kullanıcı Biyografi ekleme ve düzenleme.
 - Yorumlarda kullanıcıdan bahsetme
   - "@username text" bahsedilen kullanıcıya bildirim gönderir
