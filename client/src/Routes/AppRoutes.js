@@ -17,7 +17,7 @@ const AppRoutes = () => {
     const username = userInfo?.username;
 
     return (
-        <>            
+        <>
             {username
                 ?   <PrivRoutes />
                 :   <DefRoutes />
