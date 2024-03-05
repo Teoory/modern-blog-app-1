@@ -151,7 +151,7 @@ app.post('/request-verify-code', async (req, res) => {
             subject: 'Fiysako Blog | E-posta Doğrulama Kodu',
             // text: `Kaydınızı tamamlamak için aşağıdaki doğrulama kodunu kullanın: ${existingVerification.code}`,
             html: `
-                <div style="text-align: center;display: flex;justify-content: center;align-items: center;">
+                <div style="text-align: center;display: flex;justify-content: center;">
                     <div style="background: #f7f0e4;padding: 20px;border-radius: 25px;width: max-content;">
                         <img src="cid:logo" alt="Logo" style="width: auto; height: 100px;margin-bottom: -15px;">
                         <h1 style="color: #333;padding-bottom: 5px;border-bottom: 1px solid #aaa;">E-posta Doğrulama Kodu</h1>
@@ -1307,4 +1307,3 @@ app.delete('/ticket/:id', async (req, res) => {
 app.listen(3030, () => {
     console.log('Server listening on port 3030 || nodemon index.js')
 });
-
