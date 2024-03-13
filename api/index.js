@@ -367,10 +367,7 @@ app.get('/check-new-notifications', async (req, res) => {
 
 //? Logout
 app.post('/logout', (req, res) => {
-    res.clearCookie('token');
-    res.json({message: 'Logged out'});
-    res.sesion.destroy();
-    res.redirect('/');
+    res.clearCookie('token').json({message: 'Logged out'});
 });
 
 //? User Bio
