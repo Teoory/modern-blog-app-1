@@ -12,3 +12,4 @@ api/profilePhotos/*
 *.pnp.js
 *.txt
 /api/node_modules
+/api/node_modules
