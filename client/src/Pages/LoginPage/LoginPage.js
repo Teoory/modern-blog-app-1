@@ -21,6 +21,9 @@ const LoginPage = () => {
     });
     if (response.ok) {
       response.json().then(userInfo => {
+        if (userInfo.token) {
+          localStorage.setItem('token', userInfo.token);
+        }
         setUserInfo(userInfo);
         setRedirect(true);
       });

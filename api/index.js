@@ -1120,11 +1120,8 @@ app.get('/tags/:tag', async (req, res) => {
 
 app.post('/post/:id/comment', uploadProfilePhoto.single('file'), async (req, res) => {
     const { id } = req.params;
-    const authHeader = req.headers['authorization'];
-
-    const token = req.cookies || (authHeader && authHeader.split(' ')[1]);
-    
-    // const token = authHeader && authHeader.split(' ')[1];
+    const authHeader = req.headers['authorization'];    
+    const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
         return res.status(401).json({ error: 'Token gereklidir' });
