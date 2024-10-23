@@ -1117,8 +1117,30 @@ app.get('/tags/:tag', async (req, res) => {
 
 
 //? Comments
-
+//* Web Comment 
 app.post('/post/:id/comment', uploadProfilePhoto.single('file'), async (req, res) => {
+    const {id} = req.params;
+    const {token} = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+        const {content} = req.body;
+
+        try {
+            const commentDoc = await Comment.create({
+                content,
+                author: info.id,
+                post: id,
+            });
+
+            res.json(commentDoc);
+        } catch (e) {
+            console.error('Error with add comment',e);
+            res.status(500).json({e:'server error'});
+        }
+    });
+});
+//* Mobile Comment
+app.post('/post/:id/mobilecomment', uploadProfilePhoto.single('file'), async (req, res) => {
     const { id } = req.params;
     const authHeader = req.headers['authorization'];    
     const token = authHeader && authHeader.split(' ')[1];
@@ -1148,29 +1170,6 @@ app.post('/post/:id/comment', uploadProfilePhoto.single('file'), async (req, res
         }
     });
 });
-
-// OLD
-// app.post('/post/:id/comment', uploadProfilePhoto.single('file'), async (req, res) => {
-//     const {id} = req.params;
-//     const {token} = req.cookies;
-//     jwt.verify(token, secret, {}, async (err, info) => {
-//         if(err) throw err;
-//         const {content} = req.body;
-
-//         try {
-//             const commentDoc = await Comment.create({
-//                 content,
-//                 author: info.id,
-//                 post: id,
-//             });
-
-//             res.json(commentDoc);
-//         } catch (e) {
-//             console.error('Error with add comment',e);
-//             res.status(500).json({e:'server error'});
-//         }
-//     });
-// });
 
 app.get('/post/:id/comments', async (req, res) => {
     const {id} = req.params;

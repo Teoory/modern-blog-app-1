@@ -23,6 +23,9 @@ const LoginPage = () => {
       response.json().then(userInfo => {
         if (userInfo.token) {
           localStorage.setItem('token', userInfo.token);
+        } else {
+          alert('Token alınamadı!');
+          return;
         }
         setUserInfo(userInfo);
         setRedirect(true);
