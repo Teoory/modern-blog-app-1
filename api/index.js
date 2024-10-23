@@ -235,6 +235,7 @@ app.post ('/login', async (req, res) => {
                 tags:userDoc.tags,
                 profilePhoto: userDoc.profilePhoto,
                 likedPosts: userDoc.likedPosts,
+                token,
             });
             console.log('Logged in, Token olusturuldu.', token);
         });
