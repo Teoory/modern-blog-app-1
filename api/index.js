@@ -1119,12 +1119,21 @@ app.get('/tags/:tag', async (req, res) => {
 //? Comments
 
 app.post('/post/:id/comment', uploadProfilePhoto.single('file'), async (req, res) => {
-    const {id} = req.params;
-    const {token} = req.cookies;
-    jwt.verify(token, secret, {}, async (err, info) => {
-        if(err) throw err;
-        const {content} = req.body;
+    const { id } = req.params;
+    const authHeader = req.headers['authorization']; // Authorization başlığından token'ı alıyoruz
+    const token = authHeader && authHeader.split(' ')[1]; // Bearer kısmını ayıklıyoruz
 
+    if (!token) {
+        return res.status(401).json({ error: 'Token gereklidir' });
+    }
+
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if (err) {
+            return res.status(403).json({ error: 'Token geçersiz' });
+        }
+
+        const { content } = req.body;
+        
         try {
             const commentDoc = await Comment.create({
                 content,
@@ -1134,11 +1143,34 @@ app.post('/post/:id/comment', uploadProfilePhoto.single('file'), async (req, res
 
             res.json(commentDoc);
         } catch (e) {
-            console.error('Error with add comment',e);
-            res.status(500).json({e:'server error'});
+            console.error('Error with add comment', e);
+            res.status(500).json({ e: 'server error' });
         }
     });
 });
+
+// OLD
+// app.post('/post/:id/comment', uploadProfilePhoto.single('file'), async (req, res) => {
+//     const {id} = req.params;
+//     const {token} = req.cookies;
+//     jwt.verify(token, secret, {}, async (err, info) => {
+//         if(err) throw err;
+//         const {content} = req.body;
+
+//         try {
+//             const commentDoc = await Comment.create({
+//                 content,
+//                 author: info.id,
+//                 post: id,
+//             });
+
+//             res.json(commentDoc);
+//         } catch (e) {
+//             console.error('Error with add comment',e);
+//             res.status(500).json({e:'server error'});
+//         }
+//     });
+// });
 
 app.get('/post/:id/comments', async (req, res) => {
     const {id} = req.params;
