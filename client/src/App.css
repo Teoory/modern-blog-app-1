@@ -269,6 +269,10 @@ div.PostTags span {
   text-align: center;
 }
 
+pre.ql-syntax {
+  background-color: #00071c !important;
+}
+
 /* ALL POSTS */
 div.allPosts {
   width: 300px;
