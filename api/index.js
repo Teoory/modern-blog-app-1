@@ -747,6 +747,49 @@ app.post('/post/:id/like', async (req, res) => {
       }
     });
 });
+
+app.post('/post/:id/mobileLike', async (req, res) => {
+    const { id } = req.params;
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if(!token) {
+        return res.status(401).json({ error: 'Token gereklidir' });
+    }
+
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if (err) {
+            return res.status(403).json({ error: 'Token geçersiz' });
+        }
+    
+        try {
+            const postDoc = await Post.findById(id);
+            const hasLiked = postDoc.likes.includes(info.id);
+            if (hasLiked) {
+                postDoc.likes.pull(info.id);
+                
+                const user = await User.findOne({ _id: info.id });
+                user.likedPosts.pull(postDoc._id);
+                await user.save();
+            } else {
+                postDoc.likes.push(info.id);
+
+                const user = await User.findOne({ _id: info.id });
+                if(!user.likedPosts.includes(postDoc._id)) {
+                    user.likedPosts.push(postDoc._id);
+                    await user.save();
+                }
+            }
+
+            await postDoc.save();
+
+            res.json({ success: true, likes: postDoc.likes.length, isLiked: !hasLiked });
+        } catch (error) {
+            console.error('Error toggling like:', error.message);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
+});
   
 
 app.get('/post/:id/likes', async (req, res) => {
@@ -784,6 +827,31 @@ app.get('/post/:id/hasLiked', async (req, res) => {
   });
 });
 
+app.get('/post/:id/hasMobileLiked', async (req, res) => {
+    const { id } = req.params;
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if(!token) {
+        return res.status(401).json({ error: 'Token gereklidir' });
+    }
+
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if (err) {
+            return res.status(403).json({ error: 'Token geçersiz' });
+        }
+
+        try {
+            const postDoc = await Post.findById(id);
+            const hasLiked = postDoc.likes.includes(info.id);
+            res.json({ hasLiked });
+        } catch (error) {
+            console.error('Error checking if user has liked:', error.message);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
+});
+
 //* SuperLike
 app.post('/post/:id/superlike', async (req, res) => {
     const { id } = req.params;
@@ -808,6 +876,39 @@ app.post('/post/:id/superlike', async (req, res) => {
         console.error('Error toggling like:', error.message);
         res.status(500).json({ error: 'Internal Server Error' });
       }
+    });
+});
+
+app.post('/post/:id/mobileSuperlike', async (req, res) => {
+    const { id } = req.params;
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if(!token) {
+        return res.status(401).json({ error: 'Token gereklidir' });
+    }
+
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if (err) {
+            return res.status(403).json({ error: 'Token geçersiz' });
+        }
+    
+        try {
+            const postDoc = await Post.findById(id);
+            const hasSuperLiked = postDoc.superlikes.includes(info.id);
+            if (hasSuperLiked) {
+                postDoc.superlikes.pull(info.id);
+            } else {
+                postDoc.superlikes.push(info.id);
+            }
+    
+            await postDoc.save();
+    
+            res.json({ success: true, superlikes: postDoc.superlikes.length, isSuperLiked: !hasSuperLiked });
+        } catch (error) {
+            console.error('Error toggling like:', error.message);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
     });
 });
 
@@ -844,6 +945,31 @@ app.get('/post/:id/hasSuperLiked', async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
+});
+
+app.get('/post/:id/hasMobileSuperLiked', async (req, res) => {
+    const { id } = req.params;
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if(!token) {
+        return res.status(401).json({ error: 'Token gereklidir' });
+    }
+
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if (err) {
+            return res.status(403).json({ error: 'Token geçersiz' });
+        }
+
+        try {
+            const postDoc = await Post.findById(id);
+            const hasSuperLiked = postDoc.superlikes.includes(info.id);
+            res.json({ hasSuperLiked });
+        } catch (error) {
+            console.error('Error checking if user has superliked:', error.message);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
 });
 
 
