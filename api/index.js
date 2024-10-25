@@ -32,7 +32,7 @@ const salt = bcrypt.genSaltSync(10);
 const secret = '582905839824723984723749872938479823798huhsıufhsdfuhsdıu8789a67868768678a6s7d87a9';
 
 const corsOptions = {
-    origin: ['http://localhost:3000', 'http://localhost:3030', 'https://fiyasko-blog-api.vercel.app', 'https://fiyaskoblog-frontend.vercel.app', 'https://fiyasko.online'],
+    origin: ['http://localhost:3000', 'http://localhost:3030', 'https://fiyasko-blog-api.vercel.app', 'https://fiyaskoblog-frontend.vercel.app', 'https://fiyasko.online', 'https://kofu.com.tr'],
     credentials: true,
     methods: 'GET, POST, PUT, DELETE, OPTIONS',
     allowedHeaders: 'Content-Type, Authorization',
