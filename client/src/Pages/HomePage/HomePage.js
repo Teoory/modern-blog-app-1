@@ -43,12 +43,12 @@ const HomePage = () => {
 
   return (
     <>
-      <div className='HeadImage'>
+      {/* <div className='HeadImage'>
         <img src={upImage} alt="upperImage" decoding='async'/>
       </div>
 
       
-        <hr/>
+        <hr/> */}
       <h2>Son 3 Gönderi</h2>
       <div className="posts">
         {posts.length > 0 && posts.slice(0,3).map(post => (
