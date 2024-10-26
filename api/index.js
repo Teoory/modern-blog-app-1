@@ -368,7 +368,7 @@ app.get('/check-new-notifications', async (req, res) => {
 
 //? Logout
 app.post('/logout', (req, res) => {
-    res.clearCookie('token').json({message: 'Logged out'});
+    res.clearCookie('token').json({message: 'Logged out from all devices'});
 });
 
 //? User Bio
@@ -421,6 +421,25 @@ app.post('/profilePhoto', uploadProfilePhoto.single('file'), async (req, res) =>
         // const newPath = path + newFileName;
 
         // fs.renameSync(path, newPath);
+        userDoc.profilePhoto = url;
+        await userDoc.save();
+        res.json(userDoc);
+    });
+});
+
+app.post('/mobileProfilePhoto', uploadProfilePhoto.single('file'), async (req, res) => {
+    const pp = [];
+    const {originalname,path,mimetype} = req.file;
+    const url = await uploadPpToS3(path, originalname, mimetype);
+    pp.push(url);
+
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+
+        const userDoc = await User.findById(info.id);
         userDoc.profilePhoto = url;
         await userDoc.save();
         res.json(userDoc);
