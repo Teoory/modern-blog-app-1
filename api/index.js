@@ -253,6 +253,15 @@ app.get('/profile', (req, res) => {
     });
 });
 
+app.get('/mobileProfile', (req, res) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    jwt.verify(token, secret, {}, (err, info) => {
+        if(err) throw err;
+        res.json(info);
+    });
+});
+
 app.get('/profile/:username', async (req, res) => {
     const { username } = req.params;
   
