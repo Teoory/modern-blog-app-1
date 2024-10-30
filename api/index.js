@@ -497,8 +497,32 @@ app.put('/darkmode', async (req, res) => {
     });
 });
 
+app.put('/mobileDarkmode', async (req, res) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+        const userDoc = await User.findById(info.id);
+        userDoc.darkMode = !userDoc.darkMode;
+        await userDoc.save();
+        res.json(userDoc.darkMode);
+    });
+});
+
 app.get('/darkmode', async (req, res) => {
     const {token} = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+        const userDoc = await User.findById(info.id);
+        res.json(userDoc.darkMode);
+    });
+});
+
+app.get('/mobileDarkmode', async (req, res) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
         const userDoc = await User.findById(info.id);
