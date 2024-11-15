@@ -377,7 +377,14 @@ app.get('/check-new-notifications', async (req, res) => {
 
 //? Logout
 app.post('/logout', (req, res) => {
+    req.session.destroy();
     res.clearCookie('token').json({message: 'Logged out from all devices'});
+    res.cookie('token', '', {
+        sameSite: "none",
+        maxAge: 0,
+        httpOnly: false,
+        secure: true
+    });
 });
 
 //? User Bio
