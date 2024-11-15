@@ -24,9 +24,17 @@ const AppRoutes = () => {
     }, [location.pathname]);
 
 
+    // useEffect(() => {
+    //     ReactGA.send({ hitType: "pageview", page: location.pathname });
+    // }, [location.pathname]);
+
+
     useEffect(() => {
-        ReactGA.send({ hitType: "pageview", page: location.pathname });
-    }, [location.pathname]);
+        ReactGA.send({
+            hitType: "pageview",
+            page: location.pathname + location.search,
+        });
+    }, [location.pathname, location.search]);
     
     const username = userInfo?.username;
 
