@@ -76,9 +76,13 @@ async function uploadToS3(path, originalname, mimetype, info) {
     const parts = originalname.split('.');
     const ext = parts[parts.length - 1];
     const newFileName = `${Date.now()}_${Math.random().toString(36).substring(6)}.${ext}`;
+    const buffer = await sharp(fs.readFileSync(path))
+        .resize({ width: 800 })
+        .jpeg({ quality: 50 })
+        .toBuffer();
     await client.send(new PutObjectCommand({
         Bucket: bucket,
-        Body: fs.readFileSync(path),
+        Body: buffer,
         Key: 'uploads/' + newFileName,
         contentType: mimetype,
         ACL: 'public-read',
@@ -97,9 +101,13 @@ async function uploadPpToS3(path, originalname, mimetype, info) {
     const parts = originalname.split('.');
     const ext = parts[parts.length - 1];
     const newFileName = `${Date.now()}_${Math.random().toString(36).substring(6)}.${ext}`;
+    const buffer = await sharp(fs.readFileSync(path))
+        .resize({ width: 800 })
+        .jpeg({ quality: 50 })
+        .toBuffer();
     await client.send(new PutObjectCommand({
         Bucket: bucket,
-        Body: fs.readFileSync(path),
+        Body: buffer,
         Key: 'profilePhotos/' + newFileName,
         contentType: mimetype,
         ACL: 'public-read',
