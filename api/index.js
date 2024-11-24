@@ -24,6 +24,7 @@ const nodemailer = require('nodemailer');
 const path = require('path');
 const logoPath = path.join(__dirname, 'logo.png');
 const fs = require('fs');
+const sharp = require('sharp');
 const session = require('express-session');
 const { count } = require('console');
 require('dotenv').config();
