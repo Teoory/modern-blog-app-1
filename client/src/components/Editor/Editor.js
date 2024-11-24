@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import Quill from 'quill';
 import 'react-quill/dist/quill.snow.css';
@@ -5,10 +6,8 @@ import './Editor.css';
 // import '../../QuillSnow.css';
 
 const Editor = ({value, onChange}) => {
-    
 const modules = {
     toolbar: [
-        [{ 'font': [] }],
         [{ 'header': [2, 3, 4, false] }],
         ['bold', 'italic', 'underline', 'strike'],
         ['blockquote', 'code-block'],
@@ -16,12 +15,11 @@ const modules = {
         [{ 'align': [] }, {'indent': '-1'}, {'indent': '+1'}],
         [{'list': 'ordered'}, {'list': 'bullet'}],
         ['link', 'image', 'video'],
-        ['custom-hr']
+        ["custom-hr"]
     ]
 };
   
 const formats = [
-    'font',
     'header',
     'bold', 'italic', 'underline', 'strike',
     'blockquote', 'code-block',
@@ -38,6 +36,20 @@ HorizontalLine.blotName = 'custom-hr';
 HorizontalLine.tagName = 'hr';
 Quill.register(HorizontalLine);
 
+const CustomHRButton = () => {
+  const quill = Quill.find(document.querySelector('.ql-container'));
+  quill.getModule('toolbar').addHandler('custom-hr', () => {
+      const range = quill.getSelection();
+      if (range) {
+          quill.insertEmbed(range.index, 'custom-hr', true, Quill.sources.USER);
+          quill.setSelection(range.index + 1, Quill.sources.SILENT);
+      }
+  });
+};
+useEffect(() => {
+  CustomHRButton();
+}, []);
+
 
 window.onscroll = function() {scrollFunction()};
 
@@ -45,12 +57,12 @@ function scrollFunction() {
   if (document.querySelector(".ql-toolbar.ql-snow") === null) return;
   const toolbar = document.querySelector(".ql-toolbar.ql-snow");
   if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-    toolbar.style.position = "fixed";
+    toolbar.style.position = "sticky";
     toolbar.style.top = "80px";
     toolbar.style.zIndex = 999;
     toolbar.style.backgroundColor = "white";
   } else if (document.body.scrollTop < 200 || document.documentElement.scrollTop < 200) {
-    toolbar.style.position = "relative";
+    toolbar.style.position = "stactic";
   }
   else return;
 }

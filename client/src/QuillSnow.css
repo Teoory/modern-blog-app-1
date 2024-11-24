@@ -713,14 +713,17 @@
    .ql-picker.ql-font .ql-picker-label::before,
    .ql-picker.ql-font .ql-picker-item::before {
     content: 'Sans Serif';
+    font-family: 'Sans Serif';
   }
    .ql-picker.ql-font .ql-picker-label[data-value=serif]::before,
    .ql-picker.ql-font .ql-picker-item[data-value=serif]::before {
     content: 'Serif';
+    font-family: 'Serif';
   }
    .ql-picker.ql-font .ql-picker-label[data-value=monospace]::before,
    .ql-picker.ql-font .ql-picker-item[data-value=monospace]::before {
     content: 'Monospace';
+    font-family: 'Monospace';
   }
    .ql-picker.ql-font .ql-picker-item[data-value=serif]::before {
     font-family: Georgia, Times New Roman, serif;
