@@ -49,6 +49,7 @@ const HomePage = () => {
 
       
         <hr/> */}
+      <h1 style={{textAlign:'center',color:'var(--color-dark-varient)',margin:0}}>Merhaba, Kofu Blog'a Hoşgeldiniz!</h1>
       <h2>Son 3 Gönderi</h2>
       <div className="posts">
         {posts.length > 0 && posts.slice(0,3).map(post => (

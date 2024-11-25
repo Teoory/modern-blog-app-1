@@ -28,6 +28,8 @@ import VerifyPage from '../Pages/RegisterPage/VerifyPage';
 
 import SearchPage from '../Pages/SearchPage/SearchPage';
 
+import NotFoundPage from '../Pages/NotFoundPage/NotFoundPage';
+
 const PrivRoutes = () => {
     const { userInfo } = useContext(UserContext);
     useEffect(() => {
@@ -66,6 +68,7 @@ const PrivRoutes = () => {
                         <Route path="/post/:id" element={<PostPage/>} />
                         <Route path="/ticketCreate" element={<TicketCreatePage/>} />
                         <Route path="/tickets/:id" element={<TicketControlPage username={username} isAdmin={isAdmin}/>} />
+                        <Route path="/profile/:username" element={<UserProfilePage/>} />
                         <Route path="/settings" element={<ProfileSettingsPage />} />
                         <Route path="/verify-email" element={<VerifyPage/>} />
                         <Route path="/privacy" element={<Privacy />} />
@@ -102,7 +105,8 @@ const PrivRoutes = () => {
                 :   null
             }
 
-            <Route index path="/*" element={<HomePage />} />
+            <Route index path="/" element={<HomePage />} />
+            <Route path="*" element={<NotFoundPage/>} />
         </Routes>
     )
 }
