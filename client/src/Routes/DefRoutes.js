@@ -15,6 +15,7 @@ const DefRoutes = () => {
   return (
     <Routes>
       <Route index path ="/" element={<HomePage/>} />
+      <Route index path="/home" element={<HomePage />} />
       <Route path="*" element={<NotFoundPage/>} />
       <Route path="/login" element={<LoginPage/>} />
       <Route path="/register" element={<RegisterPage/>} />

@@ -47,7 +47,7 @@ const LoginPage = () => {
 
 
   if(redirect) {
-    return <Navigate to="/"/>;
+    return <Navigate to="/home"/>;
   }
   return (
     <div className='loginArea'>
