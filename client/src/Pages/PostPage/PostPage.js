@@ -5,6 +5,7 @@ import { tr, eu } from 'date-fns/locale';
 import { UserContext } from '../../Hooks/UserContext';
 import Image from '../../components/Image';
 import '../../QuillSnow.css';
+import Post from '../../components/Post/Post';
 
 const PostPage = () => {
     const [postInfo, setPostInfo] = useState(null);
@@ -17,6 +18,7 @@ const PostPage = () => {
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const {id} = useParams();
+    const [posts, setPosts] = useState([]);
     
     useEffect(() => {
         fetch(`https://fiyasko-blog-api.vercel.app/post/${id}`)
@@ -70,6 +72,15 @@ const PostPage = () => {
                 setHasSuperLiked(data.hasSuperLiked);
             });
     }, [id]);
+
+    
+    useEffect(() => {
+    fetch('https://fiyasko-blog-api.vercel.app/post').then(response => {
+      response.json().then(posts => {
+        setPosts(posts);
+      });
+    });
+    }, []);
     
     const sendNotification = async (senderId, receiverId, postId, type) => {
         try {
@@ -358,6 +369,27 @@ const PostPage = () => {
                     ))}
                 </div>
             }
+        </div>
+
+        <div className="related-posts">
+            <h2>Benzer Gönderiler</h2>
+            <div className="posts">
+                {posts.length > 0 && (() => {
+                    const relatedPosts = posts.filter(post => 
+                        post.PostTags === postInfo.PostTags && post._id !== postInfo._id
+                    );
+                    const displayPosts = relatedPosts.length > 0 
+                        ? relatedPosts.slice(0, 3)
+                        : [...posts]
+                            .filter(post => post._id !== postInfo._id)
+                            .sort(() => Math.random() - 0.5)
+                            .slice(0, 3);
+                
+                    return displayPosts.map(post => (
+                        <Post {...post} key={post._id} />
+                    ));
+                })()}
+            </div>
         </div>
     </div>
   )

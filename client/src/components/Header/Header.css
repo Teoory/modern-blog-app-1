@@ -331,6 +331,11 @@ header .nav {
     justify-content: flex-start;
   }
 
+  .header {
+    flex-direction: column;
+    align-items: center;
+  }
+
   header nav {
     margin-top: 10px;
     display: grid;

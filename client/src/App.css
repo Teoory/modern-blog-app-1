@@ -355,7 +355,8 @@ div.AllPostsList {
 }
 
 /* Begeniler */
-div.LikesArea::before {
+div.LikesArea::before,
+.related-posts::before {
   content: '';
   display: block;
   clear: both;
@@ -369,6 +370,18 @@ div.LikesArea::before {
   width: 90%;
   height: 3px;
   border-radius: 25px;
+}
+
+.related-posts h1 {
+  text-align: start !important;
+}
+
+.related-posts .image a {
+  width: 100%;
+}
+
+.related-posts::before {
+  margin-top: 60px;
 }
 
 div.LikesArea {

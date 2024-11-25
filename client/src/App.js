@@ -1,7 +1,7 @@
 import './App.css';
 import ReactGA from "react-ga4";
 import { UserContextProvider } from './Hooks/UserContext';
-import Aside from './components/Aside/Aside';
+// import Aside from './components/Aside/Aside';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import AppRoutes from './Routes/AppRoutes';
@@ -17,7 +17,7 @@ function App() {
       <main className="app">
         <Warning />
         <Header />
-        <Aside/>
+        {/* <Aside/> */}
         <div className="content">
           <AppRoutes />
         </div>

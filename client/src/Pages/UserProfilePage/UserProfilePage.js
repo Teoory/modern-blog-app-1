@@ -57,16 +57,16 @@ const UserProfilePage = () => {
     .catch(error => console.error('Error fetching liked posts:', error));
   }, [username]);
   
-  useEffect(() => {
-    const element = document.querySelector('.aside');
-    element.style.display = 'none';
-    return () => {
-        if(window.innerWidth > 1280)
-        element.style.display = 'block';
-        else if (window.innerWidth <= 1280)
-        element.style.display = 'contents';
-    };
-  }, []);
+  // useEffect(() => {
+  //   const element = document.querySelector('.aside');
+  //   element.style.display = 'none';
+  //   return () => {
+  //       if(window.innerWidth > 1280)
+  //       element.style.display = 'block';
+  //       else if (window.innerWidth <= 1280)
+  //       element.style.display = 'contents';
+  //   };
+  // }, []);
 
   if (!userInfo) {
     return <Navigate to="/" replace />;

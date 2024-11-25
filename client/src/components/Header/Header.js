@@ -174,6 +174,7 @@ const Header = () => {
     <>
     <div className='header'>
         <header>
+        <div style={{display:'flex',justifyContent:'space-between',maxWidth:'960px',width:'100%'}}>
             <Link to="/" className="logo" ><img alt='logo' className='logo' src={logo}/></Link>
             <nav>
         {username ? (
@@ -358,6 +359,7 @@ const Header = () => {
         </>
         )}
             </nav>
+        </div>
         </header>
 
         <div>

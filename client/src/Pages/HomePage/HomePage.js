@@ -33,13 +33,13 @@ const HomePage = () => {
     return posts.filter(post => selectedTags.includes(post.PostTags));
   };
   
-  useEffect(() => {
-    const element = document.querySelector('.aside');
-        if(window.innerWidth > 1280)
-        element.style.display = 'block';
-        else if (window.innerWidth <= 1280)
-        element.style.display = 'contents';
-  }, []);
+  // useEffect(() => {
+  //   const element = document.querySelector('.aside');
+  //       if(window.innerWidth > 1280)
+  //       element.style.display = 'block';
+  //       else if (window.innerWidth <= 1280)
+  //       element.style.display = 'contents';
+  // }, []);
 
   return (
     <>

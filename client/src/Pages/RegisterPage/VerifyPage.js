@@ -18,16 +18,16 @@ const VerifyPage = () => {
         });
     }, []);
     
-    useEffect(() => {
-        const element = document.querySelector('.aside');
-        element.style.display = 'none';
-        return () => {
-            if(window.innerWidth > 1280)
-            element.style.display = 'block';
-            else if (window.innerWidth <= 1280)
-            element.style.display = 'contents';
-        };
-      }, []);
+    // useEffect(() => {
+    //     const element = document.querySelector('.aside');
+    //     element.style.display = 'none';
+    //     return () => {
+    //         if(window.innerWidth > 1280)
+    //         element.style.display = 'block';
+    //         else if (window.innerWidth <= 1280)
+    //         element.style.display = 'contents';
+    //     };
+    //   }, []);
 
     const verifyEmail = async (ev) => {
         ev.preventDefault();

@@ -34,16 +34,16 @@ const LoginPage = () => {
       alert('Hatalı kullanıcı adı veya şifre!');
     }
   }
-  useEffect(() => {
-    const element = document.querySelector('.aside');
-    element.style.display = 'none';
-    return () => {
-        if(window.innerWidth > 1280)
-        element.style.display = 'block';
-        else if (window.innerWidth <= 1280)
-        element.style.display = 'contents';
-    };
-  }, []);
+  // useEffect(() => {
+  //   const element = document.querySelector('.aside');
+  //   element.style.display = 'none';
+  //   return () => {
+  //       if(window.innerWidth > 1280)
+  //       element.style.display = 'block';
+  //       else if (window.innerWidth <= 1280)
+  //       element.style.display = 'contents';
+  //   };
+  // }, []);
 
 
   if(redirect) {

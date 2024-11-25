@@ -65,23 +65,23 @@ const ProfilSettingsPage = () => {
         GetDarkMode();
     }
     
-    useEffect(() => {
-        const element = document.querySelector('.aside');
-        element.style.display = 'none';
-        return () => {
-            if(window.innerWidth > 1280)
-            element.style.display = 'block';
-            else if (window.innerWidth <= 1280)
-            element.style.display = 'contents';
-        };
-      }, []);
+    // useEffect(() => {
+    //     const element = document.querySelector('.aside');
+    //     element.style.display = 'none';
+    //     return () => {
+    //         if(window.innerWidth > 1280)
+    //         element.style.display = 'block';
+    //         else if (window.innerWidth <= 1280)
+    //         element.style.display = 'contents';
+    //     };
+    //   }, []);
 
-    var asideElement = document.querySelector('.aside');
-    if (aside && asideElement.classList.contains('aside-closed')) {
-        asideElement.classList.add('aside-closed');
-    } else {
-        asideElement.classList.remove('aside-closed');
-    }
+    // var asideElement = document.querySelector('.aside');
+    // if (aside && asideElement.classList.contains('aside-closed')) {
+    //     asideElement.classList.add('aside-closed');
+    // } else {
+    //     asideElement.classList.remove('aside-closed');
+    // }
 
     return (
     <div className='settingsArea'>
@@ -104,9 +104,9 @@ const ProfilSettingsPage = () => {
             <a onClick={logout}>Logout</a>
         </div>
 
-        <div className="asideButton">
+        {/* <div className="asideButton">
             <a onClick={asideToggle}>Aside</a>
-        </div>
+        </div> */}
 
             <div className="profil-settings-content">
                 <div className="SendTicket">
