@@ -113,8 +113,6 @@ const UserProfilePage = () => {
     setBio(ev.target.value);
   };
 
-  
-
   const handleShowMore = () => {
     setShowMore(false);
 
