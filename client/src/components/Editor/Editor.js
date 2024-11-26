@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import Quill from 'quill';
-import 'react-quill/dist/quill.snow.css';
+// import 'react-quill/dist/quill.snow.css';
 import './Editor.css';
 // import '../../QuillSnow.css';
 

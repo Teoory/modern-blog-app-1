@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Navigate, useParams, Link } from 'react-router-dom';
-import Editor from '../../components/Editor/Editor';
+// import Editor from '../../components/Editor/Editor';
+import CKEditorComponent from "../../components/Editor/CKEditorComponent";
 import 'react-quill/dist/quill.snow.css';
 
 const EditPost = () => {
@@ -92,7 +93,7 @@ const EditPost = () => {
 
             <input  type="file"
                     onChange={ev => setFiles(ev.target.files)}/>
-            <Editor value={content} onChange={setContent}/>
+            <CKEditorComponent value={content} onChange={setContent}/>
             <button style={{marginTop:'5px'}}>Gönderiyi Güncelle</button>
         </form>
         </div>

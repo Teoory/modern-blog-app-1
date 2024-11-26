@@ -1,4 +1,4 @@
-hr {
+/* hr {
     border: none;
     color: #868686;
     letter-spacing: 1.35em;
@@ -30,4 +30,44 @@ iframe {
         width: 100% !important;
         height: 400px !important;
     }
+} */
+
+
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+@media print {
+	body {
+		margin: 0 !important;
+	}
 }
+
+.main-container {
+	font-family: 'Lato';
+	width: 100%;
+}
+
+.ck-content {
+	font-family: 'Lato';
+	line-height: 1.6;
+	word-break: break-word;
+}
+
+.ck.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-blurred {
+    background: transparent;
+}
+
+.ck.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-focused {
+    background: transparent;
+}
+
+.ck.ck-sticky-panel__content.ck-sticky-panel__content_sticky {
+    top: 85px !important;
+}
+
+/* .editor-container_classic-editor .editor-container__editor {
+    min-width: 100%;
+} */
+
+
+/* .editor-container_include-block-toolbar {
+} */

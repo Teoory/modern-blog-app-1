@@ -1,7 +1,8 @@
 import 'react-quill/dist/quill.snow.css';
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import Editor from "../../components/Editor/Editor";
+// import Editor from "../../components/Editor/Editor";
+import CKEditorComponent from "../../components/Editor/CKEditorComponent";
 
 const CreatePrevievPost = () => {
     const [title, setTitle] = useState('');
@@ -67,7 +68,8 @@ const CreatePrevievPost = () => {
       <input  type="file"
               onChange={ev => setFiles(ev.target.files)}/>
 
-      <Editor value={content} onChange={setContent}/>
+      {/* <Editor value={content} onChange={setContent}/> */}
+      <CKEditorComponent value={content} onChange={setContent} />
       <button style={{marginTop:'5px'}}>Gönderi oluştur</button>
     </form>
     </>

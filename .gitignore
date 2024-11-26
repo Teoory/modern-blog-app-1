@@ -13,3 +13,7 @@ api/profilePhotos/*
 *.txt
 /api/node_modules
 /api/node_modules
+/node_modules
+client/public/F2-logo512.png
+client/public/F-logo512.png
+client/package copy.json

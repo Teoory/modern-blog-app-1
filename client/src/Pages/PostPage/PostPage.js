@@ -4,8 +4,11 @@ import { format } from "date-fns";
 import { tr, eu } from 'date-fns/locale';
 import { UserContext } from '../../Hooks/UserContext';
 import Image from '../../components/Image';
-import '../../QuillSnow.css';
+// import '../../QuillSnow.css';
 import Post from '../../components/Post/Post';
+import DOMPurify from 'dompurify';
+import 'ckeditor5/ckeditor5.css';
+import CKEditorComponent from "../../components/Editor/CKView";
 
 const PostPage = () => {
     const [postInfo, setPostInfo] = useState(null);
@@ -273,7 +276,12 @@ const PostPage = () => {
             {/* <img src={'https://fiyasko-blog-api.vercel.app/'+postInfo.cover} alt="img" /> */}
             <Image src={postInfo.cover} alt="img" />
         </div>
-        <div className='content' dangerouslySetInnerHTML={{__html:postInfo.content}} />
+        {/* <div className='content' dangerouslySetInnerHTML={{__html:postInfo.content}} /> */}
+        <div className='content' style={{marginTop:'20px'}}>
+            <CKEditorComponent value={postInfo.content} onChange={() => {}} readOnly={true} />
+        </div>
+        {/* <div className='content' dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(postInfo.content) }} /> */}
+        
 
 
         <div className="LikesArea">
