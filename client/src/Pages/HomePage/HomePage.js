@@ -61,10 +61,12 @@ const HomePage = () => {
       <hr className='homeHR'/> 
 
       <h2><Link to={'/tests'} style={{textDecoration:'none',color:'var(--color-dark)'}}>Tüm Testler</Link></h2>
-      {tests.length > 0 && tests.map(test => (
-        <TestsAll {...test} key={test._id} />
-      ))}
-      {tests.length === 0 && <p>Henüz test yok.</p>}
+      <div className='AllPostsList'>
+        {tests.length > 0 && tests.map(test => (
+          <TestsAll {...test} key={test._id} />
+        ))}
+        {tests.length === 0 && <p>Henüz test yok.</p>}
+      </div>
       <hr className='homeHR'/>
 
       <h2>Tüm Gönderiler</h2>

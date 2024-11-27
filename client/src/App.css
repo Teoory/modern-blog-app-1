@@ -371,20 +371,15 @@ div.AllPostsList {
 /* Begeniler */
 div.LikesArea::before,
 .related-posts::before {
-  content: '';
-  display: block;
-  clear: both;
-  border: none;
-  letter-spacing: 0;
-  text-align: center;
-  font-size: 1.3rem;
-  font-weight: 700;
-  margin: 20px 0 0 50px;
   background-color: var(--color-dark);
-  /* width: 90%; */
-  width: clamp(300px, 90%, 1200px);
-  height: 3px;
+  border: none;
   border-radius: 25px;
+  clear: both;
+  content: "";
+  display: block;
+  height: 3px;
+  width: 60%;
+  place-self: center;
 }
 
 .related-posts h1 {
