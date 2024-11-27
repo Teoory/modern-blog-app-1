@@ -32,7 +32,7 @@ const TestPage = () => {
 
   return (
     <div>
-      <h1>Test Listesi</h1>
+      <h1>Testler</h1>
       {/* {tests.length > 0 ? (
         <ul>
           {tests.map(test => (

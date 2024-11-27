@@ -95,7 +95,7 @@ const TestDetail = () => {
     }, [id]);
 
     useEffect(() => {
-    fetch('http://localhost:3030/tests').then(response => {
+    fetch(`${API_BASE_URL}/tests`).then(response => {
       response.json().then(posts => {
         setTests(tests);
       });
@@ -104,7 +104,7 @@ const TestDetail = () => {
     
     const sendNotification = async (senderId, receiverId, testId, type) => {
         try {
-            const response = await fetch('http://localhost:3030/send-notification', {
+            const response = await fetch(`${API_BASE_URL}/send-notification`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

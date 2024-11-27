@@ -4,6 +4,7 @@ import TestsAll from '../../components/Tests/Tests';
 import { useEffect, useState } from 'react';
 // import upImage from '../../Images/upperImage.jpg';
 import { API_BASE_URL } from '../../config';
+import { Link } from 'react-router-dom';
 
 const HomePage = () => {
   const [posts, setPosts] = useState([]);
@@ -59,7 +60,7 @@ const HomePage = () => {
       </div>
       <hr className='homeHR'/> 
 
-      <h2>Testler</h2>
+      <h2><Link to={'/tests'} style={{textDecoration:'none',color:'var(--color-dark)'}}>Tüm Testler</Link></h2>
       {tests.length > 0 && tests.map(test => (
         <TestsAll {...test} key={test._id} />
       ))}
