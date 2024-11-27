@@ -91,6 +91,31 @@ async function uploadToS3(path, originalname, mimetype, info) {
     return `https://${bucket}.s3.eu-central-1.amazonaws.com/uploads/${newFileName}`;
 }
 
+async function uploadToS3Quests(path, originalname, mimetype, info) {
+    const client = new S3Client({
+        region: 'eu-central-1',
+        credentials: {
+            accessKeyId: process.env.S3_ACCESS_KEY,
+            secretAccessKey: process.env.S3_SECRET_ACCESS_KEY
+        },
+    });
+    const parts = originalname.split('.');
+    const ext = parts[parts.length - 1];
+    const newFileName = `${Date.now()}_${Math.random().toString(36).substring(6)}.${ext}`;
+    const buffer = await sharp(fs.readFileSync(path))
+        .resize({ width: 800 })
+        .jpeg({ quality: 50 })
+        .toBuffer();
+    await client.send(new PutObjectCommand({
+        Bucket: bucket,
+        Body: buffer,
+        Key: 'quests/' + newFileName,
+        contentType: mimetype,
+        ACL: 'public-read',
+    }))
+    return `https://${bucket}.s3.eu-central-1.amazonaws.com/quests/${newFileName}`;
+}
+
 async function uploadPpToS3(path, originalname, mimetype, info) {
     const client = new S3Client({
         region: 'eu-central-1',
@@ -350,12 +375,13 @@ app.get('/notifications/:userId', async (req, res) => {
 });
 
 app.post('/send-notification', async (req, res) => {
-    const { senderId, receiverId, postId, type } = req.body;
+    const { senderId, receiverId, postId, testId, type } = req.body;
 
     const notification = new Notification({
         sender: senderId,
         receiver: receiverId,
-        post: postId,
+        post: !postId ? null : postId,
+        test: !testId ? null : testId,
         type: type
     });
     await notification.save();
@@ -816,6 +842,43 @@ app.post('/post/:id/like', async (req, res) => {
     });
 });
 
+app.post('/tests/:id/like', async (req, res) => {
+    const { id } = req.params;
+    const { token } = req.cookies;
+  
+    jwt.verify(token, secret, {}, async (err, info) => {
+      if (err) throw err;
+  
+      try {
+        const testDoc = await Test.findById(id);
+  
+        const hasLiked = testDoc.likes.includes(info.id);
+        if (hasLiked) {
+            testDoc.likes.pull(info.id);
+            
+            const user = await User.findOne({ _id: info.id });
+            user.likedTests.pull(testDoc._id);
+            await user.save();
+        } else {
+            testDoc.likes.push(info.id);
+
+            const user = await User.findOne({ _id: info.id });
+            if(!user.likedTests.includes(testDoc._id)) {
+                user.likedTests.push(testDoc._id);
+                await user.save();
+            }
+        }
+  
+        await testDoc.save();
+  
+        res.json({ success: true, likes: testDoc.likes.length, isLiked: !hasLiked });
+      } catch (error) {
+        console.error('Error toggling like:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+    });
+});
+
 app.post('/post/:id/mobileLike', async (req, res) => {
     const { id } = req.params;
     const authHeader = req.headers['authorization'];
@@ -871,6 +934,18 @@ app.get('/post/:id/likes', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+app.get('/tests/:id/likes', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+      const testDoc = await Test.findById(id);
+        res.json({ likes: testDoc.likes.length });
+    } catch (error) {
+        console.error('Error getting likes:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
   
 
 app.get('/post/:id/hasLiked', async (req, res) => {
@@ -893,6 +968,28 @@ app.get('/post/:id/hasLiked', async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
+});
+
+app.get('/tests/:id/hasLiked', async (req, res) => {
+    const { id } = req.params;
+    const { token } = req.cookies;
+  
+    jwt.verify(token, secret, {}, async (err, info) => {
+      
+      if (!token) {
+          return res.status(404).json({ error: 'Token not found' });
+      }
+      if (err) throw err;
+  
+      try {
+        const testDoc = await Test.findById(id);
+        const hasLiked = testDoc.likes.includes(info.id);
+        res.json({ hasLiked });
+      } catch (error) {
+        console.error('Error checking if user has liked:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+    });
 });
 
 app.get('/post/:id/hasMobileLiked', async (req, res) => {
@@ -991,6 +1088,18 @@ app.get('/post/:id/superlikes', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+app.get('/tests/:id/superlikes', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+      const testDoc = await Test.findById(id);
+        res.json({ superlikes: testDoc.superlikes.length });
+    } catch (error) {
+        console.error('Error getting superlike:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
   
 
 app.get('/post/:id/hasSuperLiked', async (req, res) => {
@@ -1013,6 +1122,28 @@ app.get('/post/:id/hasSuperLiked', async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
+});
+
+app.get('/tests/:id/hasSuperLiked', async (req, res) => {
+    const { id } = req.params;
+    const { token } = req.cookies;
+  
+    jwt.verify(token, secret, {}, async (err, info) => {
+      
+      if (!token) {
+          return res.status(404).json({ error: 'Token not found' });
+      }
+      if (err) throw err;
+  
+      try {
+        const testDoc = await Test.findById(id);
+        const hasSuperLiked = testDoc.superlikes.includes(info.id);
+        res.json({ hasSuperLiked });
+      } catch (error) {
+        console.error('Error checking if user has superliked:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+    });
 });
 
 app.get('/post/:id/hasMobileSuperLiked', async (req, res) => {
@@ -1204,88 +1335,175 @@ app.put('/approvePost/:id', async (req, res) => {
 
 
 
-//? Tests 
-app.post('/test', uploadMiddleware.single('file'), async (req, res) => {
-    const {originalname,path} = req.file;
-    const parts= originalname.split('.');
-    const ext = parts[parts.length - 1];
-    const newPath = path + '.' + ext;
-    fs.renameSync(path, newPath);
 
-    const {token} = req.cookies;
-    jwt.verify(token, secret, {}, async (err, info) => {
-        if(err) throw err;
+// OnedioTest
+app.post('/tests', uploadMiddleware.single('file'), async (req, res) => {
+    try {
+        const cover = [];
 
-        const {id, title, summary, content, previev} = req.body;
-            const testDoc = await Test.create({
-                title,
-                summary,
-                content,
-                cover: newPath,
-                author: info.id,
-                previev,
+        if (req.file) {
+            const { originalname, path, mimetype } = req.file;
+            const url = await uploadToS3Quests(path, originalname, mimetype);
+            cover.push(url);
+        }
+
+        const { title, summary, questions = '[]', resultMapping = '[]' } = req.body;
+        const parsedQuestions = JSON.parse(questions);
+        const parsedResultMapping = JSON.parse(resultMapping);
+
+        parsedResultMapping.forEach(result => {
+            if (!result.conditions || !Array.isArray(result.conditions)) {
+                throw new Error("Her sonuç için 'conditions' bir dizi olmalıdır.");
+            }
+
+            result.conditions.forEach(condition => {
+                if (!['<', '<=', '=', '>=', '>'].includes(condition.operator)) {
+                    throw new Error(`Geçersiz operatör: ${condition.operator}`);
+                }
+                if (typeof condition.value !== 'number') {
+                    throw new Error(`Koşul değeri bir sayı olmalıdır.`);
+                }
             });
-            res.json({testDoc});
         });
-});
 
-app.put('/test', uploadMiddleware.single('file'), async (req, res) => {
-    let newPath = null;
-    if(req.file) {
-        const {originalname,path} = req.file;
-        const parts= originalname.split('.');
-        const ext = parts[parts.length - 1];
-        newPath = path + '.' + ext;
-        fs.renameSync(path, newPath);
+        // Test dokümanını oluşturma
+        const testDoc = await Test.create({
+            title,
+            summary,
+            cover: cover[0] || null,
+            questions: parsedQuestions,
+            resultMapping: parsedResultMapping,
+        });
+
+        res.status(201).json({ success: true, testDoc });
+    } catch (error) {
+        console.error('Hata oluştu:', error.message);
+        res.status(500).json({ success: false, message: 'Test oluşturulamadı.', error: error.message });
     }
+});
 
-    const {token} = req.cookies;
-    jwt.verify(token, secret, {}, async (err, info) => {
-        if(err) throw err;
-        const {id, title, summary, content, previev} = req.body;
-        const testDoc = await Test.findById(id);
-        const isAuthor = JSON.stringify(testDoc.author) === JSON.stringify(info.id);
-        const isAdmin = info.tags.includes('admin');
-        const isModerator = info.tags.includes('moderator');
-        const isEditor = info.tags.includes('editor');
-        if(!isAuthor && !isAdmin && !isModerator && !isEditor) {
-            return res.status(400).json('You don\'t have permission.');
+
+
+app.get('/tests', async (req, res) => {
+    try {
+        const tests = await Test.find()
+            .populate('author', ['username'])
+            .sort({ createdAt: -1 })
+            .limit(20);
+        res.json(tests);
+    } catch (error) {
+        console.error('Error fetching tests:', error);
+        res.status(500).json({ success: false, message: 'Testler alınamadı.', error: error.message });
+    }
+});
+
+app.get('/tests/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const testDoc = await Test.findById(id).populate('author', ['username', 'profilePhoto']);
+
+        if (!testDoc) {
+            return res.status(404).json({ success: false, message: 'Test bulunamadı.' });
         }
-
-        await Test.findByIdAndUpdate(id, {
-            title, 
-            summary, 
-            content, 
-            cover: newPath?newPath:testDoc.cover,
-            previev,
-        });
-
+        testDoc.totalViews++;
+        await testDoc.save();
         res.json(testDoc);
-    });
+    } catch (error) {
+        console.error('Error fetching test:', error);
+        res.status(500).json({ success: false, message: 'Sunucu hatası', error: error.message });
+    }
 });
 
-app.get('/test/:id', async (req, res) => {
-    const {id} = req.params;
-    const testDoc = await Test.findById(id).populate('author', ['username'])
-    res.json(testDoc);
-});
 
-app.delete('/test/:id', async (req, res) => {
-    const { id } = req.params;
-    const { token } = req.cookies;
-    jwt.verify(token, secret, {}, async (err, info) => {
-        if(err) throw err;
-        const testDoc = await Test.findById(id);
-        const isAuthor = JSON.stringify(testDoc.author) === JSON.stringify(info.id);
-        const isAdmin = info.tags.includes('admin');
-        const isModerator = info.tags.includes('moderator');
-        if(!isAuthor && !isAdmin && !isModerator) {
-            return res.status(400).json('Your not ADMIN!');
-        }
-        await Test.findByIdAndDelete(id);
-        res.json({ message: 'Test deleted successfully' });
-    });
-});
+
+
+
+
+
+
+
+//? Tests  OLD
+// app.post('/test', uploadMiddleware.single('file'), async (req, res) => {
+//     const {originalname,path} = req.file;
+//     const parts= originalname.split('.');
+//     const ext = parts[parts.length - 1];
+//     const newPath = path + '.' + ext;
+//     fs.renameSync(path, newPath);
+
+//     const {token} = req.cookies;
+//     jwt.verify(token, secret, {}, async (err, info) => {
+//         if(err) throw err;
+
+//         const {id, title, summary, content, previev} = req.body;
+//             const testDoc = await Test.create({
+//                 title,
+//                 summary,
+//                 content,
+//                 cover: newPath,
+//                 author: info.id,
+//                 previev,
+//             });
+//             res.json({testDoc});
+//         });
+// });
+
+// app.put('/test', uploadMiddleware.single('file'), async (req, res) => {
+//     let newPath = null;
+//     if(req.file) {
+//         const {originalname,path} = req.file;
+//         const parts= originalname.split('.');
+//         const ext = parts[parts.length - 1];
+//         newPath = path + '.' + ext;
+//         fs.renameSync(path, newPath);
+//     }
+
+//     const {token} = req.cookies;
+//     jwt.verify(token, secret, {}, async (err, info) => {
+//         if(err) throw err;
+//         const {id, title, summary, content, previev} = req.body;
+//         const testDoc = await Test.findById(id);
+//         const isAuthor = JSON.stringify(testDoc.author) === JSON.stringify(info.id);
+//         const isAdmin = info.tags.includes('admin');
+//         const isModerator = info.tags.includes('moderator');
+//         const isEditor = info.tags.includes('editor');
+//         if(!isAuthor && !isAdmin && !isModerator && !isEditor) {
+//             return res.status(400).json('You don\'t have permission.');
+//         }
+
+//         await Test.findByIdAndUpdate(id, {
+//             title, 
+//             summary, 
+//             content, 
+//             cover: newPath?newPath:testDoc.cover,
+//             previev,
+//         });
+
+//         res.json(testDoc);
+//     });
+// });
+
+// app.get('/test/:id', async (req, res) => {
+//     const {id} = req.params;
+//     const testDoc = await Test.findById(id).populate('author', ['username'])
+//     res.json(testDoc);
+// });
+
+// app.delete('/test/:id', async (req, res) => {
+//     const { id } = req.params;
+//     const { token } = req.cookies;
+//     jwt.verify(token, secret, {}, async (err, info) => {
+//         if(err) throw err;
+//         const testDoc = await Test.findById(id);
+//         const isAuthor = JSON.stringify(testDoc.author) === JSON.stringify(info.id);
+//         const isAdmin = info.tags.includes('admin');
+//         const isModerator = info.tags.includes('moderator');
+//         if(!isAuthor && !isAdmin && !isModerator) {
+//             return res.status(400).json('Your not ADMIN!');
+//         }
+//         await Test.findByIdAndDelete(id);
+//         res.json({ message: 'Test deleted successfully' });
+//     });
+// });
 
 
 //? Search
@@ -1403,6 +1621,58 @@ app.get('/comments', async (req, res) => {
     } catch (e) {
         console.error('Error with get comments',e);
         res.status(500).json({e:'server error'});
+    }
+});
+
+
+app.post('/tests/:id/comment', async (req, res) => {
+    const { id } = req.params;
+    const { token } = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if (err) throw err;
+
+        const { content } = req.body;
+        try {
+            const commentDoc = await Comment.create({
+                content,
+                author: info.id,
+                test: id,
+                post: null,
+            });
+
+            res.json(commentDoc);
+        } catch (e) {
+            console.error('Error with add comment', e);
+            res.status(500).json({ e: 'server error' });
+        }
+    });
+});
+
+app.get('/tests/:id/comments', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const comments = await Comment.find({ test: id })
+            .populate('author', ['username', 'profilePhoto'])
+            .sort({ createdAt: -1 })
+            .limit(20);
+
+        res.json(comments);
+    } catch (e) {
+        console.error('Error with get comments', e);
+        res.status(500).json({ e: 'server error' });
+    }
+});
+
+app.get('/tests/:id/comment/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const commentDoc = await Comment.findById(id)
+            .populate('author', ['username', 'profilePhoto']);
+
+        res.json(commentDoc);
+    } catch (e) {
+        console.error('Error with get comment', e);
+        res.status(500).json({ e: 'server error' });
     }
 });
 

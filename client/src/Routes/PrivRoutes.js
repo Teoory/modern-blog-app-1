@@ -19,7 +19,10 @@ import CreatePrevievPost from '../Pages/CreatePrevievPost/CreatePrevievPost';
 import PrevievPostPage from '../Pages/PrevievPostPage/PrevievPostPage';
 import PrevievPostEdit from '../Pages/PrevievPostEdit/PrevievPostEdit';
 
+import CreateTestOld from '../Pages/CreateTest/CreateTestOld';
 import CreateTest from '../Pages/CreateTest/CreateTest';
+import TestPage from '../Pages/TestPage/TestPage';
+import TestDetail from '../Pages/TestPage/TestDetail';
 
 import TicketPage from '../Pages/TicketPage/TicketPage';
 import TicketCreatePage from '../Pages/TicketCreatePage/TicketCreatePage';
@@ -101,6 +104,7 @@ const PrivRoutes = () => {
                 ?   <>
                         <Route path="/create" element={<CreatePost/>} />
                         <Route path="/createTest" element={<CreateTest/>} />
+                        <Route path="/createTestOld" element={<CreateTestOld/>} />
                     </>
                 :   null
             }
@@ -108,6 +112,8 @@ const PrivRoutes = () => {
             <Route index path="/" element={<HomePage />} />
             <Route index path="/home" element={<HomePage />} />
             <Route path="*" element={<NotFoundPage/>} />
+            <Route path="/tests" element={<TestPage />} />
+            <Route path="/tests/:id" element={<TestDetail />} />
         </Routes>
     )
 }

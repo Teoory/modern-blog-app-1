@@ -10,6 +10,8 @@ import PublicSettingsPage from '../Pages/ProfilSettingsPage/PublicSettingsPage';
 import Privacy from '../Pages/PrivacyPage'
 import SearchPage from '../Pages/SearchPage/SearchPage';
 import NotFoundPage from '../Pages/NotFoundPage/NotFoundPage';
+import TestPage from '../Pages/TestPage/TestPage';
+import TestDetail from '../Pages/TestPage/TestDetail';
 
 const DefRoutes = () => {
   return (
@@ -26,6 +28,8 @@ const DefRoutes = () => {
       <Route path="/notifications" element={<LoginPage />} />
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/search" element={<SearchPage />} />
+      <Route path="/tests" element={<TestPage />} />
+      <Route path="/tests/:id" element={<TestDetail />} />
     </Routes>
   )
 }

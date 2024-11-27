@@ -29,7 +29,11 @@ const PostAll = ({_id,title, summary,cover,content,createdAt, author, PostTags})
           </p>
         </Link>
         <Link to={`/post/${_id}`}>
+        {summary.length > 60 ? (
+          <p className="summary">{summary.slice(0,60)}...</p>
+        ) : (
           <p className="summary">{summary}</p>
+        )}
         </Link>
       </div>
     </div>

@@ -81,7 +81,7 @@ const PrevievPostPage = () => {
     return (
         <div className="post-page">
             <h1>{postInfo.title}</h1>
-            <time>{format(new Date(postInfo.createdAt), "HH:mm | dd MMMM yyyy", {locale: locales["tr"],})}</time>
+            <time>{format(new Date(postInfo.createdAt), "HH:MM | dd MMMM yyyy", {locale: locales["tr"],})}</time>
             <div className="author">Yazar: @{postInfo.author.username}</div>
             <div className="PostTags"><span>{postInfo.PostTags}</span></div>
     

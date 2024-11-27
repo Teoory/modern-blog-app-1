@@ -1,21 +1,30 @@
 import Post from '../../components/Post/Post';
 import PostAll from '../../components/Post/PostAll';
+import TestsAll from '../../components/Tests/Tests';
 import { useEffect, useState } from 'react';
-import upImage from '../../Images/upperImage.jpg';
+// import upImage from '../../Images/upperImage.jpg';
+import { API_BASE_URL } from '../../config';
 
 const HomePage = () => {
   const [posts, setPosts] = useState([]);
+  const [tests, setTests] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [availableTags, SetAvailableTags] = useState([]);
   const [selectedView, setSelectedView] = useState(false);
   useEffect(() => {
-    fetch('https://fiyasko-blog-api.vercel.app/post').then(response => {
+    fetch(`${API_BASE_URL}/post`).then(response => {
       response.json().then(posts => {
         setPosts(posts);
       });
     });
+
+    fetch(`${API_BASE_URL}/tests`).then(response => {
+      response.json().then(tests => {
+        setTests(tests);
+      });
+    });
     
-    fetch('https://fiyasko-blog-api.vercel.app/availableTags')
+    fetch(`${API_BASE_URL}/availableTags`)
       .then(response => response.json())
       .then(data => SetAvailableTags(data.availableTags));
 
@@ -32,14 +41,6 @@ const HomePage = () => {
     }
     return posts.filter(post => selectedTags.includes(post.PostTags));
   };
-  
-  // useEffect(() => {
-  //   const element = document.querySelector('.aside');
-  //       if(window.innerWidth > 1280)
-  //       element.style.display = 'block';
-  //       else if (window.innerWidth <= 1280)
-  //       element.style.display = 'contents';
-  // }, []);
 
   return (
     <>
@@ -56,7 +57,15 @@ const HomePage = () => {
           <Post {...post} key={post._id}/>
         ))}
       </div>
-        <hr/> 
+      <hr className='homeHR'/> 
+
+      <h2>Testler</h2>
+      {tests.length > 0 && tests.map(test => (
+        <TestsAll {...test} key={test._id} />
+      ))}
+      {tests.length === 0 && <p>Henüz test yok.</p>}
+      <hr className='homeHR'/>
+
       <h2>Tüm Gönderiler</h2>
       {/* TAGS */}
       <div className='PostTagArea'>
@@ -108,6 +117,7 @@ const HomePage = () => {
             )}
           </div>
       )}
+      
 
     </>
   )

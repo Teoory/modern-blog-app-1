@@ -1,17 +1,18 @@
-import { useContext, useEffect, useState } from 'react';
-import { Link, useParams, Navigate } from 'react-router-dom';
+import React, { useContext,useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { format } from "date-fns";
 import { tr, eu } from 'date-fns/locale';
 import { UserContext } from '../../Hooks/UserContext';
 import Image from '../../components/Image';
-// import '../../QuillSnow.css';
-import Post from '../../components/Post/Post';
-import DOMPurify from 'dompurify';
-import 'ckeditor5/ckeditor5.css';
-import CKEditorComponent from "../../components/Editor/CKView";
+import Test from '../../components/Tests/Tests';
+import { API_BASE_URL } from '../../config';
 
-const PostPage = () => {
-    const [postInfo, setPostInfo] = useState(null);
+const TestDetail = () => {
+    const { id } = useParams();
+    const [testInfo, setTestInfo] = useState(null);
+    const [test, setTest] = useState(null);
+    const [answers, setAnswers] = useState({});
+    const [result, setResult] = useState(null);
     const {userInfo} = useContext(UserContext);
     const [redirect, setRedirect] = useState(false);
     const [likes, setLikes] = useState(0);
@@ -20,36 +21,53 @@ const PostPage = () => {
     const [isSuperLiked, setHasSuperLiked] = useState(false);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
-    const {id} = useParams();
-    const [posts, setPosts] = useState([]);
-    
+    const [tests, setTests] = useState([]);
+
     useEffect(() => {
-        fetch(`https://fiyasko-blog-api.vercel.app/post/${id}`)
+        fetch(`${API_BASE_URL}/tests/${id}`)
             .then(response => {
                 if(!response.ok) {
                     setRedirect(true);
                     return;
                 }
-                response.json().then(postInfo => {
-                    setPostInfo(postInfo);
+                response.json().then(testData => {
+                    setTest(testData);
                 })
             })
     }, [id]);
-        
+
+    // useEffect(() => {
+    //   const fetchTest = async () => {
+    //     try {
+    //       const response = await fetch(`${API_BASE_URL}/tests/${id}`);
+    //       if (response.ok) {
+    //         const testData = await response.json();
+    //         setTest(testData);
+    //       } else {
+    //         console.error('Test verisi alınamadı.');
+    //       }
+    //     } catch (error) {
+    //       console.error('API Hatası:', error);
+    //     }
+    //   };
+
+    //   fetchTest();
+    // }, [id]);
+
     useEffect(() => { 
-        fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/comments`)
+        fetch(`${API_BASE_URL}/tests/${id}/comments`)
             .then(response => response.json())
             .then(comments => setComments(comments))
     }, [id]);
-    
+
     useEffect(() => {
-        fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/likes`)
+        fetch(`${API_BASE_URL}/tests/${id}/likes`)
           .then(response => response.json())
           .then(data => {
             setLikes(data.likes);
           });
 
-          fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/hasLiked`,{
+          fetch(`${API_BASE_URL}/tests/${id}/hasLiked`,{
               method: 'GET',
               credentials: 'include',
           })
@@ -58,15 +76,15 @@ const PostPage = () => {
                 setIsLiked(data.hasLiked);
               });
     }, [id]);
-
+    
     useEffect(() => {
-        fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/superlikes`)
+        fetch(`${API_BASE_URL}/tests/${id}/superlikes`)
           .then(response => response.json())
           .then(data => {
             setSuperLikes(data.superlikes);
           });
 
-        fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/hasSuperLiked`,{
+        fetch(`${API_BASE_URL}/tests/${id}/hasSuperLiked`,{
             method: 'GET',
             credentials: 'include',
         })
@@ -76,18 +94,17 @@ const PostPage = () => {
             });
     }, [id]);
 
-    
     useEffect(() => {
-    fetch('https://fiyasko-blog-api.vercel.app/post').then(response => {
+    fetch('http://localhost:3030/tests').then(response => {
       response.json().then(posts => {
-        setPosts(posts);
+        setTests(tests);
       });
     });
     }, []);
     
-    const sendNotification = async (senderId, receiverId, postId, type) => {
+    const sendNotification = async (senderId, receiverId, testId, type) => {
         try {
-            const response = await fetch('https://fiyasko-blog-api.vercel.app/send-notification', {
+            const response = await fetch('http://localhost:3030/send-notification', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -95,7 +112,7 @@ const PostPage = () => {
                 body: JSON.stringify({
                     senderId: senderId,
                     receiverId: receiverId,
-                    postId: postId,
+                    testId: testId,
                     type: type
                 })
             });
@@ -109,33 +126,24 @@ const PostPage = () => {
         }
     };
 
-    const deletePost = async () => {
-        try {
-            const response = await fetch(`https://fiyasko-blog-api.vercel.app/post/${postInfo._id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({}),
-                credentials: 'include',
-            });
+    const handleAnswerSelect = (questionIndex, score) => {
+      const updatedAnswers = {
+        ...answers,
+        [questionIndex]: score,
+      };
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+      setAnswers(updatedAnswers);
 
-            setRedirect(true);
-
-            const data = await response.json();
-            console.log(data);
-        } catch (error) {
-            console.error('Error deleting post:', error.message);
-        }
+      if (Object.keys(updatedAnswers).length === test.questions.length) {
+        calculateResult(updatedAnswers);
+      }
     };
 
+
+  
     const toggleLike = async () => {
         try {
-          const response = await fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/like`, {
+          const response = await fetch(`${API_BASE_URL}/tests/${id}/like`, {
             method: 'POST',
             credentials: 'include',
           });
@@ -154,19 +162,19 @@ const PostPage = () => {
 
     const toggleSuperLike = async () => {
         try {
-          const response = await fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/superlike`, {
+          const response = await fetch(`${API_BASE_URL}/tests/${id}/superlike`, {
             method: 'POST',
             credentials: 'include',
           });
-
+      
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
-
+      
           const updatedData = await response.json();
           setSuperLikes(updatedData.superlikes);
           setHasSuperLiked(updatedData.isSuperLiked);
-
+      
         } catch (error) {
           console.error('Error toggling superlike:', error.message);
         }
@@ -174,7 +182,7 @@ const PostPage = () => {
 
     const addComment = async () => {
         try {
-            const response = await fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/comment`, {
+            const response = await fetch(`${API_BASE_URL}/tests/${id}/comment`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -186,7 +194,7 @@ const PostPage = () => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            const updatedComments = await fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/comments`)
+            const updatedComments = await fetch(`${API_BASE_URL}/tests/${id}/comments`)
                 .then(response => response.json());
 
             setComments(updatedComments);
@@ -195,19 +203,44 @@ const PostPage = () => {
             const mentionedUsers = newComment.match(/@(\w+)/g);
             if (mentionedUsers) {
                 await Promise.all(mentionedUsers.map(async (username) => {
-                    const receiverUser = await fetch(`https://fiyasko-blog-api.vercel.app/profile/${username.slice(1)}`)
+                    const receiverUser = await fetch(`${API_BASE_URL}/profile/${username.slice(1)}`)
                         .then(response => response.json());
                     if (receiverUser && receiverUser.user._id !== userInfo.id) {
-                        await sendNotification(userInfo.id, receiverUser.user._id, postInfo._id, 'Bahset');
+                        await sendNotification(userInfo.id, receiverUser.user._id, test._id, 'Bahset');
                     }
                 }));
             }                   
 
-            if (userInfo.id !== postInfo.author._id)
-            await sendNotification(userInfo.id, postInfo.author._id, postInfo._id, 'Yorum');
+            if (userInfo.id !== test.author._id)
+            await sendNotification(userInfo.id, test.author._id, test._id, 'Yorum');
         } catch (error) {
             console.error('Error adding comment:', error.message);
         }
+    };
+
+    const calculateResult = (currentAnswers) => {
+        const totalScore = Object.values(currentAnswers).reduce((acc, score) => acc + score, 0);
+
+        const matchedResult = test.resultMapping.find((result) =>
+          result.conditions.every((condition) => {
+            switch (condition.operator) {
+              case '<':
+                return totalScore < condition.value;
+              case '<=':
+                return totalScore <= condition.value;
+              case '=':
+                return totalScore === condition.value;
+              case '>=':
+                return totalScore >= condition.value;
+              case '>':
+                return totalScore > condition.value;
+              default:
+                return false;
+            }
+          })
+        );
+
+        setResult(matchedResult);
     };
 
     const formatDate = (dateString) => {
@@ -221,68 +254,61 @@ const PostPage = () => {
 
         return new Date(dateString).toLocaleDateString('tr-TR', opt);
     };
-    // document.title = postInfo?.title + " | Fiyasko Blog" || 'Yükleniyor...';
 
-    if(redirect) {
-        return <Navigate to={'/'}/>
-    }
-
-
+    
     const tags = userInfo?.tags;
     const isAdmin = tags?.includes('admin');
     const isModerator = tags?.includes('moderator');
     const isEditor = tags?.includes('editor');
 
-    if (!postInfo) return <div>Loading...</div>
+    if (!test) {
+      return <div>Yükleniyor...</div>;
+    }
+
     const locales = { tr, eu };
-  return (
+    return (
     <div className="post-page">
-        <h1>{postInfo.title}</h1>
-        <time>{format(new Date(postInfo.createdAt), "HH:MM | dd MMMM yyyy", {locale: locales["tr"],})}</time>
-        <div className="author">Yazar: @<Link to={`/profile/${postInfo.author.username}`}>{postInfo.author.username}</Link></div>
-        <div className="PostTags"><span>{postInfo.PostTags}</span></div>
+        <h1>{test.title}</h1>
         <div className="author">
-            <span className='postInfoWnL'>📃 {postInfo.totalViews}</span>
+            <span className='postInfoWnL'>📃 {test.totalViews}</span>
             <span className='postInfoWnL'>😍 {likes+superlikes}</span>
         </div>
-
-        {userInfo === null ? (
-            <span></span>
-        ) : userInfo.id === postInfo.author._id || isAdmin || isModerator || isEditor ? (
-            <div className="actions">
-                <Link className="edit" to={`/edit/${postInfo._id}`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                    </svg>
-                    Edit
-                </Link>
-                {isAdmin || isModerator ? (
-                <Link className="delete" onClick={() => {
-                    if(window.confirm('Bu işlem geri alınamaz. Silmek istediğinize emin misiniz?')) {
-                        deletePost();
-                    }
-                }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                    </svg>
-                    Delete
-                </Link>
-                ): null}
+        <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'16px',margin:'30px 0'}}>
+            <Image src={test.author.profilePhoto} style={{width:'50px',height:'50px',borderRadius:'50%',objectFit:'cover'}} alt="img" />
+            <div className='authorArea'>
+                <div className="author">Yazar: <Link to={`/profile/${test.author.username}`}>{test.author.username}</Link></div>
+                <time>{format(new Date(test.createdAt), "HH:mm - dd MMMM yyyy", {locale: locales["tr"],})}</time>
             </div>
-        ) : null}
-
-         {/* Bu alan post bilgilerini gösteriyor. */}
-        <div className="image">
-            {/* <img src={'https://fiyasko-blog-api.vercel.app/'+postInfo.cover} alt="img" /> */}
-            <Image src={postInfo.cover} alt="img" />
         </div>
-        {/* <div className='content' dangerouslySetInnerHTML={{__html:postInfo.content}} /> */}
-        <div className='content' style={{marginTop:'20px'}}>
-            <CKEditorComponent value={postInfo.content} onChange={() => {}} readOnly={true} />
-        </div>
-        {/* <div className='content' dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(postInfo.content) }} /> */}
+        <Image src={test.cover} style={{width:'100%',height:'100%',maxHeight:'300px',objectFit:'cover'}}  alt="img" />
+        <p style={{margin:'0'}}>{test.summary}</p>
+        <div>
+        {test.questions.map((question, qIndex) => (
+          <div key={qIndex} style={{marginTop:'50px'}}>
+            <h3>{question.questionText}</h3>
         
-
+            {question.image && <Image src={question.image} style={{width:'100%',height:'100%',maxHeight:'300px',objectFit:'cover'}} alt="img"/>}
+            <div className='answerArea'>
+                {question.answers.map((answer, aIndex) => (
+                  <div
+                    key={aIndex}
+                    className={`answer ${answers[qIndex] === answer.score ? 'active-answer' : ''}`}
+                    onClick={() => handleAnswerSelect(qIndex, answer.score)}
+                  >
+                    <span>{answer.answerText}</span>
+                  </div>
+                ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      {result && (
+        <div style={{display:'flex',flexDirection:'column'}}>
+          <h2>Sonuç</h2>
+          <p>{result.resultText}</p>
+          {result.image && <img src={result.image} alt="Sonuç Görseli" style={{width:'100%',height:'100%',maxHeight:'400px',objectFit:'contain'}} />}
+        </div>
+      )}
 
         <div className="LikesArea">
             <div className='LikeButtons'>
@@ -310,6 +336,7 @@ const PostPage = () => {
                 <span className='CommentLogin'>Beğenmek için <Link to="/login">giriş yapın</Link></span>
             }
         </div>
+
 
         <div className='CommentsArea'>
             <div className='Comments'>
@@ -345,7 +372,7 @@ const PostPage = () => {
                             <div className="commentInfo">
                                 <div>
                                     <Link to={`/profile/${comment.author.username}`}>
-                                        {/* <img src={`https://fiyasko-blog-api.vercel.app/${comment.author.profilePhoto}`} alt="*" /> */}
+                                        {/* <img src={`${API_BASE_URL}/${comment.author.profilePhoto}`} alt="*" /> */}
                                         <Image src={comment.author.profilePhoto} alt="*" />
                                     </Link>
                                     <span className='commentAuthorHeader'>Yazar: </span>
@@ -362,7 +389,7 @@ const PostPage = () => {
                             <>
                                 <button className='CommDelButton' onClick={() => {
                                     if(window.confirm('Bu işlem geri alınamaz. Silmek istediğinize emin misiniz?')) {
-                                        fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/comment/${comment._id}`, {
+                                        fetch(`${API_BASE_URL}/tests/${id}/comment/${comment._id}`, {
                                             method: 'DELETE',
                                             credentials: 'include',
                                         }).then(() => {
@@ -379,28 +406,32 @@ const PostPage = () => {
             }
         </div>
 
+
+
         <div className="related-posts">
             <h2>Benzer Gönderiler</h2>
             <div className="posts">
-                {posts.length > 0 && (() => {
-                    const relatedPosts = posts.filter(post => 
-                        post.PostTags === postInfo.PostTags && post._id !== postInfo._id
+                {tests.length > 0 && (() => {
+                    const relatedPosts = tests.filter(post => 
+                        post.TestsTags === testInfo.TestsTags && post._id !== testInfo._id
                     );
                     const displayPosts = relatedPosts.length > 0 
                         ? relatedPosts.slice(0, 3)
-                        : [...posts]
-                            .filter(post => post._id !== postInfo._id)
+                        : [...tests]
+                            .filter(tests => tests._id !== testInfo._id)
                             .sort(() => Math.random() - 0.5)
                             .slice(0, 3);
                 
-                    return displayPosts.map(post => (
-                        <Post {...post} key={post._id} />
+                    return displayPosts.map(tests => (
+                        <Test {...tests} key={tests._id} />
                     ));
                 })()}
+                {tests.length === 0 && <div>Henüz hiç gönderi yok.</div>}
             </div>
         </div>
-    </div>
-  )
-}
 
-export default PostPage
+    </div>
+  );
+};
+
+export default TestDetail;
