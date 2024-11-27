@@ -1371,6 +1371,8 @@ app.post('/tests', uploadMiddleware.single('file'), async (req, res) => {
             title,
             summary,
             cover: cover[0] || null,
+            author: info.id,
+            TestTags,
             questions: parsedQuestions,
             resultMapping: parsedResultMapping,
         });
