@@ -22,7 +22,7 @@ const Post = ({_id,title, summary,cover,content,createdAt, author, PostTags}) =>
           <p className="info">
             <Link to={`/profile/${author.username}`} className="author">{author.username}</Link>
             <time>
-              {format(new Date(createdAt), "HH:MM | dd MMMM yyyy", {
+              {format(new Date(createdAt), "HH:mm | dd MMMM yyyy", {
                 locale: locales["tr"],
               })}
             </time>
