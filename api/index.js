@@ -1351,7 +1351,7 @@ app.post('/tests', uploadMiddleware.single('file'), async (req, res) => {
         jwt.verify(token, secret, {}, async (err, info) => {
             if (err) throw err;
 
-            const { title, summary, questions = '[]', resultMapping = '[]' } = req.body;
+            const { title, summary, TestTags, questions = '[]', resultMapping = '[]' } = req.body;
             const parsedQuestions = JSON.parse(questions);
             const parsedResultMapping = JSON.parse(resultMapping);
 
