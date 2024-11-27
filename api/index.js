@@ -1347,37 +1347,42 @@ app.post('/tests', uploadMiddleware.single('file'), async (req, res) => {
             cover.push(url);
         }
 
-        const { title, summary, questions = '[]', resultMapping = '[]' } = req.body;
-        const parsedQuestions = JSON.parse(questions);
-        const parsedResultMapping = JSON.parse(resultMapping);
+        const { token } = req.cookies;
+        jwt.verify(token, secret, {}, async (err, info) => {
+            if (err) throw err;
 
-        parsedResultMapping.forEach(result => {
-            if (!result.conditions || !Array.isArray(result.conditions)) {
-                throw new Error("Her sonuç için 'conditions' bir dizi olmalıdır.");
-            }
+            const { title, summary, questions = '[]', resultMapping = '[]' } = req.body;
+            const parsedQuestions = JSON.parse(questions);
+            const parsedResultMapping = JSON.parse(resultMapping);
 
-            result.conditions.forEach(condition => {
-                if (!['<', '<=', '=', '>=', '>'].includes(condition.operator)) {
-                    throw new Error(`Geçersiz operatör: ${condition.operator}`);
+            parsedResultMapping.forEach(result => {
+                if (!result.conditions || !Array.isArray(result.conditions)) {
+                    throw new Error("Her sonuç için 'conditions' bir dizi olmalıdır.");
                 }
-                if (typeof condition.value !== 'number') {
-                    throw new Error(`Koşul değeri bir sayı olmalıdır.`);
-                }
+
+                result.conditions.forEach(condition => {
+                    if (!['<', '<=', '=', '>=', '>'].includes(condition.operator)) {
+                        throw new Error(`Geçersiz operatör: ${condition.operator}`);
+                    }
+                    if (typeof condition.value !== 'number') {
+                        throw new Error(`Koşul değeri bir sayı olmalıdır.`);
+                    }
+                });
             });
-        });
 
-        // Test dokümanını oluşturma
-        const testDoc = await Test.create({
-            title,
-            summary,
-            cover: cover[0] || null,
-            author: info.id,
-            TestTags,
-            questions: parsedQuestions,
-            resultMapping: parsedResultMapping,
-        });
+            // Test dokümanını oluşturma
+            const testDoc = await Test.create({
+                title,
+                summary,
+                cover: cover[0] || null,
+                author: info.id,
+                TestTags,
+                questions: parsedQuestions,
+                resultMapping: parsedResultMapping,
+            });
 
-        res.status(201).json({ success: true, testDoc });
+            res.status(201).json({ success: true, testDoc });
+        });
     } catch (error) {
         console.error('Hata oluştu:', error.message);
         res.status(500).json({ success: false, message: 'Test oluşturulamadı.', error: error.message });
