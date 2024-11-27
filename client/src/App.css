@@ -381,7 +381,8 @@ div.LikesArea::before,
   font-weight: 700;
   margin: 20px 0 0 50px;
   background-color: var(--color-dark);
-  width: 90%;
+  /* width: 90%; */
+  width: clamp(300px, 90%, 1200px);
   height: 3px;
   border-radius: 25px;
 }
@@ -1180,6 +1181,13 @@ div.image img{
   }
 }
 
+@media screen and (max-width: 768px) {
+
+  button.CommDelButton {
+    margin-left: 175px;
+  }
+}
+
 @media screen and (max-width: 430px) {
   .content {
     padding: 0 3px;
@@ -1192,9 +1200,6 @@ div.image img{
     gap: 0;
   }
 
-  button.CommDelButton {
-    margin-left: 215px;
-  }
 
   button.NotificationDelButton {
     margin-left: 290px;

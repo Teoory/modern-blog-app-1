@@ -323,6 +323,14 @@ header .nav {
   background: var(--color-white);
 }
 
+@media (max-width: 1200px) {
+  header nav {
+    margin-top: 10px;
+    display: grid;
+    width: 66%;
+  }
+}
+
 @media (max-width: 768px) {
   header {
     padding: 5px 20px;
@@ -334,12 +342,6 @@ header .nav {
   .header {
     flex-direction: column;
     align-items: center;
-  }
-
-  header nav {
-    margin-top: 10px;
-    display: grid;
-    width: 66%;
   }
 
   header a.logo {
@@ -515,7 +517,7 @@ header .nav {
   }
 } */
 
-@media (min-width: 431px) {
+@media (min-width: 601px) {
   .Mobile-Responsive {
     display: none;
   }
@@ -524,7 +526,7 @@ header .nav {
   }
 }
 
-@media (max-width: 430px) {
+@media (max-width: 600px) {
   header {
     display: none;
   }
@@ -611,7 +613,7 @@ header .nav {
   } */
 }
 
-@media (max-width: 300px) {
+@media (max-width: 400px) {
   .exchange-rate {
     font-size: 10px;
     font-weight: 600;
