@@ -64,6 +64,12 @@ iframe {
     top: 100px !important;
 }
 
+@media (max-width: 800px) {
+    .ck.ck-sticky-panel__content.ck-sticky-panel__content_sticky {
+        top: 75px !important;
+    }
+}
+
 /* .editor-container_classic-editor .editor-container__editor {
     min-width: 100%;
 } */
