@@ -7,7 +7,9 @@ import AppRoutes from './Routes/AppRoutes';
 import Warning from './components/Warning/Warning';
 import DarkMode from './components/DarkMode';
 import CookieConsent from './components/CookieConsent';
+import ReactGA from "react-ga4";
 
+ReactGA.initialize('G-L90S7CY9N9');
 
 function App() {
   return (
