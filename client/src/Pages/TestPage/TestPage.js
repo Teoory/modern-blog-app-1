@@ -33,21 +33,6 @@ const TestPage = () => {
   return (
     <div>
       <h1>Testler</h1>
-      {/* {tests.length > 0 ? (
-        <ul>
-          {tests.map(test => (
-            <li key={test._id}>
-              <h2>{test.title}</h2>
-              <p>{test.summary}</p>
-              {test.cover && <img src={test.cover} alt={test.title} style={{ width: '100px' }} />}
-              <p><strong>Oluşturulma Tarihi:</strong> {new Date(test.createdAt).toLocaleDateString()}</p>
-              <Link to={`/tests/${test._id}`}>Test Detaylarını Görüntüle</Link>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>Henüz test yok.</p>
-      )} */}
       <div style={{display:'flex',flexWrap:'wrap',gap:'20px'}}>
         {tests.length > 0 && tests.map(test => (
           <TestsAll {...test} key={test._id} />
