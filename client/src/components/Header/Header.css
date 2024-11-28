@@ -325,9 +325,10 @@ header .nav {
 
 @media (max-width: 1200px) {
   header nav {
+    display: flex;
     margin-top: 10px;
-    display: grid;
     width: 66%;
+    flex-wrap: wrap;
   }
 }
 
