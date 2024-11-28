@@ -44,7 +44,7 @@ const CookieConsent = () => {
       </p>
       <div className="cookie-buttons">
         <button onClick={handleAccept}>Kabul Et</button>
-        <button onClick={handleDecline}>Reddet</button>
+        {/* <button onClick={handleDecline}>Reddet</button> */}
       </div>
     </div>
   );
