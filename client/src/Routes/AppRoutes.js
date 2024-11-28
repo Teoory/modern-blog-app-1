@@ -10,7 +10,7 @@ import PostPage from '../Pages/PostPage/PostPage';
 const AppRoutes = () => {
     const { userInfo } = useContext(UserContext);
     const location = useLocation();
-    const [isAnalyticsEnabled, setIsAnalyticsEnabled] = useState(false);
+    const [isAnalyticsEnabled, setIsAnalyticsEnabled] = useState(true);
 
 
     useEffect(() => {

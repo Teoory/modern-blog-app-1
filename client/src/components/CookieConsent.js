@@ -4,7 +4,7 @@ import ReactGA from 'react-ga4';
 
 const CookieConsent = () => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
-  const [hasConsented, setHasConsented] = useState(false);
+  const [hasConsented, setHasConsented] = useState(true);
 
   useEffect(() => {
     const consent = localStorage.getItem('cookieConsent');
@@ -16,6 +16,7 @@ const CookieConsent = () => {
   }, []);
 
   const enableGoogleAnalytics = () => {
+    localStorage.setItem('cookieConsent', 'true');
     ReactGA.initialize('G-L90S7CY9N9');
     ReactGA.send('pageview');
   };
@@ -33,7 +34,7 @@ const CookieConsent = () => {
     setIsPopupVisible(false);
   };
 
-  if (!isPopupVisible || hasConsented) {
+  if (!isPopupVisible) {
     return null;
   }
 
