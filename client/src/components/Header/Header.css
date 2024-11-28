@@ -517,7 +517,7 @@ header .nav {
   }
 } */
 
-@media (min-width: 601px) {
+@media (min-width: 801px) {
   .Mobile-Responsive {
     display: none;
   }
@@ -526,7 +526,7 @@ header .nav {
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 800px) {
   header {
     display: none;
   }
