@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { tr, eu } from 'date-fns/locale';
 import { UserContext } from '../../Hooks/UserContext';
 import Image from '../../components/Image';
+import CKEditorComponent from "../../components/Editor/CKView";
 
 const PrevievPostPage = () => {
     const [postInfo, setPostInfo] = useState(null);
@@ -121,7 +122,8 @@ const PrevievPostPage = () => {
             <div className="image">
                 <Image src={postInfo.cover} alt="img" />
             </div>
-            <div className='content' dangerouslySetInnerHTML={{__html:postInfo.content}} />
+            {/* <div className='content' dangerouslySetInnerHTML={{__html:postInfo.content}} /> */}
+            <CKEditorComponent value={postInfo.content} onChange={() => {}} readOnly={true} />
     
         </div>
     )
