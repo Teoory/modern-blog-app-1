@@ -878,6 +878,11 @@ div.actions a.delete {
   font-weight: 600;
 }
 
+.ck-editor__editable.ck-content .todo-list .todo-list__label>span[contenteditable=false]>input:before{
+  top: 0 !important;
+  left: 0 !important;
+}
+
 div.actions svg {
   width: 20px;
   height: 20px;
