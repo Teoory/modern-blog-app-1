@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import { format } from "date-fns";
 import { tr, eu } from 'date-fns/locale';
@@ -9,6 +9,7 @@ import Post from '../../components/Post/Post';
 import DOMPurify from 'dompurify';
 import 'ckeditor5/ckeditor5.css';
 import CKEditorComponent from "../../components/Editor/CKView";
+import { API_BASE_URL } from '../../config';
 
 const PostPage = () => {
     const [postInfo, setPostInfo] = useState(null);
@@ -22,9 +23,14 @@ const PostPage = () => {
     const [newComment, setNewComment] = useState('');
     const {id} = useParams();
     const [posts, setPosts] = useState([]);
+
+    const [popupVisible, setPopupVisible] = useState(false);
+    const [userSuggestions, setUserSuggestions] = useState([]);
+    const [cursorPosition, setCursorPosition] = useState(null);
+    const popupRef = useRef(null);
     
     useEffect(() => {
-        fetch(`https://fiyasko-blog-api.vercel.app/post/${id}`)
+        fetch(`${API_BASE_URL}/post/${id}`)
             .then(response => {
                 if(!response.ok) {
                     setRedirect(true);
@@ -37,19 +43,19 @@ const PostPage = () => {
     }, [id]);
         
     useEffect(() => { 
-        fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/comments`)
+        fetch(`${API_BASE_URL}/post/${id}/comments`)
             .then(response => response.json())
             .then(comments => setComments(comments))
     }, [id]);
     
     useEffect(() => {
-        fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/likes`)
+        fetch(`${API_BASE_URL}/post/${id}/likes`)
           .then(response => response.json())
           .then(data => {
             setLikes(data.likes);
           });
 
-          fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/hasLiked`,{
+          fetch(`${API_BASE_URL}/post/${id}/hasLiked`,{
               method: 'GET',
               credentials: 'include',
           })
@@ -60,13 +66,13 @@ const PostPage = () => {
     }, [id]);
 
     useEffect(() => {
-        fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/superlikes`)
+        fetch(`${API_BASE_URL}/post/${id}/superlikes`)
           .then(response => response.json())
           .then(data => {
             setSuperLikes(data.superlikes);
           });
 
-        fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/hasSuperLiked`,{
+        fetch(`${API_BASE_URL}/post/${id}/hasSuperLiked`,{
             method: 'GET',
             credentials: 'include',
         })
@@ -78,16 +84,30 @@ const PostPage = () => {
 
     
     useEffect(() => {
-    fetch('https://fiyasko-blog-api.vercel.app/post').then(response => {
+    fetch(`${API_BASE_URL}/post`).then(response => {
       response.json().then(posts => {
         setPosts(posts);
       });
     });
     }, []);
+
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (popupRef.current && !popupRef.current.contains(event.target)) {
+                setPopupVisible(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
     
     const sendNotification = async (senderId, receiverId, postId, type) => {
         try {
-            const response = await fetch('https://fiyasko-blog-api.vercel.app/send-notification', {
+            const response = await fetch(`${API_BASE_URL}/send-notification`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -111,7 +131,7 @@ const PostPage = () => {
 
     const deletePost = async () => {
         try {
-            const response = await fetch(`https://fiyasko-blog-api.vercel.app/post/${postInfo._id}`, {
+            const response = await fetch(`${API_BASE_URL}/post/${postInfo._id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -135,7 +155,7 @@ const PostPage = () => {
 
     const toggleLike = async () => {
         try {
-          const response = await fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/like`, {
+          const response = await fetch(`${API_BASE_URL}/post/${id}/like`, {
             method: 'POST',
             credentials: 'include',
           });
@@ -154,7 +174,7 @@ const PostPage = () => {
 
     const toggleSuperLike = async () => {
         try {
-          const response = await fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/superlike`, {
+          const response = await fetch(`${API_BASE_URL}/post/${id}/superlike`, {
             method: 'POST',
             credentials: 'include',
           });
@@ -172,43 +192,134 @@ const PostPage = () => {
         }
     };
 
-    const addComment = async () => {
-        try {
-            const response = await fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/comment`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ content: newComment }),
+
+
+
+    const handleCommentChange = async (e) => {
+        const { value } = e.target;
+        setNewComment(value);
+    
+        // "@username" için kontrol
+        const cursorIndex = e.target.selectionStart;
+        const substring = value.substring(0, cursorIndex);
+        const match = substring.match(/@(\w*)$/);
+    
+        if (match) {
+          const query = match[1];
+          if (query.length > 0) {
+            // Kullanıcıları filtrele
+            try {
+              const response = await fetch(`${API_BASE_URL}/users`, {
+                method: 'GET',
                 credentials: 'include',
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                contentType: 'application/json',
+              });
+              const users = await response.json();
+              const filteredUsers = users
+                .filter((user) => user.username.startsWith(query))
+                .slice(0, 3); // İlk 3 sonucu al
+              setUserSuggestions(filteredUsers);
+              setPopupVisible(true);
+              setCursorPosition(cursorIndex);
+            } catch (error) {
+              console.error('Error fetching user suggestions:', error);
             }
-            const updatedComments = await fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/comments`)
-                .then(response => response.json());
+          }
+        } else {
+          setPopupVisible(false);
+        }
+      };
+    
+      const handleSuggestionClick = (username) => {
+        const prefix = newComment.substring(0, cursorPosition).replace(/@\w*$/, `@${username} `);
+        const suffix = newComment.substring(cursorPosition);
+        setNewComment(`${prefix}${suffix}`);
+        setPopupVisible(false);
+      };
+    
 
-            setComments(updatedComments);
-            setNewComment('');
-
-            const mentionedUsers = newComment.match(/@(\w+)/g);
-            if (mentionedUsers) {
-                await Promise.all(mentionedUsers.map(async (username) => {
-                    const receiverUser = await fetch(`https://fiyasko-blog-api.vercel.app/profile/${username.slice(1)}`)
-                        .then(response => response.json());
-                    if (receiverUser && receiverUser.user._id !== userInfo.id) {
-                        await sendNotification(userInfo.id, receiverUser.user._id, postInfo._id, 'Bahset');
-                    }
-                }));
-            }                   
-
-            if (userInfo.id !== postInfo.author._id)
+      const addComment = async () => {
+        try {
+          const response = await fetch(`${API_BASE_URL}/post/${id}/comment`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ content: newComment }),
+            credentials: 'include',
+          });
+    
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+    
+          const updatedComments = await fetch(`${API_BASE_URL}/post/${id}/comments`).then((res) =>
+            res.json()
+          );
+          setComments(updatedComments);
+          setNewComment('');
+    
+          const mentionedUsers = newComment.match(/@(\w+)/g);
+          if (mentionedUsers) {
+            await Promise.all(
+              mentionedUsers.map(async (username) => {
+                const receiverUser = await fetch(`${API_BASE_URL}/profile/${username.slice(1)}`).then(
+                  (res) => res.json()
+                );
+                if (receiverUser && receiverUser.user._id !== userInfo.id) {
+                  await sendNotification(userInfo.id, receiverUser.user._id, postInfo._id, 'Bahset');
+                }
+              })
+            );
+          }
+    
+          if (userInfo.id !== postInfo.author._id)
             await sendNotification(userInfo.id, postInfo.author._id, postInfo._id, 'Yorum');
         } catch (error) {
-            console.error('Error adding comment:', error.message);
+          console.error('Error adding comment:', error.message);
         }
-    };
+      };
+    
+
+
+
+    // const addComment = async () => {
+    //     try {
+    //         const response = await fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/comment`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify({ content: newComment }),
+    //             credentials: 'include',
+    //         });
+
+    //         if (!response.ok) {
+    //             throw new Error(`HTTP error! status: ${response.status}`);
+    //         }
+    //         const updatedComments = await fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/comments`)
+    //             .then(response => response.json());
+
+    //         setComments(updatedComments);
+    //         setNewComment('');
+
+    //         const mentionedUsers = newComment.match(/@(\w+)/g);
+    //         if (mentionedUsers) {
+    //             await Promise.all(mentionedUsers.map(async (username) => {
+    //                 const receiverUser = await fetch(`https://fiyasko-blog-api.vercel.app/profile/${username.slice(1)}`)
+    //                     .then(response => response.json());
+    //                 if (receiverUser && receiverUser.user._id !== userInfo.id) {
+    //                     await sendNotification(userInfo.id, receiverUser.user._id, postInfo._id, 'Bahset');
+    //                 }
+    //             }));
+    //         }                   
+
+    //         if (userInfo.id !== postInfo.author._id)
+    //         await sendNotification(userInfo.id, postInfo.author._id, postInfo._id, 'Yorum');
+    //     } catch (error) {
+    //         console.error('Error adding comment:', error.message);
+    //     }
+    // };
 
     const formatDate = (dateString) => {
         const opt = {
@@ -321,19 +432,36 @@ const PostPage = () => {
             </div>
             
             {userInfo !== null ? (
-                <div className='addComment'>
-                    <textarea
-                        value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
-                        placeholder="Yorumunuzu yazın..."
-                        rows="4"
-                        cols="50"
-                        maxLength={256}
-                    />
-                    <button className='CommAddButton' onClick={addComment}>Yorum Yap</button>
-                </div>
+              <div className="addComment">
+                <textarea
+                  value={newComment}
+                  onChange={handleCommentChange}
+                  placeholder="Yorumunuzu yazın..."
+                  rows="4"
+                  cols="50"
+                  maxLength={256}
+                />
+                <button className="CommAddButton" onClick={addComment}>
+                  Yorum Yap
+                </button>
+                {popupVisible && (
+                  <div ref={popupRef} className="popup">
+                    {userSuggestions.map((user) => (
+                      <div
+                        key={user._id}
+                        className="popup-item"
+                        onClick={() => handleSuggestionClick(user.username)}
+                      >
+                        {user.username}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             ) : (
-                <span className='CommentLogin'>Yorum yapmak için <Link to="/login">giriş yapın</Link></span>
+              <span className="CommentLogin">
+                Yorum yapmak için <Link to="/login">giriş yapın</Link>
+              </span>
             )}
             
             {comments.length === 0
@@ -362,7 +490,7 @@ const PostPage = () => {
                             <>
                                 <button className='CommDelButton' onClick={() => {
                                     if(window.confirm('Bu işlem geri alınamaz. Silmek istediğinize emin misiniz?')) {
-                                        fetch(`https://fiyasko-blog-api.vercel.app/post/${id}/comment/${comment._id}`, {
+                                        fetch(`${API_BASE_URL}/post/${id}/comment/${comment._id}`, {
                                             method: 'DELETE',
                                             credentials: 'include',
                                         }).then(() => {

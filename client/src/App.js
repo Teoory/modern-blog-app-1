@@ -7,8 +7,9 @@ import Footer from './components/Footer/Footer';
 import AppRoutes from './Routes/AppRoutes';
 import Warning from './components/Warning/Warning';
 import DarkMode from './components/DarkMode';
+import CookieConsent from './components/CookieConsent';
 
-ReactGA.initialize("G-JE8SQ0X8QR");
+ReactGA.initialize("G-L90S7CY9N9");
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <main className="app">
         <Warning />
         <Header />
+        <CookieConsent />
         {/* <Aside/> */}
         <div className="content">
           <AppRoutes />

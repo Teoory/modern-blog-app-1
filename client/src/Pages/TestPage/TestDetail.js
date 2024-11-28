@@ -1,4 +1,4 @@
-import React, { useContext,useEffect, useState } from 'react';
+import React, { useContext,useEffect, useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { format } from "date-fns";
 import { tr, eu } from 'date-fns/locale';
@@ -22,6 +22,11 @@ const TestDetail = () => {
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const [tests, setTests] = useState([]);
+
+    const [popupVisible, setPopupVisible] = useState(false);
+    const [userSuggestions, setUserSuggestions] = useState([]);
+    const [cursorPosition, setCursorPosition] = useState(null);
+    const popupRef = useRef(null);
 
     useEffect(() => {
         fetch(`${API_BASE_URL}/tests/${id}`)
@@ -101,6 +106,22 @@ const TestDetail = () => {
       });
     });
     }, []);
+
+    
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (popupRef.current && !popupRef.current.contains(event.target)) {
+                setPopupVisible(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+    
+
     
     const sendNotification = async (senderId, receiverId, testId, type) => {
         try {
@@ -180,6 +201,59 @@ const TestDetail = () => {
         }
     };
 
+
+
+
+    
+
+
+    const handleCommentChange = async (e) => {
+        const { value } = e.target;
+        setNewComment(value);
+    
+        // "@username" için kontrol
+        const cursorIndex = e.target.selectionStart;
+        const substring = value.substring(0, cursorIndex);
+        const match = substring.match(/@(\w*)$/);
+    
+        if (match) {
+          const query = match[1];
+          if (query.length > 0) {
+            // Kullanıcıları filtrele
+            try {
+              const response = await fetch(`${API_BASE_URL}/users`, {
+                method: 'GET',
+                credentials: 'include',
+                contentType: 'application/json',
+              });
+              const users = await response.json();
+              const filteredUsers = users
+                .filter((user) => user.username.startsWith(query))
+                .slice(0, 3); // İlk 3 sonucu al
+              setUserSuggestions(filteredUsers);
+              setPopupVisible(true);
+              setCursorPosition(cursorIndex);
+            } catch (error) {
+              console.error('Error fetching user suggestions:', error);
+            }
+          }
+        } else {
+          setPopupVisible(false);
+        }
+      };
+    
+      const handleSuggestionClick = (username) => {
+        const prefix = newComment.substring(0, cursorPosition).replace(/@\w*$/, `@${username} `);
+        const suffix = newComment.substring(cursorPosition);
+        setNewComment(`${prefix}${suffix}`);
+        setPopupVisible(false);
+      };
+
+
+
+
+
+
     const addComment = async () => {
         try {
             const response = await fetch(`${API_BASE_URL}/tests/${id}/comment`, {
@@ -202,14 +276,17 @@ const TestDetail = () => {
 
             const mentionedUsers = newComment.match(/@(\w+)/g);
             if (mentionedUsers) {
-                await Promise.all(mentionedUsers.map(async (username) => {
-                    const receiverUser = await fetch(`${API_BASE_URL}/profile/${username.slice(1)}`)
-                        .then(response => response.json());
-                    if (receiverUser && receiverUser.user._id !== userInfo.id) {
-                        await sendNotification(userInfo.id, receiverUser.user._id, test._id, 'Bahset');
-                    }
-                }));
-            }                   
+              await Promise.all(
+                mentionedUsers.map(async (username) => {
+                  const receiverUser = await fetch(`${API_BASE_URL}/profile/${username.slice(1)}`).then(
+                    (res) => res.json()
+                  );
+                  if (receiverUser && receiverUser.user._id !== userInfo.id) {
+                    await sendNotification(userInfo.id, receiverUser.user._id, test._id, 'Bahset');
+                  }
+                })
+              );
+            }                  
 
             if (userInfo.id !== test.author._id)
             await sendNotification(userInfo.id, test.author._id, test._id, 'Yorum');
@@ -348,19 +425,36 @@ const TestDetail = () => {
             </div>
             
             {userInfo !== null ? (
-                <div className='addComment'>
-                    <textarea
-                        value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
-                        placeholder="Yorumunuzu yazın..."
-                        rows="4"
-                        cols="50"
-                        maxLength={256}
-                    />
-                    <button className='CommAddButton' onClick={addComment}>Yorum Yap</button>
-                </div>
+              <div className="addComment">
+                <textarea
+                  value={newComment}
+                  onChange={handleCommentChange}
+                  placeholder="Yorumunuzu yazın..."
+                  rows="4"
+                  cols="50"
+                  maxLength={256}
+                />
+                <button className="CommAddButton" onClick={addComment}>
+                  Yorum Yap
+                </button>
+                {popupVisible && (
+                  <div ref={popupRef} className="popup">
+                    {userSuggestions.map((user) => (
+                      <div
+                        key={user._id}
+                        className="popup-item"
+                        onClick={() => handleSuggestionClick(user.username)}
+                      >
+                        {user.username}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             ) : (
-                <span className='CommentLogin'>Yorum yapmak için <Link to="/login">giriş yapın</Link></span>
+              <span className="CommentLogin">
+                Yorum yapmak için <Link to="/login">giriş yapın</Link>
+              </span>
             )}
             
             {comments.length === 0

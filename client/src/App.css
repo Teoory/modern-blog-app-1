@@ -794,6 +794,27 @@ div.post-page .content p:has(img) {
   text-align: center;
 }
 
+.popup {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-width: 200px;
+  margin-top: 5px;
+}
+
+.popup-item {
+  padding: 10px;
+  cursor: pointer;
+  color: var(--color-black);
+}
+
+.popup-item:hover {
+  background-color: #f5f5f5;
+}
+
 .content p:first-child:first-letter {
   color: gold;
   text-transform: uppercase;
@@ -1189,6 +1210,17 @@ div.image img{
     max-width: 430px;
     min-height: 585px;
   }
+
+  .post-page {
+    width: 98%;
+  }
+
+  .related-posts .posts .post .image,
+  .related-posts .posts .post .text {
+    width: 98%;
+  }
+
+
 
   .NotificationListItem {
     flex-wrap: wrap;
