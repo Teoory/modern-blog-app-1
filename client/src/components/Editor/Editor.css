@@ -70,6 +70,12 @@ iframe {
     }
 }
 
+@media (min-width: 120px) {
+    .ck.ck-sticky-panel__content.ck-sticky-panel__content_sticky {
+        top: 90px !important;
+    }
+}
+
 /* .editor-container_classic-editor .editor-container__editor {
     min-width: 100%;
 } */
