@@ -48,10 +48,12 @@ const TestPage = () => {
       ) : (
         <p>Henüz test yok.</p>
       )} */}
-      {tests.length > 0 && tests.map(test => (
-        <TestsAll {...test} key={test._id} />
-      ))}
-      {tests.length === 0 && <p>Henüz test yok.</p>}
+      <div style={{display:'flex',flexWrap:'wrap',gap:'20px'}}>
+        {tests.length > 0 && tests.map(test => (
+          <TestsAll {...test} key={test._id} />
+        ))}
+        {tests.length === 0 && <p>Henüz test yok.</p>}
+      </div>
     </div>
   );
 };
