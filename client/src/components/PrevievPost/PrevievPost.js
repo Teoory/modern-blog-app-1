@@ -20,7 +20,7 @@ const PrevievPost = ({_id,title, summary,cover,content,createdAt, author, PostTa
               <p className="info">
                 <a className="author">{author.username}</a>
                 <time>
-                  {format(new Date(createdAt), "HH:MM | dd MMMM yyyy", {
+                  {format(new Date(createdAt), "HH:mm | dd MMMM yyyy", {
                     locale: locales["tr"],
                   })}
                 </time>

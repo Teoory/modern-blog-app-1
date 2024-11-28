@@ -119,7 +119,7 @@ const NotificationsPage = () => {
                         }
                         }>Sil</button>
 
-                        <span className='commentTime'><time>{format(new Date(notification.createdAt), "HH:MM / dd MMMM yyyy", {locale: locales["tr"],})}</time></span>
+                        <span className='commentTime'><time>{format(new Date(notification.createdAt), "HH:mm / dd MMMM yyyy", {locale: locales["tr"],})}</time></span>
                         {/* <span className='commentTime'>{formatDate(notification.createdAt)}</span> */}
                     </li>
                     }
