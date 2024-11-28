@@ -70,7 +70,7 @@ iframe {
     }
 }
 
-@media (min-width: 120px) {
+@media (min-width: 1200px) {
     .ck.ck-sticky-panel__content.ck-sticky-panel__content_sticky {
         top: 90px !important;
     }
