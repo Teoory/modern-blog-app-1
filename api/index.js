@@ -411,16 +411,31 @@ app.get('/check-new-notifications', async (req, res) => {
 });
 
 //? Logout
-app.post('/logout', (req, res) => {
-    req.session?.destroy();
-    res.clearCookie('token', '', {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        path: '/',
-    });
+// app.post('/logout', (req, res) => {
+//     req.session?.destroy();
+//     res.clearCookie('token', '', {
+//         httpOnly: true,
+//         secure: true,
+//         sameSite: "none",
+//         path: '/',
+//     });
 
-    res.status(200).json({ message: 'Logged out from all devices' });
+//     res.status(200).json({ message: 'Logged out from all devices' });
+// });
+
+app.post('/logout', (req, res) => {
+    req.session?.destroy((err) => {
+        if (err) {
+            return res.status(500).json({ message: 'Session destruction failed' });
+        }
+        res.clearCookie('token', {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+            path: '/',
+        });
+        return res.status(200).json({ message: 'Logged out from all devices' });
+    });
 });
 
 //? User Bio
