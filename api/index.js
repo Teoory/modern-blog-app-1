@@ -255,13 +255,13 @@ app.post ('/login', async (req, res) => {
     }
     const  passOk = bcrypt.compareSync(password, userDoc.password);
     if(passOk){
-        jwt.sign({username, profilePhoto:userDoc.profilePhoto , email:userDoc.email, tags:userDoc.tags, id:userDoc._id, likedPosts:userDoc.likedPosts}, secret, {} , (err, token) => {
+        jwt.sign({username, profilePhoto:userDoc.profilePhoto , email:userDoc.email, tags:userDoc.tags, id:userDoc._id, likedPosts:userDoc.likedPosts}, secret, { expiresIn: '24h' } , (err, token) => {
             if (err) {
                 console.error('Token oluşturulamadı:', err);
                 return res.status(500).json({ error: 'Token oluşturulamadı' });
             }
 
-            res.cookie('token', token,{sameSite: "none", maxAge: 24 * 60 * 60 * 1000, httpOnly: false, secure: true}).json({
+            res.cookie('token', token,{sameSite: "none", maxAge: 24 * 60 * 60 * 1000, httpOnly: true, secure: true}).json({
                 id:userDoc._id,
                 username,
                 email:userDoc.email,
@@ -412,14 +412,15 @@ app.get('/check-new-notifications', async (req, res) => {
 
 //? Logout
 app.post('/logout', (req, res) => {
-    req.session.destroy();
-    res.clearCookie('token').json({message: 'Logged out from all devices'});
-    res.cookie('token', '', {
+    req.session?.destroy();
+    res.clearCookie('token', '', {
+        httpOnly: true,
+        secure: true,
         sameSite: "none",
-        maxAge: 0,
-        httpOnly: false,
-        secure: true
+        path: '/',
     });
+
+    res.status(200).json({ message: 'Logged out from all devices' });
 });
 
 //? User Bio
