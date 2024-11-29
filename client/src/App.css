@@ -828,6 +828,12 @@ div.post-page div.image img {
   width: 100%;
 }
 
+.post-page pre {
+  background-color: #00071c !important;
+  color: #fff !important;
+  padding-top: 20px !important;
+}
+
 div.post-page a{
   text-decoration: underline;
   color: inherit;
