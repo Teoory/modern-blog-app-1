@@ -2,17 +2,13 @@ import { useEffect, useState, useContext } from 'react';
 import { UserContext } from '../../Hooks/UserContext';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import Image from '../../components/Image';
+import { API_BASE_URL } from '../../config';
+import '../ProfilePage/ProfilePage.css';
+import '../AdminPage/AdminPage.css';
 
 const UserProfilePage = () => {
   const { username } = useParams();
   const [userProfile, setUserProfile] = useState(null);
-
-  useEffect(() => {
-    fetch(`https://fiyasko-blog-api.vercel.app/profile/${username}`)
-        .then(response => response.json())
-        .then(data => setUserProfile(data));
-  }, [username]);
-  
   const { setUserInfo, userInfo } = useContext(UserContext);
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [likedPosts, setLikedPosts] = useState([]);
@@ -24,7 +20,14 @@ const UserProfilePage = () => {
   const [editableBio, setEditableBio] = useState(false);
 
   useEffect(() => {
-    fetch('https://fiyasko-blog-api.vercel.app/profile', {
+    fetch(`${API_BASE_URL}/profile/${username}`)
+        .then(response => response.json())
+        .then(data => setUserProfile(data));
+  }, [username]);
+  
+
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/profile`, {
       credentials: 'include',
     }).then(response => {
       response.json().then(userInfo => {
@@ -32,7 +35,7 @@ const UserProfilePage = () => {
       });
     });
 
-  fetch('https://fiyasko-blog-api.vercel.app/profilephoto', {
+  fetch(`${API_BASE_URL}/profilephoto`, {
       credentials: 'include',
     })
       .then(response => response.json())
@@ -44,11 +47,11 @@ const UserProfilePage = () => {
 
   
   useEffect(() => {
-      fetch(`https://fiyasko-blog-api.vercel.app/profile/${username}`)
+      fetch(`${API_BASE_URL}/profile/${username}`)
         .then(response => response.json())
         .then(data => setUserProfile(data));
     
-      fetch(`https://fiyasko-blog-api.vercel.app/profile/${username}/likedPosts`)
+      fetch(`${API_BASE_URL}/profile/${username}/likedPosts`)
     .then(response => response.json())
     .then(data => {
       setLikedPosts(data.likedPosts);
@@ -56,17 +59,6 @@ const UserProfilePage = () => {
     })
     .catch(error => console.error('Error fetching liked posts:', error));
   }, [username]);
-  
-  // useEffect(() => {
-  //   const element = document.querySelector('.aside');
-  //   element.style.display = 'none';
-  //   return () => {
-  //       if(window.innerWidth > 1280)
-  //       element.style.display = 'block';
-  //       else if (window.innerWidth <= 1280)
-  //       element.style.display = 'contents';
-  //   };
-  // }, []);
 
   if (!userInfo) {
     return <Navigate to="/" replace />;
@@ -76,7 +68,7 @@ const UserProfilePage = () => {
     ev.preventDefault();
     const data = new FormData();
     data.append('file', files[0]);
-    const response = await fetch('https://fiyasko-blog-api.vercel.app/profilePhoto', {
+    const response = await fetch(`${API_BASE_URL}/profilePhoto`, {
       method: 'POST',
       body: data,
       credentials: 'include',
@@ -89,7 +81,7 @@ const UserProfilePage = () => {
   const handleEditProfileBio = async (ev) => {
     ev.preventDefault();
     try {
-      const response = await fetch(`https://fiyasko-blog-api.vercel.app/userBio/${username}`, {
+      const response = await fetch(`${API_BASE_URL}/userBio/${username}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -148,7 +140,6 @@ const UserProfilePage = () => {
                       <div className="ppContent">
                         <input  className="ChangePP" type="file" onChange={ev => {setFiles(ev.target.files);}} />
                         {profilePhoto && (
-                          // <img src={`https://fiyasko-blog-api.vercel.app/${user.profilePhoto}`} alt="Profile" />
                           <Image src={user.profilePhoto} alt="Profile" />
                           )}
                         </div>
@@ -161,7 +152,6 @@ const UserProfilePage = () => {
                           </div>
                         }
                     </form>
-                    // : <img src={`https://fiyasko-blog-api.vercel.app/${user.profilePhoto}`} alt="Profile" />
                     : <Image src={user.profilePhoto} alt="Profile" />
                 }
               </div>
@@ -232,11 +222,9 @@ const UserProfilePage = () => {
                   {posts.map(post => (
                   <div key={post._id} className="LastPostImageOverlay">
                       <Link to={`/post/${post._id}`} className='BlogTitle'>
-                          {/* <img src={'https://fiyasko-blog-api.vercel.app/'+post.cover} alt="img" /> */}
                           <Image src={post.cover} alt="img" />
                           <div className='LastPostTitle'>{post.title}</div>
                       </Link>
-                      {/* <p className='BlogSummary'>{post.summary}</p> */}
                   </div>
                   ))}
               </div>
@@ -252,7 +240,6 @@ const UserProfilePage = () => {
                 {likedPosts.slice(0, showAll ? likedPosts.length : 6).map(post => (
                   <div key={post._id} className='LastPostImageOverlay'>
                       <Link to={`/post/${post._id}`} className='BlogTitle'>
-                          {/* <img src={'https://fiyasko-blog-api.vercel.app/'+post.cover} alt="img" /> */}
                           <Image src={post.cover} alt="img" />
                           <div className='LastPostTitle'>{post.title}</div>
                       </Link>

@@ -3,6 +3,7 @@ import { Navigate, useParams, Link } from 'react-router-dom';
 // import Editor from '../../components/Editor/Editor';
 import CKEditorComponent from "../../components/Editor/CKEditorComponent";
 import 'react-quill/dist/quill.snow.css';
+import { API_BASE_URL } from '../../config';
 
 const EditPost = () => {
     const {id} = useParams();
@@ -15,7 +16,7 @@ const EditPost = () => {
     const [availableTags, SetAvailableTags] = useState([]);
 
     useEffect(() => {
-        fetch('https://fiyasko-blog-api.vercel.app/post/'+id).then(response => {
+        fetch(`${API_BASE_URL}/post/`+id).then(response => {
             response.json().then(postInfo => {
                 setTitle(postInfo.title);
                 setSummary(postInfo.summary);
@@ -26,7 +27,7 @@ const EditPost = () => {
     }, []);
 
     useEffect(() => {
-        fetch('https://fiyasko-blog-api.vercel.app/availableTags')
+        fetch(`${API_BASE_URL}/availableTags`)
             .then(response => response.json())
             .then(data => {
                 SetAvailableTags(data.availableTags);
@@ -44,7 +45,7 @@ const EditPost = () => {
         if(files?.[0]) {
             data.set('file', files?.[0]);
         }
-        const response = await fetch('https://fiyasko-blog-api.vercel.app/post', {
+        const response = await fetch(`${API_BASE_URL}/post`, {
             method: 'PUT',
             body: data,
             credentials: 'include',

@@ -1,14 +1,15 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { UserContext } from '../Hooks/UserContext';
 
 import HomePage from '../Pages/HomePage/HomePage';
 import AdminPage from '../Pages/AdminPage/AdminPage';
-import ProfilePage from '../Pages/ProfilePage/ProfilePage';
-import UserProfilePage from '../Pages/UserProfilePage/UserProfilePage';
 import ProfileSettingsPage from '../Pages/ProfilSettingsPage/ProfilSettingsPage';
 import NotificationsPage from '../Pages/NotificationsPage/NotificationsPage';
 import Privacy from '../Pages/PrivacyPage';
+
+import UserProfilePage from '../Pages/UserProfilePage/UserProfilePage';
+import ProfilePage from '../Pages/ProfilePage/ProfilePage';
 
 import PostPage from '../Pages/PostPage/PostPage';
 import CreatePost from '../Pages/CreatePost/CreatePost';
@@ -33,16 +34,12 @@ import SearchPage from '../Pages/SearchPage/SearchPage';
 
 import NotFoundPage from '../Pages/NotFoundPage/NotFoundPage';
 
+
 const PrivRoutes = () => {
     const { userInfo } = useContext(UserContext);
-    useEffect(() => {
-        fetch('https://fiyasko-blog-api.vercel.app/profile', {
-            credentials: 'include'
-        });
-    }, []);
     
-    const username = userInfo?.username;
-    const tags = userInfo?.tags;
+    const tags = userInfo?.tags || [];
+
     
     const isAdmin = tags?.includes('admin');
     const isEditorUp = tags?.includes('editor') || tags?.includes('moderator') || isAdmin;
@@ -51,69 +48,55 @@ const PrivRoutes = () => {
 
     return (
         <Routes>
-            {username 
-                ?   <>
-                        {/* <Route path="/profile" element={<ProfilePage />} />  */}
-                        <Route path="/edit/:id" element={<EditPost/>} />
-                        <Route path="/post/:id" element={<PostPage/>} />
-                        <Route path="/profile/:username" element={<UserProfilePage/>} />
-                        <Route path="/ticketCreate" element={<TicketCreatePage/>} />
-                        <Route path="/ticket" element={<TicketPage/>} />
-                        <Route path="/tickets/:id" element={<TicketControlPage/>} />
-                        <Route path="/settings" element={<ProfileSettingsPage />} />
-                        <Route path="/verify-email" element={<VerifyPage/>} />
-                        <Route path="/notifications" element={<NotificationsPage />} />
-                        <Route path="/privacy" element={<Privacy />} />
-                        <Route path="/search" element={<SearchPage />} />
-                    </>
-
-                :   <> 
-                        <Route path="/post/:id" element={<PostPage/>} />
-                        <Route path="/ticketCreate" element={<TicketCreatePage/>} />
-                        <Route path="/tickets/:id" element={<TicketControlPage username={username} isAdmin={isAdmin}/>} />
-                        <Route path="/profile/:username" element={<UserProfilePage/>} />
-                        <Route path="/settings" element={<ProfileSettingsPage />} />
-                        <Route path="/verify-email" element={<VerifyPage/>} />
-                        <Route path="/privacy" element={<Privacy />} />
-                        <Route path="/search" element={<SearchPage />} />
-                    </>
-            }
-            
-            {isAdmin
-                ?   <>
-                        <Route path="/admin" element={<AdminPage />} />
-                    </>
-                :   null
+            {userInfo && 
+            <>
+                <Route index path="/" element={<HomePage />} />
+                <Route index path="/home" element={<HomePage />} />
+                <Route path="/login" element={<HomePage />} />
+                <Route path="/register" element={<HomePage />} />
+                <Route path="*" element={<NotFoundPage/>} />
+                <Route path="/tests" element={<TestPage />} />
+                <Route path="/tests/:id" element={<TestDetail />} />
+                <Route path="/edit/:id" element={<EditPost/>} />
+                <Route path="/post/:id" element={<PostPage/>} />
+                <Route path="/profile" element={<ProfilePage/>} />
+                <Route path="/profile/:username" element={<UserProfilePage/>} />
+                <Route path="/ticketCreate" element={<TicketCreatePage/>} />
+                <Route path="/ticket" element={<TicketPage/>} />
+                <Route path="/tickets/:id" element={<TicketControlPage/>} />
+                <Route path="/settings" element={<ProfileSettingsPage />} />
+                <Route path="/verify-email" element={<VerifyPage/>} />
+                <Route path="/notifications" element={<NotificationsPage />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/search" element={<SearchPage />} />
+            </>
             }
 
-            {isEditorUp
-                ?   <>
-                        <Route path="/previev" element={<PrevievPage />} />
-                        <Route path="/previevPost/:id" element={<PrevievPostPage />} />
-                        <Route path="/previevPostEdit/:id" element={<PrevievPostEdit />} />
-                    </>
-                :   null
+            {isAdmin &&
+            <>
+                <Route path="/admin" element={<AdminPage />} />
+            </>
             }
 
-            {isWriter
-                ?   <Route path="/createPreviev" element={<CreatePrevievPost/>} />
-                :   null
+            {isEditorUp &&
+            <>
+                <Route path="/previev" element={<PrevievPage />} />
+                <Route path="/previevPost/:id" element={<PrevievPostPage />} />
+                <Route path="/previevPostEdit/:id" element={<PrevievPostEdit />} />
+            </>
             }
 
-            {isMasterWriterUp
-                ?   <>
-                        <Route path="/create" element={<CreatePost/>} />
-                        <Route path="/createTest" element={<CreateTest/>} />
-                        <Route path="/createTestOld" element={<CreateTestOld/>} />
-                    </>
-                :   null
+            {isWriter &&
+                <Route path="/createPreviev" element={<CreatePrevievPost/>} />
             }
 
-            <Route index path="/" element={<HomePage />} />
-            <Route index path="/home" element={<HomePage />} />
-            <Route path="*" element={<NotFoundPage/>} />
-            <Route path="/tests" element={<TestPage />} />
-            <Route path="/tests/:id" element={<TestDetail />} />
+            {isMasterWriterUp &&
+            <>
+                <Route path="/create" element={<CreatePost/>} />
+                <Route path="/createTest" element={<CreateTest/>} />
+                <Route path="/createTestOld" element={<CreateTestOld/>} />
+            </>
+            }
         </Routes>
     )
 }

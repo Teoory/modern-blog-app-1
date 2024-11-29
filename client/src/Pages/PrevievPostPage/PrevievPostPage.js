@@ -5,6 +5,7 @@ import { tr, eu } from 'date-fns/locale';
 import { UserContext } from '../../Hooks/UserContext';
 import Image from '../../components/Image';
 import CKEditorComponent from "../../components/Editor/CKView";
+import { API_BASE_URL } from '../../config';
 
 const PrevievPostPage = () => {
     const [postInfo, setPostInfo] = useState(null);
@@ -12,7 +13,7 @@ const PrevievPostPage = () => {
     const [redirect, setRedirect] = useState(false);
     const {id} = useParams();
     useEffect(() => {
-        fetch(`https://fiyasko-blog-api.vercel.app/previevPost/${id}`).then(response => {
+        fetch(`${API_BASE_URL}/previevPost/${id}`).then(response => {
             response.json().then(postInfo => {
                 setPostInfo(postInfo);                
             })
@@ -21,7 +22,7 @@ const PrevievPostPage = () => {
 
     const approvePost = async () => {
         try {
-            const response = await fetch(`https://fiyasko-blog-api.vercel.app/approvePost/${postInfo._id}`, {
+            const response = await fetch(`${API_BASE_URL}/approvePost/${postInfo._id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -45,7 +46,7 @@ const PrevievPostPage = () => {
 
     const deletePost = async () => {
         try {
-            const response = await fetch(`https://fiyasko-blog-api.vercel.app/previevPost/${postInfo._id}`, {
+            const response = await fetch(`${API_BASE_URL}/previevPost/${postInfo._id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',

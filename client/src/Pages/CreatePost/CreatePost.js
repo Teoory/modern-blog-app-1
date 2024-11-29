@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 // import Editor from "../../components/Editor/Editor";
 import CKEditorComponent from "../../components/Editor/CKEditorComponent";
+import { API_BASE_URL } from '../../config';
 
 const CreatePost = () => {
   const [title, setTitle] = useState('');
@@ -14,7 +15,7 @@ const CreatePost = () => {
   const [availableTags, SetAvailableTags] = useState([]);
 
   useEffect(() => {
-    fetch('https://fiyasko-blog-api.vercel.app/availableTags')
+    fetch(`${API_BASE_URL}/availableTags`)
       .then(response => response.json())
       .then(data => SetAvailableTags(data.availableTags));
   }, []);
@@ -27,7 +28,7 @@ const CreatePost = () => {
     data.set('file', files[0]);
     data.set('PostTags', selectedTags);
     ev.preventDefault();
-    const response = await fetch('https://fiyasko-blog-api.vercel.app/post', {
+    const response = await fetch(`${API_BASE_URL}/post`, {
       method: 'POST',
       body: data,
       credentials: 'include',

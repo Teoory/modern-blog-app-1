@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'; 
 import './AdminPage.css';
+import { API_BASE_URL } from '../../config';
 
 const AdminPage = () => {
   const [users, setUsers] = useState([]);
@@ -9,7 +10,7 @@ const AdminPage = () => {
   const [postCount, setPostCount] = useState('');
 
   useEffect(() => {
-    fetch('https://fiyasko-blog-api.vercel.app/users', {
+    fetch(`${API_BASE_URL}/users`, {
       method: 'GET',
       credentials: 'include',
     })
@@ -17,7 +18,7 @@ const AdminPage = () => {
       .then(data => setUsers(data))
       .catch(error => console.error('Error fetching users:', error));
     
-    fetch('https://fiyasko-blog-api.vercel.app/previevPost', {
+    fetch(`${API_BASE_URL}/previevPost`, {
       method: 'GET',
       credentials: 'include',
     })
@@ -27,7 +28,7 @@ const AdminPage = () => {
   }, []);
 
   const handleChangeTag = (username, newTag) => {
-    fetch('https://fiyasko-blog-api.vercel.app/changeTag', {
+    fetch(`${API_BASE_URL}/changeTag`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -52,7 +53,7 @@ const AdminPage = () => {
     ev.preventDefault();
     const title = document.getElementById('title').value;
     const message = document.getElementById('message').value;
-    fetch('https://fiyasko-blog-api.vercel.app/warning', {
+    fetch(`${API_BASE_URL}/warning`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

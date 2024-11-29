@@ -5,6 +5,7 @@ import './Header.css';
 import logo from './logo.svg';
 import goldIngot from '../../Images/gold-ingot.svg';
 import Image from '../Image';
+import { API_BASE_URL } from '../../config';
 
 const Header = () => {
     const { setUserInfo, userInfo } = useContext(UserContext);
@@ -14,19 +15,9 @@ const Header = () => {
     const [newNotification, setNewNotification] = useState(false);
 
     useEffect(() => {
-        fetch('https://fiyasko-blog-api.vercel.app/profile', {
-            credentials: 'include',
-        }).then(response => {
-                response.json().then(userInfo => {
-                    setUserInfo(userInfo);
-                });
-            })
-    }, []);
-
-    useEffect(() => {
         const checkNewNotifications = async () => {
             try {
-                const response = await fetch(`https://fiyasko-blog-api.vercel.app/check-new-notifications?userId=${userInfo.id}`);
+                const response = await fetch(`${API_BASE_URL}/check-new-notifications?userId=${userInfo.id}`);
                 if (response.ok) {
                     const { newNotificationExists } = await response.json();
                     setNewNotification(newNotificationExists);
@@ -47,7 +38,7 @@ const Header = () => {
     setTimeout(() => {
         const checkNewNotifications = async () => {
             try {
-                const response = await fetch(`https://fiyasko-blog-api.vercel.app/check-new-notifications?userId=${userInfo.id}`);
+                const response = await fetch(`${API_BASE_URL}/check-new-notifications?userId=${userInfo.id}`);
                 if (response.ok) {
                     const { newNotificationExists } = await response.json();
                     setNewNotification(newNotificationExists);
@@ -61,10 +52,9 @@ const Header = () => {
         setTimer(timer + 1);
 
         if (userInfo) {
-            // console.log('Yeni bildirimler kontrol ediliyor...');
             checkNewNotifications();
         }
-    }, 30000); // 30 saniyede bir bildirimleri kontrol et | 60 saniye 60000 / 10 saniye 10000 / 1 saniye 1000 
+    }, 30000);
 
     let [exchangeData, setExchangeData] = useState({});
     useEffect(() => {
@@ -98,17 +88,30 @@ const Header = () => {
         return () => clearInterval(intervalId);
     }, []);
 
-    function logout() {
-        fetch('https://fiyasko-blog-api.vercel.app/logout', {
-          credentials: 'include',
-          method: 'POST',
-        }).then(() => {
-          setUserInfo(null);
+    const logout = async () => {
+        await fetch(`${API_BASE_URL}/logout`, {
+            credentials: 'include',
+            method: 'POST',
         });
+        deleteAllCookies();
+        setUserInfo(null);
+    };
+
+    function deleteAllCookies() {
+        document.cookie.split(';').forEach(cookie => {
+            const eqPos = cookie.indexOf('=');
+            const name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;
+            document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT';
+        });
+        localStorage.clear();
+        document.cookie.split(';').forEach(function(c) {
+            document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+        });
+
     }
 
     const getProfilePhoto = () => {
-        fetch('https://fiyasko-blog-api.vercel.app/profilephoto', {
+        fetch(`${API_BASE_URL}/profilephoto`, {
           credentials: 'include',
         })
           .then(response => response.json())
@@ -128,36 +131,45 @@ const Header = () => {
     const onlyWriter = tags?.includes('writer');
     const isUser = tags?.includes('user') || isWriter;
 
-    window.onscroll = function() {scrollFunction()};
+    window.onscroll = function () {
+        scrollFunction();
+    };
+      
     let lastScrollTop = 0;
-    let scrolledUpOnce = false;
+    let scrollDelta = 0;
+    const SCROLL_THRESHOLD = 700;
     
     function scrollFunction() {
-        let st = window.scrollY || document.documentElement.scrollTop;
+        const st = window.scrollY || document.documentElement.scrollTop;
         if (document.querySelector("header") === null) return;
+      
         const header = document.querySelector(".header");
-        
-        header.style.transition = "transform 0.3s ease";
-        
+      
+        header.style.transition = "transform 1.3s ease";
+      
         if (st < 200) {
             header.style.position = "relative";
             header.style.transform = "translateY(0%)";
             header.style.zIndex = "999999";
-            scrolledUpOnce = false;
-        }
-        else if (st > lastScrollTop){
+            scrollDelta = 0;
+        } else if (st > lastScrollTop) {
+            // Aşağı kaydırma
             header.style.position = "relative";
             header.style.transform = "translateY(-100%)";
             header.style.zIndex = "999999";
-            scrolledUpOnce = false;
+            scrollDelta = 0;
         } else {
-            header.style.position = "fixed";
-            header.style.transform = "translateY(0%)";
-            header.style.width = "100%";
-            header.style.zIndex = "999999";
-            scrolledUpOnce = true;
+            // Yukarı kaydırma
+            scrollDelta += lastScrollTop - st;
+            if (scrollDelta > SCROLL_THRESHOLD) {
+                header.style.position = "fixed";
+                header.style.transform = "translateY(0%)";
+                header.style.width = "100%";
+                header.style.zIndex = "999999";
+          }
         }
-        lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
+      
+        lastScrollTop = st <= 0 ? 0 : st;
     }
 
     if (!isWriter) {
@@ -278,7 +290,6 @@ const Header = () => {
                 <div className="dropdown">
                     <a className="dropbtn" onClick={() => setShowDropdown(!showDropdown)}>
                     {profilePhoto ? (
-                        // <img className='ProfilePhoto' src={`https://fiyasko-blog-api.vercel.app/${profilePhoto}`} alt="Profile" />
                         <Image src={profilePhoto} className='ProfilePhoto' />
                     ) : (
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -298,6 +309,7 @@ const Header = () => {
                         </div>
                     )}
                 </div>
+                {userInfo && (
                 <div className={`notificationsButton ${newNotification ? 'newNatificationsActive' : ''}`}>
                     {newNotification ? (
                         <Link to="/notifications">
@@ -313,6 +325,7 @@ const Header = () => {
                         </Link>
                     )}
                 </div>
+                )}
             </div>
         </>
         ) : (
@@ -365,6 +378,7 @@ const Header = () => {
         <div>
             <div className='HeadNav'>
                 <Link to="/" className="logo" ><img alt='logo' className='logo' src={logo}/></Link>
+                {userInfo && (
                 <div className={`notificationsButton ${newNotification ? 'newNatificationsActive' : ''}`}>
                     {newNotification ? (
                         <Link to="/notifications">
@@ -380,6 +394,7 @@ const Header = () => {
                         </Link>
                     )}
                 </div>
+                )}
             </div>
             <nav className="exchange-rate">
                 <span>
@@ -495,7 +510,6 @@ const Header = () => {
             <div className="profileButton">
                 <Link to={`/profile/${username}`}>
                 {profilePhoto ? (
-                    // <img className='ProfilePhoto' src={`https://fiyasko-blog-api.vercel.app/${profilePhoto}`} alt="Profile" />
                     <Image src={profilePhoto} className='ProfilePhoto' />
                 ) : (
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">

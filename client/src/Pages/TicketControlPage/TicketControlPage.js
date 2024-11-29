@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { tr, eu } from 'date-fns/locale';
 import { UserContext } from '../../Hooks/UserContext';
 import '../../QuillSnow.css';
+import { API_BASE_URL } from '../../config';
 
 const TicketControlPage = () => {
     const [ticketInfo, setTicketInfo] = useState(null);
@@ -13,7 +14,7 @@ const TicketControlPage = () => {
     const { id } = useParams();
 
     useEffect(() => {
-        fetch(`https://fiyasko-blog-api.vercel.app/ticket/${id}`).then(response => {
+        fetch(`${API_BASE_URL}/ticket/${id}`).then(response => {
             response.json().then(ticketInfo => {
                 setTicketInfo(ticketInfo);
             })
@@ -21,7 +22,7 @@ const TicketControlPage = () => {
     }, []);
 
     useEffect(() => {
-        fetch('https://fiyasko-blog-api.vercel.app/profile', {
+        fetch(`${API_BASE_URL}/profile`, {
             credentials: 'include',
         });
     }, []);
@@ -31,7 +32,7 @@ const TicketControlPage = () => {
         const data = new FormData();
         data.set('status', status);
         ev.preventDefault();
-        const response = await fetch(`https://fiyasko-blog-api.vercel.app/ticket/${id}`, {
+        const response = await fetch(`${API_BASE_URL}/ticket/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'

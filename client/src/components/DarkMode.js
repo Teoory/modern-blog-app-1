@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { UserContext } from '../Hooks/UserContext';
+import { API_BASE_URL } from '../config';
 
 const DarkMode = () => {
     const { userInfo } = useContext(UserContext);
@@ -9,7 +10,7 @@ const DarkMode = () => {
         if (userInfo === null) {
             return;
         };
-        fetch('https://fiyasko-blog-api.vercel.app/darkmode', {
+        fetch(`${API_BASE_URL}/darkmode`, {
             credentials: 'include'
         })
             .then(response => response.json())

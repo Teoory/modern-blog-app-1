@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './Warning.css';
+import { API_BASE_URL } from '../../config';
 
 const Warning = () => {
     const [isHidden, setIsHidden] = useState(false);
     const [warning, setWarning] = useState({});
   
     useEffect(() => {
-        fetch('https://fiyasko-blog-api.vercel.app/getWarning', {
+        fetch(`${API_BASE_URL}/getWarning`, {
             method: 'GET',
             credentials: 'include',
         })

@@ -2,26 +2,17 @@ import TicketPages from '../../components/Ticket/Ticket';
 import { useEffect, useContext, useState } from 'react';
 import { UserContext } from '../../Hooks/UserContext';
 import '../../QuillSnow.css';
+import { API_BASE_URL } from '../../config';
 
 const TicketPage = () => {
-    const { setUserInfo, userInfo } = useContext(UserContext);
+    const { userInfo } = useContext(UserContext);
     const [previewTickets, setPreviewTickets] = useState([]);
 
 
     useEffect(() => {
-        fetch('https://fiyasko-blog-api.vercel.app/ticket').then(response => {
+        fetch(`${API_BASE_URL}/ticket`).then(response => {
             response.json().then(previewTickets => {
                 setPreviewTickets(previewTickets);
-            });
-        });
-    }, []);
-    
-    useEffect(() => {
-        fetch('https://fiyasko-blog-api.vercel.app/profile', {
-            credentials: 'include',
-        }).then(response => {
-            response.json().then(userInfo => {
-                setUserInfo(userInfo);
             });
         });
     }, []);

@@ -1,11 +1,12 @@
 import PrevievPages from '../../components/PrevievPost/PrevievPost';
 import { useEffect, useState } from 'react';
 import '../../QuillSnow.css';
+import { API_BASE_URL } from '../../config';
 
 const PrevievPage = () => {
     const [previevPosts, setPrevievPosts] = useState([]);
     useEffect(() => {
-        fetch('https://fiyasko-blog-api.vercel.app/previevPost').then(response => {
+        fetch(`${API_BASE_URL}/previevPost`).then(response => {
             response.json().then(previevPosts => {
                 setPrevievPosts(previevPosts);
             });

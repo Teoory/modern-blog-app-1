@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
+import { API_BASE_URL } from '../../config';
 
 const RegisterPage = () => {
     const [username, setUsername] = useState('');
@@ -25,7 +26,7 @@ const RegisterPage = () => {
             alert('Lütfen şifrenizi kontrol edin!');
             return;
         }
-        const response = await fetch('https://fiyasko-blog-api.vercel.app/register', {
+        const response = await fetch(`${API_BASE_URL}/register`, {
             method: 'POST',
             body: JSON.stringify({username, password, email}),
             headers: {'Content-Type': 'application/json'},

@@ -1,29 +1,20 @@
 import React from 'react'
-import { useEffect, useContext, useState } from 'react';
-import { Link, useParams, Navigate } from 'react-router-dom';
+import { useContext, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { UserContext } from '../../Hooks/UserContext';
+import { API_BASE_URL } from '../../config';
 
 const ProfilSettingsPage = () => {
     const { setUserInfo, userInfo } = useContext(UserContext);
     const [darkMode, setDarkMode] = useState(false);
     const [aside, setAside] = useState(false);
 
-    useEffect(() => {
-        fetch('https://fiyasko-blog-api.vercel.app/profile', {
-            credentials: 'include',
-        }).then(response => {
-            response.json().then(userInfo => {
-                setUserInfo(userInfo);
-            });
-        });
-    }, []);
-
     const darkModeToggle = () => {
         if (userInfo === null) {
             setDarkMode(!darkMode);
             return;
         };
-        fetch('https://fiyasko-blog-api.vercel.app/darkmode', {
+        fetch(`${API_BASE_URL}/darkmode`, {
             credentials: 'include',
             method: 'PUT',
             }).then(() => {
@@ -42,7 +33,7 @@ const ProfilSettingsPage = () => {
         if (userInfo === null) {
             return;
         };
-        fetch('https://fiyasko-blog-api.vercel.app/darkmode', {
+        fetch(`${API_BASE_URL}/darkmode`, {
             credentials: 'include',
         })
             .then(response => response.json())
@@ -53,7 +44,7 @@ const ProfilSettingsPage = () => {
     };
 
     function logout() {
-        fetch('https://fiyasko-blog-api.vercel.app/logout', {
+        fetch(`${API_BASE_URL}/logout`, {
           credentials: 'include',
           method: 'POST',
         }).then(() => {

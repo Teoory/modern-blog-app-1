@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react'
 import SearchBox from '../../components/Searchbox/SearchBox';
 import { Link } from 'react-router-dom';
 import Image from '../../components/Image';
+import { API_BASE_URL } from '../../config';
 
 const SearchPage = () => {
     const [searchResults, setSearchResults] = useState([]);
     
     const handleSearch = async (keyword) => {
         try {
-            const response = await fetch(`https://fiyasko-blog-api.vercel.app/search/${keyword}`);
+            const response = await fetch(`${API_BASE_URL}/search/${keyword}`);
             if (response.ok) {
                 const searchData = await response.json();
                 setSearchResults(searchData);

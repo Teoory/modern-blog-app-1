@@ -3,6 +3,7 @@ import { useState, useContext } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { UserContext } from '../../Hooks/UserContext';
 import './LoginPage.css';
+import { API_BASE_URL } from '../../config';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -11,7 +12,7 @@ const LoginPage = () => {
   const {setUserInfo} = useContext(UserContext);
   async function login(ev) {
     ev.preventDefault();
-    const response = await fetch('https://fiyasko-blog-api.vercel.app/login', {
+    const response = await fetch(`${API_BASE_URL}/login`, {
       method: 'POST',
       mode: 'cors',
       redirect: 'follow',
@@ -23,6 +24,7 @@ const LoginPage = () => {
       response.json().then(userInfo => {
         if (userInfo.token) {
           localStorage.setItem('token', userInfo.token);
+          localStorage.setItem('userInfo', JSON.stringify(userInfo));
         } else {
           alert('Token alınamadı!');
           return;
@@ -34,21 +36,12 @@ const LoginPage = () => {
       alert('Hatalı kullanıcı adı veya şifre!');
     }
   }
-  // useEffect(() => {
-  //   const element = document.querySelector('.aside');
-  //   element.style.display = 'none';
-  //   return () => {
-  //       if(window.innerWidth > 1280)
-  //       element.style.display = 'block';
-  //       else if (window.innerWidth <= 1280)
-  //       element.style.display = 'contents';
-  //   };
-  // }, []);
-
 
   if(redirect) {
     return <Navigate to="/home"/>;
   }
+
+  
   return (
     <div className='loginArea'>
       <form className="login" onSubmit={login}>

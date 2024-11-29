@@ -1726,6 +1726,12 @@ app.get('/users', isAdmin, async (req, res) => {
     );
 });
 
+app.get('/mentions', async (req, res) => {
+    res.json(
+        await User.find({},'username')
+    );
+});
+
 app.post('/changeTag', async (req, res) => {
     const {username, newTag} = req.body;
     const userDoc = await User.findOne({username});

@@ -24,6 +24,7 @@ header a.logo {
   max-width: 128px;
   font-weight: bold;
   font-size: 1.5rem;
+  display: flex;
 }
 
 header nav {
@@ -41,8 +42,9 @@ header nav {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background-color: #678dce;
-  border-radius: 5px;
+  /* background-color: #678dce; */
+  /* background-color: var(--color-nav); */
+  /* border-radius: 5px; */
   color: white;
   padding: 2px;
   width: max-content;
@@ -59,12 +61,13 @@ header nav {
   display: none;
   position: absolute;
   background-color: white;
-  border: 2px solid #678dce;
+  /* border: 2px solid #678dce; */
+  /* border: 2px solid var(--color-nav); */
   min-width: 100px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
   z-index: 1;
   text-align: center;
-  border-radius: 5px;
+  /* border-radius: 5px; */
   font-weight: 400;
   width: 100%;
 }
@@ -94,12 +97,31 @@ header nav {
   text-decoration: none;
   display: block;
   text-align: center;
-  border-bottom: 1px solid #678dce;
+  /* border-bottom: 1px solid #678dce; */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .dropdown-content a:hover,
 .dropdown-content2 a:hover {
-  background-color: lightblue;
+  /* background-color: lightblue; */
+  background-color: rgb(0, 0, 0, 0.1);
+}
+
+/* .dropdown-content a:first-child:hover,
+.dropdown-content2 a:first-child:hover,
+.AdminButton:hover {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+} */
+
+/* .dropdown-content a:last-child:hover,
+.dropdown-content2 a:last-child:hover {
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+} */
+
+.dropdown-content a:nth-last-child(1) {
+  border-bottom: none;
 }
 
 div .dropbtn {
@@ -113,7 +135,8 @@ div .dropbtn {
 div .dropbtn svg {
   width: 24px;
   height: 24px;
-  background-color: #678dce;
+  /* background-color: #678dce; */
+  background-color: var(--color-nav);
   border-radius: 50%;
   color: white;
 }
@@ -128,13 +151,16 @@ div .dropbtn svg {
 }
 
 .AdminButton {
-  background: linear-gradient(to right top, goldenrod, #345678);
+  background: linear-gradient(to right top, rgb(218, 32, 88), #345678);
   color: white !important;
+  /* border-top-left-radius: 5px;
+  border-top-right-radius: 5px; */
 }
 
 .AdminButton:hover {
-  background: linear-gradient(to left bottom, goldenrod, #224422);
+  background: linear-gradient(to left bottom, rgb(181, 32, 218), #345678);
   color: white !important;
+  
 }
 
 
@@ -151,8 +177,9 @@ div .dropbtn svg {
 }
 
 .create-post {
-  background-color: #678dce;
-  border-radius: 5px;
+  /* background-color: #678dce; */
+  background-color: var(--color-nav);
+  /* border-radius: 5px; */
   color: white;
   padding: 2px;
   font-weight: lighter;
@@ -166,7 +193,7 @@ div .dropbtn svg {
 .create-post svg {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
+  /* border-radius: 50%; */
   color: white;
 }
 
@@ -225,7 +252,8 @@ header .nav {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background-color: #678dce;
+  /* background-color: #678dce; */
+  background-color: var(--color-nav);
   border-radius: 50%;
   color: white;
   padding: 2px;

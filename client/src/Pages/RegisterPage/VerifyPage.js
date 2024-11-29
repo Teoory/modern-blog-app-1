@@ -1,39 +1,18 @@
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../Hooks/UserContext';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../../config';
 
 const VerifyPage = () => {
     const [verificationCode, setVerificationCode] = useState('');
-    const { setUserInfo, userInfo } = useContext(UserContext);
+    const [emailSent, setEmailSent] = useState(false);
+    const { userInfo } = useContext(UserContext);
     const navigate = useNavigate();
-
-    
-  useEffect(() => {
-        fetch('https://fiyasko-blog-api.vercel.app/profile', {
-          credentials: 'include',
-        }).then(response => {
-          response.json().then(userInfo => {
-            setUserInfo(userInfo);
-          });
-        });
-    }, []);
-    
-    // useEffect(() => {
-    //     const element = document.querySelector('.aside');
-    //     element.style.display = 'none';
-    //     return () => {
-    //         if(window.innerWidth > 1280)
-    //         element.style.display = 'block';
-    //         else if (window.innerWidth <= 1280)
-    //         element.style.display = 'contents';
-    //     };
-    //   }, []);
 
     const verifyEmail = async (ev) => {
         ev.preventDefault();
 
-        // Verification code'yi doğrulama işlemi
-        const response = await fetch('https://fiyasko-blog-api.vercel.app/verify-email', {
+        const response = await fetch(`${API_BASE_URL}/verify-email`, {
             method: 'POST',
             body: JSON.stringify({ verificationCode }),
             headers: { 'Content-Type': 'application/json' },
@@ -49,10 +28,9 @@ const VerifyPage = () => {
     const email = userInfo?.email;
 
     const requestNewCode = async () => {
-        // Yeni bir doğrulama kodu isteği
-        const response = await fetch('https://fiyasko-blog-api.vercel.app/request-verify-code', {
+        const response = await fetch(`${API_BASE_URL}/request-verify-code`, {
             method: 'POST',
-            body: JSON.stringify({ email }), // E-posta adresini gönder
+            body: JSON.stringify({ email }),
             headers: { 'Content-Type': 'application/json' },
         });
 
@@ -62,6 +40,8 @@ const VerifyPage = () => {
             alert('Yeni doğrulama kodu isteği başarısız! Lütfen tekrar deneyin.');
         }
     };
+    
+
 
 
     return (
