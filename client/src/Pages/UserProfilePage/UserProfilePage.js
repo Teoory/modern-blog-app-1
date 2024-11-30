@@ -162,7 +162,14 @@ const UserProfilePage = () => {
 
                 {/* <div className="username">{username}</div> */}
                 <div className="email">{user.email}</div>
-                <div className={`tags ${user.tags.join(' ')}`}>{user.tags}</div>
+                <div className={`tags ${user.tags[0]}`}>
+                  {user.tags[0]}
+                  {user.tags[1] === 'premium' &&(
+                  <span className={`premium`}>
+                    {" " + "(" + user.tags[1] + ")"}
+                  </span>
+                  )}
+                </div>
               </div>
             </div>
         </div>

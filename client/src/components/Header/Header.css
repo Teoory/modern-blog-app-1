@@ -42,9 +42,6 @@ header nav {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  /* background-color: #678dce; */
-  /* background-color: var(--color-nav); */
-  /* border-radius: 5px; */
   color: white;
   padding: 2px;
   width: max-content;
@@ -61,13 +58,10 @@ header nav {
   display: none;
   position: absolute;
   background-color: white;
-  /* border: 2px solid #678dce; */
-  /* border: 2px solid var(--color-nav); */
   min-width: 100px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
   z-index: 1;
   text-align: center;
-  /* border-radius: 5px; */
   font-weight: 400;
   width: 100%;
 }
@@ -97,28 +91,14 @@ header nav {
   text-decoration: none;
   display: block;
   text-align: center;
-  /* border-bottom: 1px solid #678dce; */
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .dropdown-content a:hover,
 .dropdown-content2 a:hover {
-  /* background-color: lightblue; */
   background-color: rgb(0, 0, 0, 0.1);
 }
 
-/* .dropdown-content a:first-child:hover,
-.dropdown-content2 a:first-child:hover,
-.AdminButton:hover {
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-} */
-
-/* .dropdown-content a:last-child:hover,
-.dropdown-content2 a:last-child:hover {
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-} */
 
 .dropdown-content a:nth-last-child(1) {
   border-bottom: none;
@@ -135,7 +115,6 @@ div .dropbtn {
 div .dropbtn svg {
   width: 24px;
   height: 24px;
-  /* background-color: #678dce; */
   background-color: var(--color-nav);
   border-radius: 50%;
   color: white;
@@ -153,8 +132,6 @@ div .dropbtn svg {
 .AdminButton {
   background: linear-gradient(to right top, rgb(218, 32, 88), #345678);
   color: white !important;
-  /* border-top-left-radius: 5px;
-  border-top-right-radius: 5px; */
 }
 
 .AdminButton:hover {
@@ -177,9 +154,7 @@ div .dropbtn svg {
 }
 
 .create-post {
-  /* background-color: #678dce; */
   background-color: var(--color-nav);
-  /* border-radius: 5px; */
   color: white;
   padding: 2px;
   font-weight: lighter;
@@ -193,7 +168,6 @@ div .dropbtn svg {
 .create-post svg {
   width: 40px;
   height: 40px;
-  /* border-radius: 50%; */
   color: white;
 }
 
@@ -252,7 +226,6 @@ header .nav {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  /* background-color: #678dce; */
   background-color: var(--color-nav);
   border-radius: 50%;
   color: white;
@@ -285,6 +258,35 @@ header .nav {
   height: 24px;
   border-radius: 50%;
   color: white;
+}
+
+.premiumHeader {
+  position: relative;
+  top: -5px;
+  font-size: 10px;
+  text-align: center;
+  font-weight: 700 !important;
+  background: linear-gradient(120deg, #21b1f3, #00510d, #cfb523, #f32170, #21b1f3, #00510d, #cfb523);
+  /* background: linear-gradient(to right top, #00ffff, #ff00ff); */
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient 3s linear infinite;
+}
+
+.premiumHeaderMobil {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  text-align: center;
+  font-weight: 700 !important;
+  background: linear-gradient(120deg, #21b1f3, #00510d, #cfb523, #f32170, #21b1f3, #00510d, #cfb523);
+  /* background: linear-gradient(to right top, #00ffff, #ff00ff); */
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient 3s linear infinite;
 }
 
 .exchange-rate {
@@ -349,6 +351,15 @@ header .nav {
   justify-content: space-between;
   padding: 5px;
   background: var(--color-white);
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
 }
 
 @media (max-width: 1200px) {
@@ -486,66 +497,6 @@ header .nav {
   }
 }
 
-/* @media (max-width: 425px) {
-  .exchange-rate {
-    font-size: 6px;
-    gap: 1px;
-    padding: 2px 0;
-    max-width: 420px;
-    display: flex;
-    justify-content: start;
-  }
-
-  .exchange-rate span::after {
-    content: " | ";
-    height: 100%;
-    display: inline-block;
-    font-size: initial;
-  }
-
-  .exchange-rate span:nth-last-child(1)::after {
-    content: "";
-  }
-
-  .exchange-rate svg {
-    margin: 0;
-  }
-
-  .downChange, .upChange {
-    font-size: 8px;
-    font-weight: 400;
-    margin: 0 !important;
-  }
-  
-  .dropdowns {
-    display: grid;
-    gap: 10px;
-  }
-
-  header {
-    align-items: start;
-  }
-
-  header nav {
-    width: 50%;
-  }
-}
-
-@media (max-width: 300px) {
-  .exchange-rate {
-    display: none;
-  }
-
-  header {
-    align-items: start;
-  }
-
-  .dropdowns {
-    display: grid;
-    gap: 10px;
-  }
-} */
-
 @media (min-width: 801px) {
   .Mobile-Responsive {
     display: none;
@@ -636,10 +587,6 @@ header .nav {
   main {
     display: contents;
   }
-
-  /* .aside {
-    display: none;
-  } */
 }
 
 @media (max-width: 400px) {

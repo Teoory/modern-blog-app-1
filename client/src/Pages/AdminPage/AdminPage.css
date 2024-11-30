@@ -42,7 +42,9 @@ body {
   font-weight: 700;
 }
 
-.tags {    text-transform: uppercase;
+.tags {    
+  text-transform: uppercase;
+  user-select: none;
   font-size: 14px;
   color: #888;
 }

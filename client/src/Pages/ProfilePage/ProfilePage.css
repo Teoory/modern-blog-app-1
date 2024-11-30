@@ -168,13 +168,116 @@ content:hover {
     width: 100px;
     margin-top: 25px;
     color: white;
-
 }
 
-@media (max-width: 300px) {
+.premium {
+    font-weight: 700 !important;
+    background: linear-gradient(120deg,#21b1f3,#00510d,#cfb523,#f32170,#21b1f3,#00510d,#cfb523);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient 3s linear infinite;
+    user-select: none;
+}
 
+/* PREMIUN PAGE */
+.prePage {
+    display: grid;
+    justify-items: center;
+}
 
-    .ppArea img {
-        height: auto;
+.prePage span {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #7c00ad;
+}   
+
+.premium-page {
+    background: #fff;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+    border-radius: 15px;
+}
+
+.premium-page a {
+    text-decoration: none
+}
+
+.premium-page p {
+    color: var(--color-black);
+}
+
+.premiumHeader2 {
+    text-align: center;
+    font-weight: 700 !important;
+    background: linear-gradient(120deg, #21b1f3, #00510d, #cfb523, #f32170, #21b1f3, #00510d, #cfb523);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient 3s linear infinite;
+  }
+
+.checkbox-container {
+    margin-top: 20px;
+    color: var(--color-danger);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    user-select: none;
+}
+
+.checkbox-container input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+}
+
+.continue-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.continue-button2 {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.continue-button:hover {
+    background-color: #0056b3;
+}
+
+.continue-button2:hover {
+    background-color: #00510d;
+}
+
+.premiumAvantage {
+    font-weight: 700 !important;
+    background: linear-gradient(120deg, #FF3CAC, #784BA0, #2B86C5, #FF3CAC, #784BA0, #2B86C5);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient 9s linear infinite;
+}
+
+@keyframes gradient {
+    0% {
+      background-position: 0% 0%;
+    }
+    100% {
+      background-position: 100% 100%;
     }
 }

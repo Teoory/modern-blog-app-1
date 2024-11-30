@@ -12,6 +12,7 @@ import SearchPage from '../Pages/SearchPage/SearchPage';
 import NotFoundPage from '../Pages/NotFoundPage/NotFoundPage';
 import TestPage from '../Pages/TestPage/TestPage';
 import TestDetail from '../Pages/TestPage/TestDetail';
+import NavigatorPage from '../Pages/HomePage/NavigatorPage';
 
 const DefRoutes = () => {
   return (
@@ -30,6 +31,7 @@ const DefRoutes = () => {
       <Route path="/search" element={<SearchPage />} />
       <Route path="/tests" element={<TestPage />} />
       <Route path="/tests/:id" element={<TestDetail />} />
+      <Route path="/kesfet" element={<NavigatorPage />} />
     </Routes>
   )
 }

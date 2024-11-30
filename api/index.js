@@ -11,6 +11,7 @@ const Ticket = require ('./models/Ticket');
 const PrevievPost = require ('./models/PrevievPost');
 const Warning = require ('./models/Warning');
 const bcrypt = require('bcryptjs');
+const Iyzipay = require('iyzipay');
 const app = express ();
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
@@ -49,7 +50,13 @@ app.use(session({
     secret: '582905839824723984723749872938479823798huhsıufhsdfuhsdıu8789a67868768678a6s7d87a9',
     resave: false,
     saveUninitialized: true
-  }));
+}));
+
+const iyzipay = new Iyzipay({
+    apiKey: process.env.IYZICO_API_KEY,
+    secretKey: process.env.IYZICO_SECRET_KEY,
+    uri: 'https://sandbox-api.iyzipay.com'
+});
 
 
 mongoose.connect(process.env.MONGODB_URL);
@@ -182,7 +189,7 @@ app.post('/request-verify-code', async (req, res) => {
         const mailOptions = {
             from: `${process.env.MAIL_ADRESS}`,
             to: email,
-            subject: 'Fiysako Blog | E-posta Doğrulama Kodu',
+            subject: 'Kofu Blog | E-posta Doğrulama Kodu',
             // text: `Kaydınızı tamamlamak için aşağıdaki doğrulama kodunu kullanın: ${existingVerification.code}`,
             html: `
                 <div style="text-align: center;display: flex;justify-content: center;">
@@ -196,7 +203,7 @@ app.post('/request-verify-code', async (req, res) => {
                         <p style="color: #888;">Eğer bu e-postayı siz talep etmediyseniz, lütfen dikkate almayın.</p>
                         <hr style="border:none;border-top:1px solid #cdcdcd" />
                         <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
-                            <p>Fiyasko Blog</p>
+                            <p>Kofu Blog</p>
                         </div>
                     </div>
                 </div>
@@ -267,8 +274,13 @@ app.post ('/login', async (req, res) => {
                 email:userDoc.email,
                 bio:userDoc.bio,
                 tags:userDoc.tags,
+                isVerified:userDoc.isVerified,
+                isBanned:userDoc.isBanned,
+                premiumExpiration:userDoc.premiumExpiration,
+                userColor:userDoc.userColor,
                 profilePhoto: userDoc.profilePhoto,
                 likedPosts: userDoc.likedPosts,
+                likedTests: userDoc.likedTests,
                 token,
             });
             console.log('Logged in, Token olusturuldu.', token);
@@ -283,6 +295,15 @@ app.get('/profile', (req, res) => {
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, (err, info) => {
         if(err) throw err;
+        if(userDoc?.isBanned) {
+            res.clearCookie('token', {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'none',
+                path: '/',
+            });
+            return res.status(400).json('You are banned!');
+        }
         res.json(info);
     });
 });
@@ -1822,6 +1843,110 @@ app.delete('/ticket/:id', async (req, res) => {
     const { id } = req.params;
     await Ticket.findByIdAndDelete(id);
     res.json({ message: 'Ticket deleted successfully' });
+});
+
+
+
+
+//? Payment
+app.post('/payment', async (req, res) => {
+    const { userId, price, paymentCard } = req.body;
+
+    console.log("Gelen Ödeme Talebi:", req.body);
+
+    if (!paymentCard) {
+        return res.status(400).json({ message: 'PaymentCard bilgisi eksik' });
+    }
+
+    try {
+        const paymentRequest = {
+            locale: Iyzipay.LOCALE.TR,
+            conversationId: userId,
+            price: price,
+            paidPrice: price,
+            currency: Iyzipay.CURRENCY.TRY,
+            installment: 1,
+            basketId: 'B67832',
+            paymentChannel: Iyzipay.PAYMENT_CHANNEL.WEB,
+            paymentGroup: Iyzipay.PAYMENT_GROUP.PRODUCT,
+            callbackUrl: `${process.env.API_BASE_URL}/payment/callback`,
+            buyer: {
+                id: userId,
+                name: 'Kullanıcı',
+                surname: 'Adı',
+                email: 'kullanici@example.com',
+                identityNumber: '11111111111',
+                registrationAddress: 'Adres',
+                city: 'Şehir',
+                country: 'Türkiye',
+                zipCode: '34732',
+            },
+            shippingAddress: {
+                contactName: 'Kullanıcı Adı',
+                city: 'Şehir',
+                country: 'Türkiye',
+                address: 'Adres',
+                zipCode: '34732',
+            },
+            billingAddress: {
+                contactName: 'Kullanıcı Adı',
+                city: 'Şehir',
+                country: 'Türkiye',
+                address: 'Adres',
+                zipCode: '34732',
+            },
+            basketItems: [
+                {
+                    id: 'BI101',
+                    name: 'Premium Üyelik',
+                    category1: 'Üyelik',
+                    itemType: Iyzipay.BASKET_ITEM_TYPE.VIRTUAL,
+                    price: price,
+                },
+            ],
+            paymentCard,
+        };
+
+        iyzipay.payment.create(paymentRequest, async (err, result) => {
+            if (err || result.status !== 'success') {
+                console.error("Ödeme Hatası:", err || result);
+                return res.status(400).json({ message: 'Ödeme başarısız', error: err || result });
+            }
+
+            try {
+                const user = await User.findById(userId);
+
+                if (!user) {
+                    return res.status(404).json({ message: 'Kullanıcı bulunamadı' });
+                }
+
+                // Premium süresini ayarla (1 ay ekle)
+                const premiumExpiration = new Date();
+                premiumExpiration.setMonth(premiumExpiration.getMonth() + 1);
+
+                // Kullanıcı "user" rolünde ise sadece premium rolüyle değiştir
+                if (user.tags.includes('user') && user.tags.length === 1) {
+                    user.tags = ['premium'];
+                } else if (!user.tags.includes('premium')) {
+                    // Diğer rolleri varsa "premium" ekle
+                    user.tags.push('premium');
+                }
+
+                // Premium süresini güncelle
+                user.premiumExpiration = premiumExpiration;
+
+                await user.save();
+
+                res.status(200).json({ message: 'Ödeme başarılı, Premium aktif edildi', result });
+            } catch (error) {
+                console.error("Kullanıcı Güncelleme Hatası:", error);
+                res.status(500).json({ message: 'Premium güncellemesi sırasında bir hata oluştu', error });
+            }
+        });
+    } catch (error) {
+        console.error("Sunucu Hatası:", error);
+        res.status(500).json({ message: 'Bir hata oluştu', error });
+    }
 });
 
 
