@@ -31,7 +31,6 @@ const NavigatorPage = () => {
 
     const [posts, setPosts] = useState([]);
     const [tests, setTests] = useState([]);
-    const [games, setGames] = useState([]);
 
     useEffect(() => {
       fetch(`${API_BASE_URL}/homePosts`).then(response => {

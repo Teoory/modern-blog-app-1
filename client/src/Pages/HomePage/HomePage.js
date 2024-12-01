@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 // import upImage from '../../Images/upperImage.jpg';
 import { API_BASE_URL } from '../../config';
 import { Link } from 'react-router-dom';
+import keygame from '../../Images/keygame.png';
 
 const HomePage = () => {
   const [posts, setPosts] = useState([]);
@@ -66,6 +67,18 @@ const HomePage = () => {
           <TestsAll {...test} key={test._id} />
         ))}
         {tests.length === 0 && <p>Henüz test yok.</p>}
+      </div>
+      <hr className='homeHR'/>
+
+      
+      <h2><Link to={'/games'} style={{textDecoration:'none',color:'var(--color-dark)'}}>Oyunlar</Link></h2>
+      <div className='AllPostsList'>
+        <div className="lastPostImageOverlay">
+            <Link to="/keygame" className='BlogTitle'>
+                <img src={keygame} alt='img'/>
+                <div className="lastPostTitle"><span>Keygame</span></div>
+            </Link>
+        </div>
       </div>
       <hr className='homeHR'/>
 
