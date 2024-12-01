@@ -226,7 +226,7 @@ header .nav {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background-color: var(--color-nav);
+  /* background-color: var(--color-nav); */
   border-radius: 50%;
   color: white;
   padding: 2px;

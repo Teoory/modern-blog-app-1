@@ -32,6 +32,10 @@ import TicketCreatePage from '../Pages/TicketCreatePage/TicketCreatePage';
 import TicketControlPage from '../Pages/TicketControlPage/TicketControlPage';
 import VerifyPage from '../Pages/RegisterPage/VerifyPage';
 
+import Games from '../Pages/GamesPage/GamesPage';
+import KeyGame from '../Pages/GamesPage/KeyGame';
+import KeyGameAdd from '../Pages/GamesPage/KeyGameAdd';
+
 import SearchPage from '../Pages/SearchPage/SearchPage';
 
 import NotFoundPage from '../Pages/NotFoundPage/NotFoundPage';
@@ -72,6 +76,8 @@ const PrivRoutes = () => {
                 <Route path="/notifications" element={<NotificationsPage />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/search" element={<SearchPage />} />
+                <Route path="/games" element={<Games />} />
+                <Route path="/keygame" element={<KeyGame />} />
             </>
             }
 
@@ -85,6 +91,7 @@ const PrivRoutes = () => {
             {isAdmin &&
             <>
                 <Route path="/admin" element={<AdminPage />} />
+                <Route path="/keygame-add" element={<KeyGameAdd />} />
             </>
             }
 

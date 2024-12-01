@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import { API_BASE_URL } from '../../config';
 import Image from '../../components/Image';
+import keygame from '../../Images/keygame.png';
 import { max } from 'date-fns';
 
 const NavigatorPage = () => {
@@ -33,13 +34,13 @@ const NavigatorPage = () => {
     const [games, setGames] = useState([]);
 
     useEffect(() => {
-      fetch(`${API_BASE_URL}/post`).then(response => {
+      fetch(`${API_BASE_URL}/homePosts`).then(response => {
         response.json().then(posts => {
           setPosts(posts);
         });
       });
   
-      fetch(`${API_BASE_URL}/tests`).then(response => {
+      fetch(`${API_BASE_URL}/homeTests`).then(response => {
         response.json().then(tests => {
           setTests(tests);
         });
@@ -48,39 +49,45 @@ const NavigatorPage = () => {
 
     return (
         <div>
-            <div style={styles.areas}>
-                <div style={styles.buttonArea}>
-                    <a href="/home" style={styles.areasTopButton}>
+            <div className='areas'>
+                <div className="buttonArea">
+                    <a href="/home" className="areasTopButton">
                         Bloglar
                     </a>
-                    {posts.slice(0, 3).map(post => (
-                      <div key={post._id} style={styles.LastPostImageOverlay} className='LastPostImageOverlay'>
+                    {posts.slice(0, 2).map(post => (
+                      <div key={post._id} className="lastPostImageOverlay">
                           <Link to={`/post/${post._id}`} className='BlogTitle'>
-                              <Image style={styles.LastPostImage} src={post.cover} alt="img" />
-                              <div style={styles.LastPostTitle} className='LastPostTitle'>{post.title}</div>
+                              <Image className="lastPostImage" src={post.cover} alt="img" />
+                              <div className="lastPostTitle"><span>{post.title}</span></div>
                           </Link>
                       </div>
                     ))}
                 </div>
 
-                <div style={styles.buttonArea}>
-                    <a href="/tests" style={styles.areasTopButton}>
+                <div className="buttonArea">
+                    <a href="/tests" className="areasTopButton">
                         Testler
                     </a>
-                    {tests.slice(0, 3).map(test => (
-                      <div key={test._id} style={styles.LastPostImageOverlay} className='LastPostImageOverlay'>
+                    {tests.slice(0, 2).map(test => (
+                      <div key={test._id} className="lastPostImageOverlay">
                           <Link to={`/tests/${test._id}`} className='BlogTitle'>
-                              <Image style={styles.LastPostImage} src={test.cover} alt="img" />
-                              <div style={styles.LastPostTitle} className='LastPostTitle'>{test.title}</div>
+                              <Image className="lastPostImage" src={test.cover} alt="img" />
+                              <div className="lastPostTitle"><span>{test.title}</span></div>
                           </Link>
                       </div>
                     ))}
                 </div>
 
-                <div style={styles.buttonArea}>
-                    <a href="/games" style={styles.areasTopButton}>
+                <div className="buttonArea">
+                    <a href="/games" className="areasTopButton">
                         Oyunlar
                     </a>
+                    <div className="lastPostImageOverlay">
+                        <Link to="/keygame" className='BlogTitle'>
+                            <img src={keygame} alt='img'/>
+                            <div className="lastPostTitle"><span>Keygame</span></div>
+                        </Link>
+                    </div>
                 </div>
 
             </div>
@@ -89,53 +96,3 @@ const NavigatorPage = () => {
 }
 
 export default NavigatorPage
-
-const styles = {
-    areas: {
-        display: 'flex',
-        // justifyContent: 'space-between',
-        justifyContent: 'space-around',
-        gap: '22px',
-        marginBottom: '22px'
-    },
-    buttonImage: {
-        width: '200px',
-        height: '200px'
-    },
-    buttonArea: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '10px',
-        marginBottom: '22px',
-        alignItems: 'center'
-    },
-    areasTopButton: {
-        backgroundColor: '#303f47',
-        border: 'none',
-        padding: '10px 20px',
-        borderTopRightRadius: '10px',
-        borderTopLeftRadius: '10px',
-        cursor: 'pointer',
-        color: '#fff',
-        fontWeight: 'bold',
-        fontSize: '1.2rem',
-        textDecoration: 'none'
-    },
-    LastPostImageOverlay: {
-        width: '200px',
-        height: '200px',
-    },
-    LastPostImage: {
-        maxWidth: '200px',
-        maxHeight: '200px',
-        margin: '0 auto',
-    },
-    LastPostTitle: {
-        maxWidth: '175px',
-        with: '100%',
-        maxHeight: '175px',
-        height: 'auto',
-        overflow: 'hidden',
-    }
-
-}

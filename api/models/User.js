@@ -59,6 +59,18 @@ const UserSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: 'Test'
     }],
+    totalGamesPlayed: {
+        type: Number,
+        default: 0,
+    },
+    correctAnswers: {
+        type: Number,
+        default: 0,
+    },
+    playedGames: {
+        type: [Number],
+        default: [],
+    },
 });
 
 const UserModel = model('User', UserSchema);

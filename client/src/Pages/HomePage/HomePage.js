@@ -13,13 +13,13 @@ const HomePage = () => {
   const [availableTags, SetAvailableTags] = useState([]);
   const [selectedView, setSelectedView] = useState(false);
   useEffect(() => {
-    fetch(`${API_BASE_URL}/post`).then(response => {
+    fetch(`${API_BASE_URL}/homePosts`).then(response => {
       response.json().then(posts => {
         setPosts(posts);
       });
     });
 
-    fetch(`${API_BASE_URL}/tests`).then(response => {
+    fetch(`${API_BASE_URL}/homeTests`).then(response => {
       response.json().then(tests => {
         setTests(tests);
       });

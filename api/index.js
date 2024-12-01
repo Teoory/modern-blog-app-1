@@ -10,8 +10,10 @@ const Test = require ('./models/Test');
 const Ticket = require ('./models/Ticket');
 const PrevievPost = require ('./models/PrevievPost');
 const Warning = require ('./models/Warning');
+const KeyGame = require ('./models/KeyGameSchema');
 const bcrypt = require('bcryptjs');
 const Iyzipay = require('iyzipay');
+const cron = require('node-cron');
 const app = express ();
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
@@ -293,17 +295,8 @@ app.post ('/login', async (req, res) => {
 //? Profile
 app.get('/profile', (req, res) => {
     const {token} = req.cookies;
-    jwt.verify(token, secret, {}, (err, info) => {
+    jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
-        if(userDoc?.isBanned) {
-            res.clearCookie('token', {
-                httpOnly: true,
-                secure: true,
-                sameSite: 'none',
-                path: '/',
-            });
-            return res.status(400).json('You are banned!');
-        }
         res.json(info);
     });
 });
@@ -696,7 +689,15 @@ app.get('/post', async (req, res) => {
         await Post.find()
         .populate('author', ['username'])
         .sort({createdAt: -1})
-        .limit(20)
+    );
+});
+
+app.get('/homePosts', async (req, res) => {
+    res.json(
+        await Post.find()
+        .select('title summary cover author createdAt PostTags')
+        .populate('author', ['username'])
+        .sort({createdAt: -1})
     );
 });
 
@@ -1426,14 +1427,24 @@ app.post('/tests', uploadMiddleware.single('file'), async (req, res) => {
     }
 });
 
-
-
 app.get('/tests', async (req, res) => {
     try {
         const tests = await Test.find()
             .populate('author', ['username'])
             .sort({ createdAt: -1 })
-            .limit(20);
+        res.json(tests);
+    } catch (error) {
+        console.error('Error fetching tests:', error);
+        res.status(500).json({ success: false, message: 'Testler alınamadı.', error: error.message });
+    }
+});
+
+app.get('/homeTests', async (req, res) => {
+    try {
+        const tests = await Test.find()
+            .select('title summary cover author createdAt TestTags')
+            .populate('author', ['username'])
+            .sort({ createdAt: -1 })
         res.json(tests);
     } catch (error) {
         console.error('Error fetching tests:', error);
@@ -1845,6 +1856,129 @@ app.delete('/ticket/:id', async (req, res) => {
     res.json({ message: 'Ticket deleted successfully' });
 });
 
+
+
+//? Games
+app.post('/keygame-add-game', async (req, res) => {
+    const { correctAnswer, clues, questionDate } = req.body;
+
+    if (!correctAnswer || correctAnswer.length !== 4 || clues.length !== 4) {
+        return res.status(400).json({ message: 'Doğru cevap ve ipuçları eksiksiz olmalıdır.' });
+    }
+
+    try {
+        const lastGame = await KeyGame.findOne().sort({ gameNumber: -1 });
+        const newGameNumber = lastGame ? lastGame.gameNumber + 1 : 1;
+
+        // Yeni oyun oluştur
+        const newGame = new KeyGame({
+            gameNumber: newGameNumber,
+            correctAnswer,
+            clues,
+            createdAt: new Date(),
+        });
+
+        await newGame.save();
+        res.status(201).json({ message: 'Oyun başarıyla eklendi.', game: newGame });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Oyun eklenirken bir hata oluştu.' });
+    }
+});
+
+app.get('/keygame-daily', async (req, res) => {
+    try {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const dailyGame = await KeyGame.findOne({ questionDate: today });
+
+        if (!dailyGame) {
+            return res.status(404).json({ message: 'Bugün için bir oyun bulunamadı.' });
+        }
+
+        res.status(200).json(dailyGame);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Günlük oyun alınırken bir hata oluştu.' });
+    }
+});
+
+app.post('/keygame-play', async (req, res) => {
+    const { userId, gameNumber, userAnswer } = req.body;
+
+    if (!userId || !gameNumber || !userAnswer || userAnswer.length !== 4) {
+        return res.status(400).json({ message: 'Tüm alanları eksiksiz doldurun.' });
+    }
+
+    try {
+        const user = await User.findById(userId);
+        const game = await KeyGame.findOne({ gameNumber });
+
+        if (!user || !game) {
+            return res.status(404).json({ message: 'Kullanıcı veya oyun bulunamadı.' });
+        }
+
+        if (user.playedGames.includes(gameNumber)) {
+            return res.status(403).json({ message: 'Bu oyunu zaten oynadınız.' });
+        }
+
+        const isCorrect = JSON.stringify(game.correctAnswer) === JSON.stringify(userAnswer);
+
+        user.playedGames.push(gameNumber);
+        user.totalGamesPlayed += 1;
+        if (isCorrect) {
+            user.correctAnswers += 1;
+        }
+
+        await user.save();
+
+        res.status(200).json({
+            message: isCorrect ? 'Tebrikler, doğru cevap!' : 'Maalesef yanlış cevap.',
+            isCorrect,
+            correctAnswer: game.correctAnswer,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Oyun oynanırken bir hata oluştu.' });
+    }
+});
+
+async function selectDailyGame() {
+    try {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // O gün için zaten bir oyun seçildiyse işlem yapma
+        const existingGame = await KeyGame.findOne({ questionDate: today });
+        if (existingGame) {
+            console.log('Bugün için zaten bir oyun seçilmiş:', existingGame);
+            return;
+        }
+
+        // Tüm oyunları al
+        const games = await KeyGame.find({});
+        if (!games || games.length === 0) {
+            console.log('Hiç oyun bulunamadı.');
+            return;
+        }
+
+        // Rastgele bir oyun seç
+        const randomGameIndex = Math.floor(Math.random() * games.length);
+        const selectedGame = games[randomGameIndex];
+
+        // Seçilen oyunu günlük oyun olarak işaretle
+        selectedGame.questionDate = today;
+        await selectedGame.save();
+
+        console.log('Yeni günlük oyun seçildi:', selectedGame);
+    } catch (error) {
+        console.error('Günlük oyun seçilirken hata oluştu:', error);
+    }
+}
+
+selectDailyGame();
+cron.schedule('0 12 * * *', selectDailyGame); // Cron job: Her gün saat 12:00'de yeni oyun seç
 
 
 
