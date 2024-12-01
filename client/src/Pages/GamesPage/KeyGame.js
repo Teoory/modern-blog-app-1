@@ -90,7 +90,7 @@ const GamePage = () => {
                         {num}
                     </div>
                 ))}
-                <span>{text}</span>
+                <span style={{color:'var(--color-white2)'}}>{text}</span>
             </div>
         );
     };
@@ -98,11 +98,11 @@ const GamePage = () => {
     return (
         <div style={{display:'flex',justifyContent:'center'}}>
             <div style={{width:'75%',display:'flex',flexDirection:'column',alignItems:'center',background:'#222',borderTopLeftRadius:'5px',borderTopRightRadius:'5px',textTransform:'capitalize'}}>
-                <h1 style={{margin:'5px 0'}}>Günlük Oyun</h1>
-                <p style={{margin:'5px 0 20px 0'}}>Her gün saat 12:00'de oyun yenilenir.</p>
+                <h1 style={{margin:'5px 0', color:'var(--color-white2)'}}>Günlük Oyun</h1>
+                <p style={{margin:'5px 0 20px 0', color:'var(--color-white2)'}}>Her gün saat 12:00'de oyun yenilenir.</p>
                 <div>
                     {game.clues.map((clue, index) => (
-                        <div key={index} style={{ marginBottom: '10px' }}>
+                        <div key={index} style={{ marginBottom: '10px', color:'var(--color-white2)' }}>
                             {formatClue(clue)}
                         </div>
                     ))}
