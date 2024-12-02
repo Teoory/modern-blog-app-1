@@ -106,6 +106,10 @@ const Header = () => {
         localStorage.clear();
     }
 
+    useEffect(() => {
+        userInfo && getProfilePhoto();
+    }, [userInfo]);
+
     const getProfilePhoto = () => {
         fetch(`${API_BASE_URL}/profilephoto`, {
           credentials: 'include',
@@ -178,7 +182,7 @@ const Header = () => {
         }
     }
 
-    userInfo && getProfilePhoto();
+    // userInfo && getProfilePhoto();
   return (
     <>
     <div className='header'>

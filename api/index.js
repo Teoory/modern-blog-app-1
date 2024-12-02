@@ -30,6 +30,7 @@ const fs = require('fs');
 const sharp = require('sharp');
 const session = require('express-session');
 const { count } = require('console');
+const { title } = require('process');
 require('dotenv').config();
 
 const salt = bcrypt.genSaltSync(10);
@@ -295,6 +296,9 @@ app.post ('/login', async (req, res) => {
 //? Profile
 app.get('/profile', (req, res) => {
     const {token} = req.cookies;
+    if(!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
         res.json(info);
@@ -381,7 +385,7 @@ app.get('/notifications/:userId', async (req, res) => {
     const profilID = req.params.userId;
     try {
         const userId = req.params.userId;
-        const notifications = await Notification.find({ receiver: userId }).populate('sender').populate('post').sort({ createdAt: -1 });
+        const notifications = await Notification.find({ receiver: userId }).populate('sender').populate('post',['title']).populate('test', ['title']).sort({ createdAt: -1 });
         res.json(notifications);
     } catch (error) {
         res.status(500).json({ message: 'Bildirimleri getirirken bir hata oluştu.' });
@@ -559,6 +563,9 @@ app.put('/profilePhoto', uploadProfilePhoto.single('file'), async (req, res) => 
 
 app.get('/profilephoto', async (req, res) => {
     const {token} = req.cookies;
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
         const userDoc = await User.findById(info.id);
@@ -593,6 +600,9 @@ app.put('/mobileDarkmode', async (req, res) => {
 
 app.get('/darkmode', async (req, res) => {
     const {token} = req.cookies;
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
     jwt.verify(token, secret, {}, async (err, info) => {
         if(err) throw err;
         const userDoc = await User.findById(info.id);
@@ -717,6 +727,39 @@ app.get('/post/:id', async (req, res) => {
         console.error('Error fetching post:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
+});
+
+app.post('/post/feature/:id', async (req, res) => {
+    const { id } = req.params;
+    const post = await Post.findById(id);
+  
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+  
+    post.isFeatured = true;
+    await post.save();
+  
+    res.json({ message: 'Post marked as featured' });
+});
+
+app.post('/post/unfeature/:id', async (req, res) => {
+    const { id } = req.params;
+    const post = await Post.findById(id);
+  
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+  
+    post.isFeatured = false;
+    await post.save();
+  
+    res.json({ message: 'Post unmarked as featured' });
+});
+  
+app.get('/featured-posts', async (req, res) => {
+  const posts = await Post.find({ isFeatured: true });
+  res.json(posts);
 });
 
 app.delete('/post/:id', async (req, res) => {
@@ -1240,16 +1283,37 @@ app.post('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
         });
 });
 
+app.post('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
+    const cover = [];
+    const {originalname,path,mimetype} = req.file;
+    const url = await uploadToS3(path, originalname, mimetype);
+    cover.push(url);
+
+    const {token} = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if(err) throw err;
+
+        const {id, title, summary, content, previev, PostTags} = req.body;
+            const postDoc = await PrevievPost.create({
+                title,
+                summary,
+                content,
+                cover: url,
+                author: info.id,
+                previev,
+                PostTags,
+            });
+            res.json({postDoc});
+        });
+});
+
 app.put('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
     const cover = [];
     let newPath = null; 
+    const url = null;
     if(req.file) {
         const {originalname,path,mimetype} = req.file;
-        // const parts= originalname.split('.');
-        // const ext = parts[parts.length - 1];
-        // newPath = path + '.' + ext;
-        // fs.renameSync(path, newPath);
-        const url = await uploadToS3(path, originalname, mimetype);
+        url = await uploadToS3(path, originalname, mimetype);
         cover.push(url);
     }
 
@@ -1258,11 +1322,13 @@ app.put('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
         if(err) throw err;
         const {id, title, summary, content, previev, PostTags} = req.body;
         const postDoc = await PrevievPost.findById(id);
+
         const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+        
         const isAdmin = info.tags.includes('admin');
         const isModerator = info.tags.includes('moderator');
         const isEditor = info.tags.includes('editor');
-        if(!isAuthor && isAdmin && isModerator && isEditor) {
+        if(!isAuthor && !isAdmin && !isModerator && !isEditor) {
             return res.status(400).json('You don\'t have permission.');
         }
 
@@ -1279,6 +1345,9 @@ app.put('/previevPost', uploadMiddleware.single('file'), async (req, res) => {
         res.json(postDoc);
     });
 });
+
+
+
 
 app.get('/previevPost', async (req, res) => {
     res.json(
@@ -1743,6 +1812,17 @@ app.delete('/post/:id/comment/:id', async (req, res) => {
     }
 });
 
+app.delete('/tests/:id/comment/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        await Comment.findByIdAndDelete(id);
+        res.json({ message: 'Comment deleted successfully' });
+    } catch (e) {
+        console.error('Error with delete comment', e);
+        res.status(500).json({ e: 'server error' });
+    }
+});
+
 
 //!Admin
 const isAdmin = (req, res, next) => {
@@ -1978,7 +2058,18 @@ async function selectDailyGame() {
 }
 
 selectDailyGame();
-cron.schedule('0 12 * * *', selectDailyGame); // Cron job: Her gün saat 12:00'de yeni oyun seç
+app.get('/api/cron', async (req, res) => {
+    try {
+        await selectDailyGame();
+        res.status(200).json({ message: 'Günlük oyun başarıyla seçildi.' });
+    } catch (error) {
+        console.error('Cron işlemi sırasında hata:', error);
+        res.status(500).json({ message: 'Cron işlemi sırasında hata oluştu.' });
+    }
+});
+
+
+// cron.schedule('0 12 * * *', selectDailyGame); // Cron job: Her gün saat 12:00'de yeni oyun seç
 
 
 

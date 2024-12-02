@@ -30,6 +30,7 @@ const LoginPage = () => {
           return;
         }
         setUserInfo(userInfo);
+        window.location.reload();
         setRedirect(true);
       });
     } else {
@@ -38,7 +39,7 @@ const LoginPage = () => {
   }
 
   if(redirect) {
-    return <Navigate to="/home"/>;
+    <Navigate to="/home"/>;
   }
 
   

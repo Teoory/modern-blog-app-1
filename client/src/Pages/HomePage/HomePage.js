@@ -1,6 +1,7 @@
 import Post from '../../components/Post/Post';
 import PostAll from '../../components/Post/PostAll';
 import TestsAll from '../../components/Tests/Tests';
+import BlogSlider from '../../components/Slider/Slider';
 import { useEffect, useState } from 'react';
 // import upImage from '../../Images/upperImage.jpg';
 import { API_BASE_URL } from '../../config';
@@ -13,6 +14,7 @@ const HomePage = () => {
   const [selectedTags, setSelectedTags] = useState([]);
   const [availableTags, SetAvailableTags] = useState([]);
   const [selectedView, setSelectedView] = useState(false);
+  const [featuredPosts, setFeaturedPosts] = useState([]);
   useEffect(() => {
     fetch(`${API_BASE_URL}/homePosts`).then(response => {
       response.json().then(posts => {
@@ -25,6 +27,11 @@ const HomePage = () => {
         setTests(tests);
       });
     });
+
+    fetch(`${API_BASE_URL}/featured-posts`)
+      .then((res) => res.json())
+      .then((data) => setFeaturedPosts(data))
+      .catch((error) => console.error('Error fetching featured posts:', error));
     
     fetch(`${API_BASE_URL}/availableTags`)
       .then(response => response.json())
@@ -53,6 +60,9 @@ const HomePage = () => {
       
         <hr/> */}
       <h1 style={{textAlign:'center',color:'var(--color-dark-varient)',margin:0}}>Merhaba, Kofu Blog'a Hoşgeldiniz!</h1>
+      
+      <BlogSlider featuredPosts={featuredPosts} />
+
       <h2>Son 3 Gönderi</h2>
       <div className="posts">
         {posts.length > 0 && posts.slice(0,3).map(post => (

@@ -71,13 +71,9 @@ const AdminPage = () => {
 
   return (
     <div>
-        <div className="PrevievShowButton">
-          <Link to='/previev'>İnceleme Bloglarını Görüntüle</Link>
-          {postCount > 0 && 
-            <span className="postCount">{postCount}</span>
-          }
-        </div>
-
+      <div className="admin-page">
+        <h1 style={{color:'var(--color-primary)',textAlign:'center',textTransform:'uppercase',margin:'0'}}>Admin Dashboard</h1>
+        
       <div className="warning-edit-area">
         <div className="warning-inside">
           <h3>Warning</h3>
@@ -88,8 +84,13 @@ const AdminPage = () => {
           </form>
         </div>
       </div>
-
-
+        
+      <div className="PrevievShowButton">
+        <Link to='/previev'>İnceleme Bloglarını Görüntüle</Link>
+        {postCount > 0 && 
+          <span className="postCount">{postCount}</span>
+        }
+      </div>
       <div>
         <input
         placeholder="Search User..."
@@ -100,8 +101,7 @@ const AdminPage = () => {
         />
       </div>
 
-
-      <table className="AdminUserTable" style={{ maxHeight: '800px', overflowY: 'auto', borderCollapse: 'collapse', width: '100%' }}>
+      <table className="admin-table">
         <thead>
           <tr>
             <th>Username</th>
@@ -111,24 +111,21 @@ const AdminPage = () => {
         </thead>
         <tbody>
           {users
-            .filter((user) => user.username.toLowerCase().includes(searchTerm.toLowerCase()))
-            .map((user) => (
+            .filter(user => user.username.toLowerCase().includes(searchTerm.toLowerCase()))
+            .map(user => (
               <tr key={user.username}>
-                <td>
-                  <span className={`username`}>
-                    <Link to={`/profile/${user.username}`}>
-                      {user.username}
-                    </Link>
-                  </span>
-                </td>
-                <td>
-                  <span className={`tags ${user.tags.join(' ')}`}>
-                    {user.tags.join(', ')}
-                  </span>
+                <td><Link to={`/profile/${user.username}`} className={`username ${user.userColor}`} style={{textDecoration:'none'}}>{user.username}</Link></td>
+                <td className={`tags ${user.tags[0]}`}>
+                  {user.tags[0]} 
+                  {user.tags[1] && 
+                    <span className={`${user.tags[1]}`} style={{marginLeft:'5px'}}>
+                      {user.tags[1]}
+                    </span>
+                  }
                 </td>
                 <td>
                   {!user.tags.includes('admin') ? (
-                    <div className="tagSelect">
+                    <div className="tag-actions">
                       <select
                         value={newTag}
                         onChange={(e) => setNewTag(e.target.value)}
@@ -137,54 +134,20 @@ const AdminPage = () => {
                         <option value="writer">Writer</option>
                         <option value="master-writer">Master Writer</option>
                         <option value="editor">Editor</option>
-                        {user.username === 'teory' && (
-                          <option value="moderator">Moderator</option>
-                        )}
+                        {user.username === 'teory' && <option value="moderator">Moderator</option>}
                       </select>
-                      <button
-                        onClick={() => handleChangeTag(user.username, newTag)}
-                      >
-                        Change Tag
-                      </button>
+                      <div style={{display:'flex',gap:'10px'}}>
+                        <button onClick={() => handleChangeTag(user.username, newTag)} className="btn-primary">Change</button>
+                        <button style={{backgroundColor:'var(--color-danger)',color:'#fff',textTransform:'uppercase'}}>BAN</button>
+                      </div>
                     </div>
-                  ) : (
-                    <span className="ourAdmin">
-                      Not authorized to change tags
-                    </span>
-                  )}
+                  ) : <span className="ourAdmin">Not Authorized</span>}
                 </td>
               </tr>
             ))}
         </tbody>
       </table>
-
-
-      {/* <ul className="AdminUserList">
-        {users.map(user => (
-          <li key={user.username}>
-            <span><span className={`username ${user.tags.join(' ')}`}>{user.username}</span> <span className="tagn">Tag:</span> <span className={`tags ${user.tags.join(' ')}`}>{user.tags.join(', ')}</span></span>
-            {!user.tags.includes('admin') ? (
-              <div className="tagSelect">
-                <select
-                  value={newTag}
-                  onChange={e => setNewTag(e.target.value)}>
-                  <option value="user">User</option>
-                  <option value="writer">Writer</option>
-                  <option value="master-writer">Master Writer</option>
-                  <option value="editor">Editor</option>
-                  {user.username === 'teory'}
-                      <option value="moderator">Moderator</option>
-                </select>
-                <button onClick={() => handleChangeTag(user.username, newTag)}>
-                  Change Tag
-                </button>
-              </div>
-            ) : (
-              <span className="ourAdmin">Not authorized to change tags</span>
-            )}
-          </li>
-        ))}
-      </ul> */}
+      </div>
     </div>
   )
 }

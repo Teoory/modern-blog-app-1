@@ -24,6 +24,7 @@ const NotificationsPage = () => {
         const fetchNotifications = async () => {
             try {
                 const response = await fetch(`${API_BASE_URL}/notifications/${userInfo.id}`);
+                console.log(response);
                 if (response.ok) {
                     const data = await response.json();
                     setNotifications(data);
@@ -99,10 +100,22 @@ const NotificationsPage = () => {
                         <div className="NotificationArea">
                             <Image src={notification.sender.profilePhoto} alt={notification.sender.username} className='ProfilePhoto'/>
                             <Link to={`/profile/${notification.sender.username}`}> @{notification.sender.username} </Link>  kullanıcısı,
-                            <Link to={`/post/${notification.post._id}`}>"{notification.post.title}"</Link>
-                            {notification.type === 'Yorum' && <span> paylaşımına yorum yaptı.</span>}
-                            {notification.type === 'like' && <span> paylaşımını beğendi.</span>}
-                            {notification.type === 'Bahset' && <span> paylaşımında senden bahsetti.</span>}
+                            {notification.post && (
+                                <>
+                                <Link to={`/post/${notification.post?._id}`}>"{notification.post?.title}"</Link>
+                                {notification.type === 'Yorum' && <span> bloguna yorum yaptı.</span>}
+                                {notification.type === 'like' && <span> blogunu beğendi.</span>}
+                                {notification.type === 'Bahset' && <span> blogunda senden bahsetti.</span>}
+                                </>
+                            )}
+                            {notification.test && (
+                                <>
+                                <Link to={`/test/${notification.test?._id}`}>"{notification.test?.title}"</Link>
+                                {notification.type === 'Yorum' && <span> testine yorum yaptı.</span>}
+                                {notification.type === 'like' && <span> testini beğendi.</span>}
+                                {notification.type === 'Bahset' && <span> testinde senden bahsetti.</span>}
+                                </>
+                            )}
                             {/* <span> {notification.type} yaptı.</span> */}
                         </div>
                         <button className='NotificationDelButton' onClick={() => {

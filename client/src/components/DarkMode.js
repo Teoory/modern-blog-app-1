@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../Hooks/UserContext';
 import { API_BASE_URL } from '../config';
 
@@ -20,9 +20,9 @@ const DarkMode = () => {
             .catch(error => console.error('Error fetching dark mode:', error));
     };
 
-    if (userInfo) {
-        GetDarkMode();
-    }
+    useEffect(() => {
+        userInfo && GetDarkMode();
+    }, [userInfo]);
 
     if ((userInfo && userInfo.darkMode) || darkMode) {
         document.body.classList.add('dark-mode-variables');

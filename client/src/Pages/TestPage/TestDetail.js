@@ -41,24 +41,6 @@ const TestDetail = () => {
             })
     }, [id]);
 
-    // useEffect(() => {
-    //   const fetchTest = async () => {
-    //     try {
-    //       const response = await fetch(`${API_BASE_URL}/tests/${id}`);
-    //       if (response.ok) {
-    //         const testData = await response.json();
-    //         setTest(testData);
-    //       } else {
-    //         console.error('Test verisi alınamadı.');
-    //       }
-    //     } catch (error) {
-    //       console.error('API Hatası:', error);
-    //     }
-    //   };
-
-    //   fetchTest();
-    // }, [id]);
-
     useEffect(() => { 
         fetch(`${API_BASE_URL}/tests/${id}/comments`)
             .then(response => response.json())
@@ -176,6 +158,9 @@ const TestDetail = () => {
           const updatedData = await response.json();
           setLikes(updatedData.likes);
           setIsLiked(updatedData.isLiked);
+          if (updatedData.isLiked) {
+            await sendNotification(userInfo.id, test.author._id, test._id, 'like');
+          }
         } catch (error) {
           console.error('Error toggling like:', error.message);
         }
@@ -202,9 +187,6 @@ const TestDetail = () => {
     };
 
 
-
-
-    
 
 
     const handleCommentChange = async (e) => {
@@ -248,10 +230,6 @@ const TestDetail = () => {
         setNewComment(`${prefix}${suffix}`);
         setPopupVisible(false);
       };
-
-
-
-
 
 
     const addComment = async () => {
@@ -466,7 +444,6 @@ const TestDetail = () => {
                             <div className="commentInfo">
                                 <div>
                                     <Link to={`/profile/${comment.author.username}`}>
-                                        {/* <img src={`${API_BASE_URL}/${comment.author.profilePhoto}`} alt="*" /> */}
                                         <Image src={comment.author.profilePhoto} alt="*" />
                                     </Link>
                                     <span className='commentAuthorHeader'>Yazar: </span>
@@ -477,7 +454,19 @@ const TestDetail = () => {
                                 <span className='commentTime'>{formatDate(comment.createdAt)}</span>
                             </div>
 
-                            <p>{comment.content}</p>
+                            <p>
+                                {comment.content.split(/(@\w+)/g).map((part, index) => {
+                                    if (part.startsWith('@')) {
+                                        const username = part.substring(1);
+                                        return (
+                                            <Link key={index} to={`/profile/${username}`} className="mention-link">
+                                                {part}
+                                            </Link>
+                                        );
+                                    }
+                                    return <span key={index}>{part}</span>;
+                                })}
+                            </p>
                         </div>
                         {userInfo !== null && (userInfo.id === comment.author._id || isAdmin || isModerator || isEditor) &&
                             <>

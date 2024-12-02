@@ -174,6 +174,27 @@ const UserProfilePage = () => {
             </div>
         </div>
 
+
+        <div className='ProfilePageMain'>
+            <h1>Oyun Verileri</h1>
+            <div className="ProfileCard" style={{marginTop:'5px'}}>
+              <div className="infoArea">
+                {user?.totalGamesPlayed !== 0 && (
+                  <>
+                  <div className="tags" style={{textAlign:'center', color:'var(--color-info)'}}>Kazanılan Oyunlar: <span className='premiumAvantage'>{user.correctAnswers}</span></div>
+                  <div className="tags" style={{textAlign:'center', color:'var(--color-info)'}}>Toplam Oynanan Oyunlar: <span className='premiumAvantage'>{user.totalGamesPlayed}</span></div>
+                  <div className="tags" style={{textAlign:'center', color:'var(--color-info)'}}>Kazanma Oranı: <span className='premiumAvantage'>{user.totalGamesPlayed === 0 ? 0 : Math.round((user.correctAnswers / user.totalGamesPlayed) * 100)}%</span></div>
+                  </>
+                )}
+                {user?.totalGamesPlayed === 0 && (
+                  <div className="tags" style={{textAlign:'center', color:'var(--color-info)'}}>Henüz hiç oyun oynamamış.</div>
+                )}
+              </div>
+            </div>
+        </div>
+
+        
+
         <div className='dj-center'>
           {(!user.isVerified && userInfo.username === username) ? (<span>E-posta adresinizi doğrulayarak Writer yetkisine terfi alabilirsiniz.</span>) : null}
         </div>

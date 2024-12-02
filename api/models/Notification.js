@@ -22,12 +22,12 @@ const NotificationSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ['Yorum', 'like', 'share', 'Bahset'], // Bildirim türleri
+        enum: ['Yorum', 'like', 'share', 'Bahset'],
         required: true
     },
     isRead: {
         type: Boolean,
-        default: false // Varsayılan olarak okunmamış olarak işaretlenir
+        default: false
     },
     createdAt: {
         type: Date,
