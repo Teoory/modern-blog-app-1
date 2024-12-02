@@ -36,6 +36,7 @@ const Header = () => {
 
     const [timer, setTimer] = useState(0);
     setTimeout(() => {
+        if (!userInfo) return;
         const checkNewNotifications = async () => {
             try {
                 const response = await fetch(`${API_BASE_URL}/check-new-notifications?userId=${userInfo.id}`);
