@@ -131,7 +131,16 @@ const AdminPage = () => {
         </thead>
         <tbody>
           {users
-            .filter(user => user.username.toLowerCase().includes(searchTerm.toLowerCase()))
+            .filter(user => {
+              const isTagSearch = searchTerm.startsWith("#") || searchTerm.startsWith("@") || searchTerm.startsWith("!");
+              if (isTagSearch) {
+                  const tagSearchTerm = searchTerm.substring(1).toLowerCase();
+                  return user.tags.some(tag => tag.toLowerCase() === tagSearchTerm);
+                  //return user.tags.some(tag => tag.toLowerCase().includes(tagSearchTerm));
+              } else {
+                  return user.username.toLowerCase().includes(searchTerm.toLowerCase());
+              }
+            })
             .map(user => (
               <tr key={user.username}>
                 <td><Link to={`/profile/${user.username}`} className={`username ${user.userColor}`} style={{textDecoration:'none'}}>{user.username}</Link></td>
