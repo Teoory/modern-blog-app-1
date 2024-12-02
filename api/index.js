@@ -2034,12 +2034,8 @@ async function selectDailyGame() {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        // O gün için zaten bir oyun seçildiyse işlem yapma
-        const existingGame = await KeyGame.findOne({ questionDate: today });
-        if (existingGame) {
-            console.log('Bugün için zaten bir oyun seçilmiş:', existingGame);
-            return;
-        }
+        // Önce bugünün oyununu sıfırla
+        await KeyGame.updateMany({ questionDate: today }, { $unset: { questionDate: "" } });
 
         // Tüm oyunları al
         const games = await KeyGame.find({});
@@ -2061,6 +2057,7 @@ async function selectDailyGame() {
         console.error('Günlük oyun seçilirken hata oluştu:', error);
     }
 }
+
 
 selectDailyGame();
 app.get('/api/cron', async (req, res) => {
