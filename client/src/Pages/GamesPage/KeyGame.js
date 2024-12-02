@@ -79,7 +79,7 @@ const GamePage = () => {
                         width: '30px',
                         height: '30px',
                         border: '1px solid var(--color-warning)',
-                        backgroundColor: 'var(--color-white)',
+                        backgroundColor: 'var(--color-black)',
                         borderRadius: '5px',
                         display: 'flex',
                         justifyContent: 'center',
