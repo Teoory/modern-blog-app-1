@@ -85,7 +85,7 @@ const HomePage = () => {
       <div className='AllPostsList'>
         <div className="lastPostImageOverlay">
             <Link to="/keygame" className='BlogTitle'>
-                <img src={keygame} alt='img'/>
+                <img src={keygame} className='lastPostImageGame' alt='img'/>
                 <div className="lastPostTitle"><span>Keygame</span></div>
             </Link>
         </div>
