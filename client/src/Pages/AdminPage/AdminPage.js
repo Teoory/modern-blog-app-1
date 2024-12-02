@@ -49,6 +49,22 @@ const AdminPage = () => {
       .catch(error => console.error('Error changing tag:', error));
   };
 
+  const resetDailyKeyGame = () => {
+    fetch(`${API_BASE_URL}/keygame-reset`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Key game reset successfully:', data);
+        alert('Key game reset successfully');
+      })
+      .catch(error => console.error('Error resetting key game:', error));
+  };
+
   function handleWarning(ev) {
     ev.preventDefault();
     const title = document.getElementById('title').value;
@@ -90,6 +106,10 @@ const AdminPage = () => {
         {postCount > 0 && 
           <span className="postCount">{postCount}</span>
         }
+      </div>
+
+      <div className="PrevievShowButton">
+        <Link onClick={resetDailyKeyGame} style={{background:'var(--color-success)'}}>Günlük Key Game'i Sıfırla</Link>
       </div>
       <div>
         <input

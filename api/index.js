@@ -2024,6 +2024,11 @@ app.post('/keygame-play', async (req, res) => {
     }
 });
 
+app.post('/keygame-reset', isAdmin, async (req, res) => {
+    selectDailyGame();
+    res.status(200).json({ message: 'Günlük oyun sıfırlandı.' });
+});
+
 async function selectDailyGame() {
     try {
         const today = new Date();
