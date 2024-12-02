@@ -24,7 +24,13 @@ const DarkMode = () => {
         userInfo && GetDarkMode();
     }, [userInfo]);
 
-    if ((userInfo && userInfo.darkMode) || darkMode) {
+    useEffect(() => {
+        if (userInfo === null) {
+            localStorage.getItem('darkMode') === 'true' ? setDarkMode(true) : setDarkMode(false);
+        };
+    }, [userInfo]);
+
+    if ((userInfo && userInfo.darkMode) || darkMode || localStorage.getItem('darkMode') === 'true') {
         document.body.classList.add('dark-mode-variables');
     } else {
         document.body.classList.remove('dark-mode-variables');

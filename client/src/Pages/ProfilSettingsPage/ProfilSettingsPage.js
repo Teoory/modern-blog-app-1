@@ -10,10 +10,7 @@ const ProfilSettingsPage = () => {
     const [aside, setAside] = useState(false);
 
     const darkModeToggle = () => {
-        if (userInfo === null) {
-            setDarkMode(!darkMode);
-            return;
-        };
+        localStorage.setItem('darkMode', !darkMode);
         fetch(`${API_BASE_URL}/darkmode`, {
             credentials: 'include',
             method: 'PUT',
@@ -21,7 +18,6 @@ const ProfilSettingsPage = () => {
             setDarkMode(!darkMode);
             setUserInfo({ ...userInfo, darkMode: !userInfo.darkMode });
             });
-        // console.log(darkMode);
         window.location.reload();
     };
 

@@ -4,35 +4,25 @@ import { Link, useParams, Navigate } from 'react-router-dom';
 import { UserContext } from '../../Hooks/UserContext';
 
 const ProfilSettingsPage = () => {
-    const { setUserInfo, userInfo } = useContext(UserContext);
     const [darkMode, setDarkMode] = useState(true);
 
-    const darkModeToggle = () => {
-        if (userInfo === null) {
-            setDarkMode(!darkMode);
-            return;
-        };
-        console.log(darkMode);
-    };
+    useEffect(() => {
+        const savedDarkMode = localStorage.getItem('darkMode');
+        if (savedDarkMode) {
+            setDarkMode(JSON.parse(savedDarkMode));
+        }
+    }, []);
 
+    const darkModeToggle = () => {
+        localStorage.setItem('darkMode', !darkMode);
+        setDarkMode(!darkMode);
+    };
     
     if (darkMode) {
         document.body.classList.add('dark-mode-variables');
     } else {
         document.body.classList.remove('dark-mode-variables');
     }
-
-    // useEffect(() => {
-    //   const element = document.querySelector('.aside');
-    //   element.style.display = 'none';
-    //   return () => {
-    //       if(window.innerWidth > 1280)
-    //       element.style.display = 'block';
-    //       else if (window.innerWidth <= 1280)
-    //       element.style.display = 'contents';
-    //   };
-    // }, []);
-  
 
     return (
     <div className='settingsArea'>

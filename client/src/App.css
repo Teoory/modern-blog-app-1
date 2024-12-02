@@ -209,6 +209,7 @@ main {
   font-size: 1.5rem;
   margin: 0;
   font-weight: bold;
+  color: var(--color-white2);
 }
 
 .slick-prev,

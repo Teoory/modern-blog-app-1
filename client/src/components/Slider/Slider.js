@@ -86,7 +86,7 @@ const BlogSlider = ({ featuredPosts }) => {
               <a href={`/post/${post._id}`} className="slider-link">
                 <img src={post.cover} alt={post.title} />
                 <div className="title-overlay">
-                  <h3>{post.title}</h3>
+                  <h3 >{post.title}</h3>
                 </div>
               </a>
             </div>
