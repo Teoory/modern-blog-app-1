@@ -758,7 +758,7 @@ app.post('/post/unfeature/:id', async (req, res) => {
 });
   
 app.get('/featured-posts', async (req, res) => {
-  const posts = await Post.find({ isFeatured: true });
+  const posts = await Post.find({ isFeatured: true }).select('title summary cover author isFeatured createdAt').populate('author', ['username']);
   res.json(posts);
 });
 
