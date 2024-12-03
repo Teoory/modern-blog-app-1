@@ -1711,7 +1711,7 @@ app.get('/post/:id/comments', async (req, res) => {
     const {id} = req.params;
     try {
         const comments = await Comment.find({post: id})
-        .populate('author', ['username', 'profilePhoto'])
+        .populate('author', ['username', 'profilePhoto', 'tags'])
         .sort({createdAt: -1})
         .limit(20);
 

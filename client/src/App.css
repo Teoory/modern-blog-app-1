@@ -712,6 +712,16 @@ span.commentAuthor {
   color: var(--color-text-author);
   font-weight: bold;
 }
+
+span.commentPremium {
+  font-size: 16px;
+  font-weight: bold;
+  background: linear-gradient(120deg,#0e6994,#00510d,#cf8a23,#f32170,#0e6994,#00510d,#cf8a23);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient 6s linear infinite;
+}
 span.commentAuthor a{
   text-decoration: none !important;
 }
