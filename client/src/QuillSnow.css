@@ -61,9 +61,6 @@
    ul li.ql-direction-rtl {
     padding-right: 1.5em;
   }
-   ol li:before {
-    content: counter(list-0, decimal) '. ';
-  }
    ol li.ql-indent-1 {
     counter-increment: list-1;
   }

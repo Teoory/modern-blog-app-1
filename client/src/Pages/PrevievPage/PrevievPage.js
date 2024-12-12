@@ -1,6 +1,5 @@
 import PrevievPages from '../../components/PrevievPost/PrevievPost';
 import { useEffect, useState } from 'react';
-import '../../QuillSnow.css';
 import { API_BASE_URL } from '../../config';
 
 const PrevievPage = () => {
