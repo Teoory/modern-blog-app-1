@@ -1665,6 +1665,7 @@ app.post('/post/:id/comment', uploadProfilePhoto.single('file'), async (req, res
             const commentDoc = await Comment.create({
                 content,
                 author: info.id,
+                tags: info.tags,
                 post: id,
             });
 
@@ -1696,6 +1697,7 @@ app.post('/post/:id/mobilecomment', uploadProfilePhoto.single('file'), async (re
             const commentDoc = await Comment.create({
                 content,
                 author: info.id,
+                tags: info.tags,
                 post: id,
             });
 
@@ -1726,7 +1728,7 @@ app.get('/post/:id/comment/:id', async (req, res) => {
     const {id} = req.params;
     try {
         const commentDoc = await Comment.findById(id)
-        .populate('author', ['username', 'profilePhoto'])
+        .populate('author', ['username', 'profilePhoto', 'tags']);
 
         res.json(commentDoc);
     } catch (e) {
@@ -1739,7 +1741,7 @@ app.get('/comments', async (req, res) => {
     try {
         res.json(
             await Comment.find()
-            .populate('author', ['username'])
+            .populate('author', ['username', 'profilePhoto', 'tags'])
             .sort({createdAt: -1})
         );
     } catch (e) {
@@ -1760,6 +1762,7 @@ app.post('/tests/:id/comment', async (req, res) => {
             const commentDoc = await Comment.create({
                 content,
                 author: info.id,
+                tags: info.tags,
                 test: id,
                 post: null,
             });
@@ -1776,7 +1779,7 @@ app.get('/tests/:id/comments', async (req, res) => {
     const { id } = req.params;
     try {
         const comments = await Comment.find({ test: id })
-            .populate('author', ['username', 'profilePhoto'])
+            .populate('author', ['username', 'profilePhoto', 'tags'])
             .sort({ createdAt: -1 })
             .limit(20);
 
@@ -1791,7 +1794,7 @@ app.get('/tests/:id/comment/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const commentDoc = await Comment.findById(id)
-            .populate('author', ['username', 'profilePhoto']);
+            .populate('author', ['username', 'profilePhoto', 'tags']);
 
         res.json(commentDoc);
     } catch (e) {

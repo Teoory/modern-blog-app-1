@@ -447,7 +447,7 @@ const TestDetail = () => {
                                         <Image src={comment.author.profilePhoto} alt="*" />
                                     </Link>
                                     <span className='commentAuthorHeader'>Yazar: </span>
-                                    <span className={`commentAuthor ${(comment.author.tags.includes('premium') && "commentPremium")}`}>
+                                    <span className={`commentAuthor ${(comment.author.tags?.includes('premium') && "commentPremium")}`}>
                                         <Link to={`/profile/${comment.author.username}`}>{comment.author.username}</Link>
                                     </span>
                                 </div>
