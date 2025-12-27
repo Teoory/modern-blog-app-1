@@ -5,7 +5,7 @@ import { UserContext } from '../../Hooks/UserContext';
 import { API_BASE_URL } from '../../config';
 
 const ProfilSettingsPage = () => {
-    const { setUserInfo, userInfo } = useContext(UserContext);
+    const { setUserInfo, userInfo, theme, setTheme } = useContext(UserContext);
     const [darkMode, setDarkMode] = useState(false);
     const [aside, setAside] = useState(false);
 
@@ -19,6 +19,10 @@ const ProfilSettingsPage = () => {
             setUserInfo({ ...userInfo, darkMode: !userInfo.darkMode });
             });
         window.location.reload();
+    };
+
+    const themeToggle = (selectedTheme) => {
+        setTheme(selectedTheme);
     };
 
     const asideToggle = () => {
@@ -87,6 +91,45 @@ const ProfilSettingsPage = () => {
             <div className="profil-settings-title">
                 Profil Ayarları
             </div>
+
+            <div className="theme-selection" style={{marginBottom: '20px'}}>
+                <h3 style={{marginBottom: '15px', fontSize: '1.2rem'}}>Tema Seçimi</h3>
+                <div className="theme-buttons" style={{display: 'flex', gap: '10px', flexWrap: 'wrap'}}>
+                    <button 
+                        className={theme === 'default' ? 'active' : ''} 
+                        onClick={() => themeToggle('default')}
+                        style={{
+                            padding: '10px 20px',
+                            border: theme === 'default' ? '2px solid #4CAF50' : '2px solid #ccc',
+                            borderRadius: '8px',
+                            background: theme === 'default' ? '#4CAF50' : 'transparent',
+                            color: theme === 'default' ? 'white' : 'inherit',
+                            cursor: 'pointer',
+                            fontSize: '1rem',
+                            transition: 'all 0.3s ease'
+                        }}
+                    >
+                        Varsayılan Tema
+                    </button>
+                    <button 
+                        className={theme === 'winter' ? 'active' : ''} 
+                        onClick={() => themeToggle('winter')}
+                        style={{
+                            padding: '10px 20px',
+                            border: theme === 'winter' ? '2px solid #2196F3' : '2px solid #ccc',
+                            borderRadius: '8px',
+                            background: theme === 'winter' ? '#2196F3' : 'transparent',
+                            color: theme === 'winter' ? 'white' : 'inherit',
+                            cursor: 'pointer',
+                            fontSize: '1rem',
+                            transition: 'all 0.3s ease'
+                        }}
+                    >
+                        Kış Teması ❄️
+                    </button>
+                </div>
+            </div>
+
         <div className="logoutButton">
             <a onClick={logout}>Logout</a>
         </div>

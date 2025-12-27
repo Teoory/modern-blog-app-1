@@ -1,12 +1,14 @@
-import {useContext} from 'react';
+import { useContext } from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { UserContext } from '../../Hooks/UserContext';
 import { API_BASE_URL } from '../../config';
 
+import snowNewsFreme from '../../Images/news-frame-christmas-slider.png';
+
 const BlogSlider = ({ featuredPosts }) => {
-  const { userInfo } = useContext(UserContext);
+  const { userInfo, theme } = useContext(UserContext);
   const tags = userInfo?.tags;
   const isAdmin = tags?.includes('admin');
 
@@ -67,7 +69,7 @@ const BlogSlider = ({ featuredPosts }) => {
     }
   };
 
-  
+
 
   return (
     <div className="slider-container">
@@ -77,7 +79,7 @@ const BlogSlider = ({ featuredPosts }) => {
             <div className="image-wrapper">
               {isAdmin && (
                 <button
-                  style={{ position: 'absolute', top: 10, right: 10, width: 200, height: 40, fontSize: 16, backgroundColor: 'red', color: 'white', transition: 'background-color 0.3s ease'}}
+                  style={{ position: 'absolute', top: 10, right: 10, width: 200, height: 40, zIndex: 10, fontSize: 16, backgroundColor: 'red', color: 'white', transition: 'background-color 0.3s ease' }}
                   onClick={() => handleRemoveHighlight(post._id)}
                 >
                   Öne Çıkarmayı Kaldır
@@ -85,6 +87,14 @@ const BlogSlider = ({ featuredPosts }) => {
               )}
               <a href={`/post/${post._id}`} className="slider-link">
                 <img src={post.cover} alt={post.title} />
+                
+      {theme === 'winter' && (
+          <img
+            src={snowNewsFreme}
+            alt="Snow News Frame"
+            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
+          />
+      )}
                 <div className="title-overlay">
                   <h3 >{post.title}</h3>
                 </div>

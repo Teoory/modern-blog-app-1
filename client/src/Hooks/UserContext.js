@@ -6,6 +6,9 @@ export const UserContext = createContext({});
 export function UserContextProvider({ children }) {
     const [userInfo, setUserInfo] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [theme, setTheme] = useState(() => {
+        return localStorage.getItem('theme') || 'winter';
+    });
 
     useEffect(() => {
         fetch(`${API_BASE_URL}/profile`, {
@@ -32,10 +35,14 @@ export function UserContextProvider({ children }) {
                 .then(data => setUserInfo(data || null));
         }
     }, []);
+
+    useEffect(() => {
+        localStorage.setItem('theme', theme);
+    }, [theme]);
     
 
     return (
-        <UserContext.Provider value={{ userInfo, setUserInfo, loading }}>
+        <UserContext.Provider value={{ userInfo, setUserInfo, loading, theme, setTheme }}>
             {children}
         </UserContext.Provider>
     );

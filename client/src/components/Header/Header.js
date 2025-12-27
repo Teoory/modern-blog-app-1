@@ -7,8 +7,11 @@ import goldIngot from '../../Images/gold-ingot.svg';
 import Image from '../Image';
 import { API_BASE_URL } from '../../config';
 
+import garlandTile from '../../Images/garland-tile.png';
+import snowman from '../../Images/snowman.png';
+
 const Header = () => {
-    const { setUserInfo, userInfo } = useContext(UserContext);
+    const { setUserInfo, userInfo, theme } = useContext(UserContext);
     const [showDropdown, setShowDropdown] = useState(false);
     const [writerDropdown, setWriterDropdown] = useState(false);
     const [profilePhoto, setProfilePhoto] = useState(null);
@@ -189,7 +192,13 @@ const Header = () => {
     <div className='header'>
         <header>
         <div style={{display:'flex',justifyContent:'space-between',maxWidth:'960px',width:'100%'}}>
-            <Link to="/" className="logo" ><img alt='logo' className='logo' src={logo}/></Link>
+            <Link to="/" className="logo" >
+            {
+                (theme === 'winter') && ( 
+                    <img src={snowman} alt="Snowman" style={{height: '50px', marginRight: '10px'}} />
+                )
+            }
+            <img alt='logo' className='logo' src={logo}/></Link>
             <nav>
         {username ? (
         <>
@@ -394,6 +403,31 @@ const Header = () => {
         )}
             </nav>
         </div>
+        {theme === 'winter' && (
+        <div 
+            style={{
+                position: 'absolute',
+                left: 0,
+                width: '100%',
+                bottom: '-41px',
+                height: '70px',
+                zIndex: -1,
+                pointerEvents: 'none'
+            }}
+        >
+            <div 
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    backgroundImage: `url(${garlandTile})`,
+                    backgroundRepeat: 'repeat-x',
+                    backgroundSize: 'auto 100%',
+                    backgroundPosition: 'center top',
+                    filter: 'drop-shadow(rgba(0, 0, 0, 0.5) 0px 4px 8px)'
+                }}
+            />
+        </div>
+    )}
         </header>
 
         <div>

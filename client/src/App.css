@@ -510,6 +510,12 @@ div.allPosts div.image img{
   height: 200px;
 }
 
+.snowBellDecoration,
+.giftBoxDecoration {
+  width: 80px;
+  height: 80px;
+}
+
 div.allPosts div.image {
   height: 200px;
 }
