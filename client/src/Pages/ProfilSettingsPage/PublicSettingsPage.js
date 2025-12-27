@@ -32,14 +32,16 @@ const ProfilSettingsPage = () => {
     return (
     <div className='settingsArea'>
 
-        <div className="themaSwitch">
+        <div className="themaSwitch" style={{marginTop:'20px'}}>
             <div className="dark-mode" onClick={darkModeToggle}>
                 <span className={`material-symbols-outlined ${darkMode ? 'active' : ''}`}>
                     light_mode
                 </span>
                 <span className={`material-symbols-outlined ${darkMode ? '' : 'active'}`}>
                     dark_mode
-        <div style={{marginBottom: '20px'}}>
+                </span>
+            </div>
+            <div style={{marginBottom: '20px'}}>
             <h3 style={{marginBottom: '15px', fontSize: '1.2rem'}}>Tema Seçimi</h3>
             <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '20px'}}>
                 <button 
@@ -74,9 +76,6 @@ const ProfilSettingsPage = () => {
                 </button>
             </div>
         </div>
-
-                </span>
-            </div>
         </div>
 
 		<span>Daha fazla ayar görebilmek ve ayarlarınızın kaydedilebilmesi için lütfen giriş yapınız!</span>
