@@ -40,15 +40,18 @@ import SearchPage from '../Pages/SearchPage/SearchPage';
 
 import NotFoundPage from '../Pages/NotFoundPage/NotFoundPage';
 
+
+import KkslabApps from '../Pages/AppPrivacys/Apps';
+import CubeMoverTimeRace from '../Pages/AppPrivacys/CubeMoverTimeRace';
 import KofuBlog from '../Pages/AppPrivacys/kofuBlog';
 
 
 const PrivRoutes = () => {
     const { userInfo } = useContext(UserContext);
-    
+
     const tags = userInfo?.tags || [];
 
-    
+
     const isAdmin = tags?.includes('admin');
     const isEditorUp = tags?.includes('editor') || tags?.includes('moderator') || isAdmin;
     const isPremium = tags?.includes('premium') || isEditorUp;
@@ -57,65 +60,67 @@ const PrivRoutes = () => {
 
     return (
         <Routes>
-            {userInfo && 
-            <>
-                <Route index path="/" element={<HomePage />} />
-                <Route index path="/home" element={<HomePage />} />
-                <Route path="/login" element={<HomePage />} />
-                <Route path="/register" element={<HomePage />} />
-                <Route path="*" element={<NotFoundPage/>} />
-                <Route path="/kesfet" element={<NavigatorPage />} />
-                <Route path="/tests" element={<TestPage />} />
-                <Route path="/tests/:id" element={<TestDetail />} />
-                <Route path="/edit/:id" element={<EditPost/>} />
-                <Route path="/post/:id" element={<PostPage/>} />
-                <Route path="/profile/:username" element={<UserProfilePage/>} />
-                <Route path="/ticketCreate" element={<TicketCreatePage/>} />
-                <Route path="/ticket" element={<TicketPage/>} />
-                <Route path="/tickets/:id" element={<TicketControlPage/>} />
-                <Route path="/settings" element={<ProfileSettingsPage />} />
-                <Route path="/verify-email" element={<VerifyPage/>} />
-                <Route path="/notifications" element={<NotificationsPage />} />
-                <Route path="/privacy" element={<Privacy />} />
-                <Route path="/search" element={<SearchPage />} />
-                <Route path="/games" element={<Games />} />
-                <Route path="/keygame" element={<KeyGame />} />
-                <Route path="/apps/kofu-blog-privacy" element={<KofuBlog />} />
-            </>
+            {userInfo &&
+                <>
+                    <Route index path="/" element={<HomePage />} />
+                    <Route index path="/home" element={<HomePage />} />
+                    <Route path="/login" element={<HomePage />} />
+                    <Route path="/register" element={<HomePage />} />
+                    <Route path="*" element={<NotFoundPage />} />
+                    <Route path="/kesfet" element={<NavigatorPage />} />
+                    <Route path="/tests" element={<TestPage />} />
+                    <Route path="/tests/:id" element={<TestDetail />} />
+                    <Route path="/edit/:id" element={<EditPost />} />
+                    <Route path="/post/:id" element={<PostPage />} />
+                    <Route path="/profile/:username" element={<UserProfilePage />} />
+                    <Route path="/ticketCreate" element={<TicketCreatePage />} />
+                    <Route path="/ticket" element={<TicketPage />} />
+                    <Route path="/tickets/:id" element={<TicketControlPage />} />
+                    <Route path="/settings" element={<ProfileSettingsPage />} />
+                    <Route path="/verify-email" element={<VerifyPage />} />
+                    <Route path="/notifications" element={<NotificationsPage />} />
+                    <Route path="/privacy" element={<Privacy />} />
+                    <Route path="/search" element={<SearchPage />} />
+                    <Route path="/games" element={<Games />} />
+                    <Route path="/keygame" element={<KeyGame />} />
+                    <Route path="/apps" element={<KkslabApps />} />
+                    <Route path="/apps/cubemover-time-race-privacy" element={<CubeMoverTimeRace />} />
+                    <Route path="/apps/kofu-blog-privacy" element={<KofuBlog />} />
+                </>
             }
 
-            {!isPremium && 
-            <>
-                <Route path="/premium" element={<PremiumPage />} />
-                <Route path="/purchase" element={<PurchasePage />} />
-            </>
+            {!isPremium &&
+                <>
+                    <Route path="/premium" element={<PremiumPage />} />
+                    <Route path="/purchase" element={<PurchasePage />} />
+                </>
             }
 
             {isAdmin &&
-            <>
-                <Route path="/admin" element={<AdminPage />} />
-                <Route path="/keygame-add" element={<KeyGameAdd />} />
-            </>
+                <>
+                    <Route path="/admin" element={<AdminPage />} />
+                    <Route path="/keygame-add" element={<KeyGameAdd />} />
+                </>
             }
 
             {isEditorUp &&
-            <>
-                <Route path="/previev" element={<PrevievPage />} />
-                <Route path="/previevPost/:id" element={<PrevievPostPage />} />
-                <Route path="/previevPostEdit/:id" element={<PrevievPostEdit />} />
-            </>
+                <>
+                    <Route path="/previev" element={<PrevievPage />} />
+                    <Route path="/previevPost/:id" element={<PrevievPostPage />} />
+                    <Route path="/previevPostEdit/:id" element={<PrevievPostEdit />} />
+                </>
             }
 
             {isWriter &&
-                <Route path="/createPreviev" element={<CreatePrevievPost/>} />
+                <Route path="/createPreviev" element={<CreatePrevievPost />} />
             }
 
             {isMasterWriterUp &&
-            <>
-                <Route path="/create" element={<CreatePost/>} />
-                <Route path="/createTest" element={<CreateTest/>} />
-                <Route path="/createTestOld" element={<CreateTestOld/>} />
-            </>
+                <>
+                    <Route path="/create" element={<CreatePost />} />
+                    <Route path="/createTest" element={<CreateTest />} />
+                    <Route path="/createTestOld" element={<CreateTestOld />} />
+                </>
             }
         </Routes>
     )

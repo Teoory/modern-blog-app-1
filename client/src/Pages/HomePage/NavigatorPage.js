@@ -89,6 +89,18 @@ const NavigatorPage = () => {
                     </div>
                 </div>
 
+                <div className="buttonArea">
+                    <a href="/apps" className="areasTopButton">
+                        Uygulamalar
+                    </a>
+                    <div className="lastPostImageOverlay">
+                        <Link to="/apps" className='BlogTitle'>
+                            <img src="https://kofu.com.tr/images/apps/kkslab_apps_logo.png" alt='img'/>
+                            <div className="lastPostTitle"><span>Kkslab Apps</span></div>
+                        </Link>
+                    </div>
+                </div>
+
             </div>
         </div>
     )

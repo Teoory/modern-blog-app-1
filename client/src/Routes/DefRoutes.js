@@ -15,6 +15,8 @@ import TestDetail from '../Pages/TestPage/TestDetail';
 import NavigatorPage from '../Pages/HomePage/NavigatorPage';
 import Games from '../Pages/GamesPage/GamesPage';
 
+import KkslabApps from '../Pages/AppPrivacys/Apps';
+import CubeMoverTimeRace from '../Pages/AppPrivacys/CubeMoverTimeRace';
 import KofuBlog from '../Pages/AppPrivacys/kofuBlog';
 
 const DefRoutes = () => {
@@ -39,6 +41,8 @@ const DefRoutes = () => {
       <Route path="/tests/:id" element={<TestDetail />} />
       <Route path="/kesfet" element={<NavigatorPage />} />
       <Route path="/games" element={<Games />} />
+      <Route path="/apps" element={<KkslabApps />} />
+      <Route path="/apps/cubemover-time-race-privacy" element={<CubeMoverTimeRace />} />
       <Route path="/apps/kofu-blog-privacy" element={<KofuBlog />} />
     </Routes>
   )
