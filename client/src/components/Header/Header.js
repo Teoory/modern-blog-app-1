@@ -410,7 +410,7 @@ const Header = () => {
                 left: 0,
                 width: '100%',
                 bottom: '-41px',
-                top: 'auto',
+                top: '65px',
                 height: '70px',
                 zIndex: -1,
                 pointerEvents: 'none'
