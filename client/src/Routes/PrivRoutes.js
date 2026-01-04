@@ -40,6 +40,8 @@ import SearchPage from '../Pages/SearchPage/SearchPage';
 
 import NotFoundPage from '../Pages/NotFoundPage/NotFoundPage';
 
+import kofuBlog from '../Pages/AppPrivacys/kofuBlog';
+
 
 const PrivRoutes = () => {
     const { userInfo } = useContext(UserContext);
@@ -78,6 +80,7 @@ const PrivRoutes = () => {
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/games" element={<Games />} />
                 <Route path="/keygame" element={<KeyGame />} />
+                <Route path="/kofu-blog-privacy" element={<kofuBlog />} />
             </>
             }
 
