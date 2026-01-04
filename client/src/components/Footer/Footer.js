@@ -39,7 +39,7 @@ const Footer = () => {
                     <a>
                         <a target="_blank" href="https://www.linkedin.com/in/berkay-koksal/" rel="nofollow"><span>KKSLAB tarafından geliştirilmiştir.</span></a>
                         <br />
-                        <a target="_blank" href="https://fiyasko.online/privacy" rel="nofollow"><span>© 2024 Sitemizin tüm hakları gizlidir.</span></a>
+                        <a target="_blank" href="https://kofu.com.tr/privacy" rel="nofollow"><span>© 2024 Sitemizin tüm hakları gizlidir.</span></a>
                     </a>
                 </div>
             </div>
