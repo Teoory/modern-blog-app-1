@@ -15,7 +15,7 @@ import TestDetail from '../Pages/TestPage/TestDetail';
 import NavigatorPage from '../Pages/HomePage/NavigatorPage';
 import Games from '../Pages/GamesPage/GamesPage';
 
-import kofuBlog from '../Pages/AppPrivacys/kofuBlog';
+import KofuBlog from '../Pages/AppPrivacys/kofuBlog';
 
 const DefRoutes = () => {
   return (
@@ -39,7 +39,7 @@ const DefRoutes = () => {
       <Route path="/tests/:id" element={<TestDetail />} />
       <Route path="/kesfet" element={<NavigatorPage />} />
       <Route path="/games" element={<Games />} />
-      <Route path="/apps/kofu-blog-privacy" element={<kofuBlog />} />
+      <Route path="/apps/kofu-blog-privacy" element={<KofuBlog />} />
     </Routes>
   )
 }

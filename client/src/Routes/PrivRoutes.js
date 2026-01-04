@@ -40,7 +40,7 @@ import SearchPage from '../Pages/SearchPage/SearchPage';
 
 import NotFoundPage from '../Pages/NotFoundPage/NotFoundPage';
 
-import kofuBlog from '../Pages/AppPrivacys/kofuBlog';
+import KofuBlog from '../Pages/AppPrivacys/kofuBlog';
 
 
 const PrivRoutes = () => {
@@ -80,7 +80,7 @@ const PrivRoutes = () => {
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/games" element={<Games />} />
                 <Route path="/keygame" element={<KeyGame />} />
-                <Route path="/apps/kofu-blog-privacy" element={<kofuBlog />} />
+                <Route path="/apps/kofu-blog-privacy" element={<KofuBlog />} />
             </>
             }
 

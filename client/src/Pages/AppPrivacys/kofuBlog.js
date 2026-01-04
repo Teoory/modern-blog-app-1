@@ -3,7 +3,7 @@ import React from 'react'
 const kofuBlog = () => {
   return (
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto', lineHeight: '1.6' }}>
-      <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit', fontSize: '16px' }}>
+      <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit', fontSize: '16px', color: '#333' }}>
 {`# Kofu Blog Gizlilik Politikası
 
 ## Gizlilik Politikası
