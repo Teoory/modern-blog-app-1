@@ -39,7 +39,7 @@ const DefRoutes = () => {
       <Route path="/tests/:id" element={<TestDetail />} />
       <Route path="/kesfet" element={<NavigatorPage />} />
       <Route path="/games" element={<Games />} />
-      <Route path="/kofu-blog-privacy" element={<kofuBlog />} />
+      <Route path="/apps/kofu-blog-privacy" element={<kofuBlog />} />
     </Routes>
   )
 }

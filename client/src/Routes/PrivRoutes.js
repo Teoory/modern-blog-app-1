@@ -80,7 +80,7 @@ const PrivRoutes = () => {
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/games" element={<Games />} />
                 <Route path="/keygame" element={<KeyGame />} />
-                <Route path="/kofu-blog-privacy" element={<kofuBlog />} />
+                <Route path="/apps/kofu-blog-privacy" element={<kofuBlog />} />
             </>
             }
 
