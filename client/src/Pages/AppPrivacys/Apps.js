@@ -51,16 +51,16 @@ const Apps = () => {
 
       <ul style={{ marginBottom: '15px', color: '#444', fontSize: '1.05rem' }}>
         <li style={{ marginBottom: '8px' }}>
-          <strong>Uygulama Adı:</strong> [Diğer Uygulama Adı]
+          <strong>Uygulama Adı:</strong> <span style={{color:'rgb(182, 2, 2)', textShadow: '-2px 2px 8px rgb(255, 57, 57)', fontFamily:'"Great Vibes", cursive', fontSize:'1.6rem', letterSpacing:'0.12em'}}>KoFu - Adalet</span>
         </li>
         <li style={{ marginBottom: '8px' }}>
           <strong>Geliştirici:</strong> Kkslab
         </li>
         <li style={{ marginBottom: '8px' }}>
-          <strong>Web Sitesi:</strong> [Diğer Uygulama Web Sitesi]
+          <strong>Web Sitesi:</strong> <a href="https://adalet.kofu.com.tr" target="_blank" rel="noopener noreferrer" style={{ color: '#4CAF50', textDecoration: 'none' }}>adalet.kofu.com.tr</a>
         </li>
         <li style={{ marginBottom: '8px' }}>
-          <strong>Gizlilik Politikası URL'si:</strong> [Diğer Uygulama Gizlilik Politikası URL'si]
+          <strong>Gizlilik Politikası URL'si:</strong> <a href="https://www.adalet.kofu.com.tr/privacy" target="_blank" rel="noopener noreferrer" style={{ color: '#4CAF50', textDecoration: 'none' }}>KoFu Adalet Privacy Policy</a>
         </li>
       </ul>
       
