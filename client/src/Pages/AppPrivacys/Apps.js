@@ -57,7 +57,7 @@ const Apps = () => {
           <strong>Geliştirici:</strong> Kkslab
         </li>
         <li style={{ marginBottom: '8px' }}>
-          <strong>Web Sitesi:</strong> <a href="https://adalet.kofu.com.tr" target="_blank" rel="noopener noreferrer" style={{ color: '#4CAF50', textDecoration: 'none' }}>adalet.kofu.com.tr</a>
+          <strong>Web Sitesi:</strong> <a href="https://www.adalet.kofu.com.tr" target="_blank" rel="noopener noreferrer" style={{ color: '#4CAF50', textDecoration: 'none' }}>adalet.kofu.com.tr</a>
         </li>
         <li style={{ marginBottom: '8px' }}>
           <strong>Gizlilik Politikası URL'si:</strong> <a href="https://www.adalet.kofu.com.tr/privacy" target="_blank" rel="noopener noreferrer" style={{ color: '#4CAF50', textDecoration: 'none' }}>KoFu Adalet Privacy Policy</a>
