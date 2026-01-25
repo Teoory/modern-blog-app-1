@@ -5,7 +5,7 @@
 
 Dilerseniz Youtube'dan videolara ulaşabilirsiniz.
 
-<h1>Artık https://fiyasko.online/ adresinden ulaşabilirsiniz.</h1> 
+<h1>Artık https://kofu.com.tr adresinden ulaşabilirsiniz.</h1> 
 
 <br/>
 [Playlist](https://youtube.com/playlist?list=PLR_-EKc5hBrEuh7I2JvghWuuaxa6XbCNj&si=a7IW0qtQxUpKbO8t)
@@ -48,7 +48,7 @@ mongoose.connect('mongodb+srv://username:password@cluster0.hd2atfr.mongodb.net/?
 <hr>
 
 ### V2.1.1
-- New Domain: https://fiyasko.online/
+- New Domain: https://kofu.com.tr
 - Vercel Server
 - Responsive Fix
 - Adsense Added

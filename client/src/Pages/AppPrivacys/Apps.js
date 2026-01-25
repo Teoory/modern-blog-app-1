@@ -68,6 +68,23 @@ const Apps = () => {
 
       <ul style={{ marginBottom: '15px', color: '#444', fontSize: '1.05rem' }}>
         <li style={{ marginBottom: '8px' }}>
+          <strong>Uygulama Adı:</strong> <span style={{color:'#6a1b9aff', textShadow: '-2px 2px 8px #ab47bcff', fontFamily:'"Great Vibes", cursive', fontSize:'1.6rem', letterSpacing:'0.12em'}}>QR Generator KoFu</span>
+        </li>
+        <li style={{ marginBottom: '8px' }}>
+          <strong>Geliştirici:</strong> Kkslab
+        </li>
+        <li style={{ marginBottom: '8px' }}>
+          <strong>Web Sitesi:</strong> <a href="https://qr.kofu.com.tr" target="_blank" rel="noopener noreferrer" style={{ color: '#4CAF50', textDecoration: 'none' }}>qr.kofu.com.tr</a>
+        </li>
+        <li style={{ marginBottom: '8px' }}>
+          <strong>Gizlilik Politikası URL'si:</strong> <a href="https://kofu.com.tr/apps/kofu-blog-privacy" target="_blank" rel="noopener noreferrer" style={{ color: '#4CAF50', textDecoration: 'none' }}>QR Generator KoFu Privacy Policy</a>
+        </li>
+      </ul>
+      
+      <hr style={{ margin: '30px 0', border: 'none', borderTop: '1px solid #ddd' }} />
+
+      <ul style={{ marginBottom: '15px', color: '#444', fontSize: '1.05rem' }}>
+        <li style={{ marginBottom: '8px' }}>
           <strong>Uygulama Adı:</strong> [Diğer Uygulama Adı]
         </li>
         <li style={{ marginBottom: '8px' }}>
