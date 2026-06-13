@@ -30,6 +30,23 @@ const Apps = () => {
       <hr style={{ margin: '30px 0', border: 'none', borderTop: '1px solid #ddd' }} />
 
       <ul style={{ marginBottom: '15px', color: '#444', fontSize: '1.05rem' }}>
+        <li style={{ marginBottom: '8px' }}>
+          <strong>Uygulama Adı:</strong> <span style={{color:'#ed8709', textShadow: '-2px 2px 8px #FFAA40', fontFamily:'"Great Vibes", cursive', fontSize:'1.6rem', letterSpacing:'0.12em'}}>HepsyDopamin</span>
+        </li>
+        <li style={{ marginBottom: '8px' }}>
+          <strong>Geliştirici:</strong> Kkslab
+        </li>
+        <li style={{ marginBottom: '8px' }}>
+          <strong>Web Sitesi:</strong> <a href="https://hepsydopamin.kofu.com.tr/" target="_blank" rel="noopener noreferrer" style={{ color: '#4CAF50', textDecoration: 'none' }}>hepsydopamin.kofu.com.tr</a>
+        </li>
+        <li style={{ marginBottom: '8px' }}>
+          <strong>Gizlilik Politikası URL'si:</strong> <a href="https://kofu.com.tr/apps/kofu-blog-privacy" target="_blank" rel="noopener noreferrer" style={{ color: '#4CAF50', textDecoration: 'none' }}>HepsyDopamin Privacy Policy</a>
+        </li>
+      </ul>
+      
+      <hr style={{ margin: '30px 0', border: 'none', borderTop: '1px solid #ddd' }} />
+
+      <ul style={{ marginBottom: '15px', color: '#444', fontSize: '1.05rem' }}>
         <li style={{ marginBottom: '8px'}}>
           <strong>Uygulama Adı:</strong> <span style={{color:'#0292b6ff', textShadow: '-2px 2px 8px #39d7ffff', fontFamily:'"Great Vibes", cursive', fontSize:'1.6rem', letterSpacing:'0.12em'}}>CubeMover: Time Race</span>
         </li>
